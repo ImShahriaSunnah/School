@@ -1,0 +1,82 @@
+@extends('layouts.master')
+
+@section('content')
+
+    <div class="container mt-5">
+        <div class="row  border-bottom white-bg dashboard-header">
+            <div class="col-md-12">
+
+                <div class="row wrapper border-bottom white-bg page-heading">
+                    <div class="col-md-10">
+                        <h2>Tutorial</h2>
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item">
+                                <a href="index.html">Home</a>
+                            </li>
+                            <li class="breadcrumb-item active">
+                                <strong>Tutorial</strong>
+                            </li>
+                        </ol>
+                    </div>
+                    <div class="col-md-2">
+
+                    </div>
+                </div>
+
+                <div class="wrapper wrapper-content animated fadeInRight">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="ibox ">
+                                <div class="ibox-content">
+
+                                    <div class="row justify-content-center">
+                                        <div class="col-md-12 b-r">
+                                            <h3 class="m-t-none m-b">Tutorial Create</h3>
+                                            <form role="form" action="{{ route('tutorial.store') }}" method="POST">
+                                                @csrf
+
+                                                <div class="form-group">
+                                                    <label>Page Info</label>
+                                                    <select class="form-control" id="exampleFormControlSelect1" name="page_info">
+                                                        <option value="class-show">class-show</option>
+                                                        <option value="section-show">section-show</option>
+                                                        <option value="group-show">group-show</option>
+                                                        <option value="department-show">department-show</option>
+                                                        <option value="subject-show">subject-show</option>
+                                                        <option value="teacher-show">teacher-show</option>
+                                                        <option value="assign-teacher">assign-teacher</option>
+                                                        <option value="student-show">student-show</option>
+                                                        <option value="attendance-show">attendance-show</option>
+                                                        <option value="attendance-date-show">attendance-date-show</option>
+                                                        <option value="finance-show">finance-show</option>
+                                                        <option value="student-fees-show">student-fees-show</option>
+                                                        <option value="staff-salary-show">staff-salary-show</option>
+                                                        <option value="teacher-salary-show">teacher-salary-show</option>
+                                                        <option value="staff-type-show">staff-type-show</option>
+                                                    </select>
+                                                </div>
+
+                                                <label for="basic-url">Link</label>
+                                                <div class="input-group mb-3">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text" id="basic-addon3">https://www.youtube.com/watch?v=</span>
+                                                    </div>
+                                                    <input type="text" class="form-control" id="basic-url" aria-describedby="basic-addon3" name="link">
+                                                </div>
+                                                <div>
+                                                    <button class="btn btn-sm btn-primary float-right m-t-n-xs" type="submit">
+                                                        <strong>Create</strong>
+                                                    </button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endsection

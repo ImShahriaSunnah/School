@@ -1,0 +1,14 @@
+node_modules/
+vendor/
+public/assets
+public/frontend
+public/images
+public/js
+public/profile
+public/schools
+public/storage
+public/up
+public/vendor
+docker/
+.env
+.vscode

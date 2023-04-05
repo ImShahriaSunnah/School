@@ -1,0 +1,11 @@
+<link rel="stylesheet" href="{{ asset('frontend/assets/css/preloader.css') }}">
+<link rel="stylesheet" href="{{ asset('frontend/assets/css/bootstrap.min.css') }}">
+<link rel="stylesheet" href="{{ asset('frontend/assets/css/meanmenu.css') }}">
+<link rel="stylesheet" href="{{ asset('frontend/assets/css/animate.min.css') }}">
+<link rel="stylesheet" href="{{ asset('frontend/assets/css/owl.carousel.min.css') }}">
+<link rel="stylesheet" href="{{ asset('frontend/assets/css/backToTop.css') }}">
+<link rel="stylesheet" href="{{ asset('frontend/assets/css/jquery.fancybox.min.css') }}">
+<link rel="stylesheet" href="{{ asset('frontend/assets/css/fontAwesome5Pro.css') }}">
+<link rel="stylesheet" href="{{ asset('frontend/assets/css/elegantFont.css') }}">
+<link rel="stylesheet" href="{{ asset('frontend/assets/css/default.css') }}">
+<link rel="stylesheet" href="{{ asset('frontend/assets/css/style.css') }}">

@@ -1,0 +1,148 @@
+<?php
+
+namespace App\Http\Controllers\School;
+
+use App\Models\Term;
+use App\Models\Subject;
+use Illuminate\Http\Request;
+use App\Models\ClassSyllabus;
+use App\Models\InstituteClass;
+use App\Http\Controllers\Controller;
+use RealRashid\SweetAlert\Facades\Alert;
+
+class SyllabusController extends Controller
+{
+    public function SyllabusCreate()
+    {
+        $term = Term::where('school_id', auth()->id())->orderby('id', 'desc')->get();
+        $class = InstituteClass::where('school_id', auth()->id())->get();
+        $subjects = Subject::all();
+        return view('frontend.school.syllabus.create', compact('class', 'subjects', 'term'));
+    }
+    public function SyllabusCreatePost(Request $request)
+    {
+        $request->validate([
+            // validate syllabus
+            'term_id' => 'required',
+            'class_id' => 'required',
+            'subject_id' => 'required',
+            'syllabus' => 'required'
+
+        ]);
+        $data= ClassSyllabus::where('class_id',$request->class_id)->where('term_id',$request->term_id)->where('subject_id',$request->subject_id)->first();
+   if($data!== null){
+        $data->update([
+            // create syllabus
+            'term_id' => $request->term_id,
+            'class_id' => $request->class_id,
+            'subject_id' => $request->subject_id,
+            'syllabus' => $request->syllabus
+
+        ]);
+    }
+   else{
+
+   $data= ClassSyllabus::create([
+        // create syllabus
+        'term_id' => $request->term_id,
+        'class_id' => $request->class_id,
+        'subject_id' => $request->subject_id,
+        'syllabus' => $request->syllabus
+
+    ]);
+
+   }
+   Alert::success('Syllabus Created Succesfully', 'Success Message');
+
+        return back();
+    }
+    public function SyllabusDataShow()
+    {
+
+        $syllabus = ClassSyllabus::with('classRelation', 'subjectRelation', 'termRelation')->get();
+        return view('frontend.school.syllabus.show', compact('syllabus'));
+    }
+
+
+
+
+    // public function SyllabusShow()
+    // {
+    //     // syllabus page show
+    //     // $syllabus= Syllabus::->first();
+    //     // dd($syllabus);
+    //     $syllabus = ClassSyllabus::with('classRelation', 'subjectRelation','termRelation')->get();
+
+    //     return view('frontend.school.syllabus.show', compact('syllabus'));
+    // }
+
+
+    public function SyllabusFormShow()
+    {
+
+        $class = InstituteClass::where('school_id', auth()->id())->get();
+
+        return view('frontend.school.syllabus.selectform', compact('class'));
+    }
+
+
+
+    public function SyllabusFormPost(Request $request)
+    {
+        // return $request;
+
+         $syllabus = ClassSyllabus::with('termRelation')->where('class_id', $request->select_class)->get()->groupBy('term_id');
+        if ($syllabus->count()>0){
+            return view('frontend.school.syllabus.show')->with(compact('syllabus'));
+        }
+        else {
+            Alert::error('Sorry', "No record found");
+            return back();
+        }
+
+    }
+
+
+    public function syllabusEdit($id)
+    {
+        // view syllabus edit
+        $editSyllabus = ClassSyllabus::find($id);
+        $commonClass = InstituteClass::all();
+        $commonSubject = Subject::all();
+        return view('frontend.school.syllabus.edit', compact('commonClass', 'commonSubject', 'editSyllabus'));
+    }
+    public function syllabusEditPost(Request $request, $id)
+    {
+        // validation for edit
+        $editSubmit = ClassSyllabus::find($id);
+        $request->validate([
+            'class_id' => 'required',
+            'subject_id' => 'required',
+            'term_id'=>'required',
+            'syllabus' => 'required'
+
+        ]);
+        // for syllabus update
+        $editSubmit->update([
+            'class_id' => $request->common_class_id,
+            'subject_id' => $request->common_subject_id,
+            'term_id'=>$request->term_id,
+            'syllabus' => $request->syllabus
+
+
+        ]);
+        return redirect()->route('syllabus.table.show');
+    }
+
+
+
+
+    public function syllabusDelete($id)
+    {
+        // syllabus delete
+        ClassSyllabus::find($id)->delete();
+        toast('opps deleted', 'danger');
+
+        return back();
+    }
+}
