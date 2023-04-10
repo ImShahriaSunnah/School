@@ -102,6 +102,8 @@ Route::middleware('language')->group(function(){
         //school-profile
         Route::get('/receipt/show', [App\Http\Controllers\ExpenseController::class, 'receipt'])->name('Reciept.Create');
         Route::get('/getPrice/{id}', [App\Http\Controllers\ExpenseController::class, 'getPrice'])->name('getPrice');
+        
+        Route::get('/receipt/Show', [App\Http\Controllers\ExpenseController::class, 'receiptShow'])->name('receipt.Show')->middleware('language');
 
         Route::get('/accesories/create', [App\Http\Controllers\ExpenseController::class, 'accesoriesType'])->name('accesoriesType')->middleware('language');
         Route::post('/accesories/create/post', [App\Http\Controllers\ExpenseController::class, 'accesoriesTypePost'])->name('accesoriesType.post')->middleware('language');
@@ -150,6 +152,7 @@ Route::middleware('language')->group(function(){
             //syllabus part
             Route::get('/ajax', [AjaxController::class, 'ajaxLoaderSubject'])->name('ajax.load.subject');
             Route::get('/ajax/students', [AjaxController::class, 'ajaxLoadStudents'])->name('ajax.load.students');
+            Route::post('/ajax/accesories/transaction', [AjaxController::class, 'ajaxAccesorisTransaction'])->name('ajax.load.accesories.transaction');
             Route::get('syllabus/create', [SyllabusController::class, 'SyllabusCreate'])->name('syllabus.create');
             Route::post('/create/post', [SyllabusController::class, 'SyllabusCreatePost'])->name('syllabus.create.post');
             Route::get('/ShowData', [SyllabusController::class, 'SyllabusDataShow'])->name('syllabus.data.show');
@@ -702,6 +705,8 @@ Route::middleware(['auth:schools', 'language'])
 Route::middleware(['auth:schools', 'language'])
 ->group(function(){
     Route::get('/receipt/show', [App\Http\Controllers\ExpenseController::class, 'receipt'])->name('reciept.create');
+    Route::get('/receipt/delete/{id}', [App\Http\Controllers\ExpenseController::class, 'receiptDelete'])->name('receipt.delete');
+
     Route::get('/getPrice/{id}', [App\Http\Controllers\ExpenseController::class, 'getPrice'])->name('getPrice');
     Route::post('/ajax/accesories/', [AjaxController::class, 'ajaxLoaderaccesories'])->name('ajax.load.accesories');
 

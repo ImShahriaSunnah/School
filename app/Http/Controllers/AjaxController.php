@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AccesoriesTransaction;
 use Str;
 use Exception;
 use App\Models\User;
@@ -15,32 +16,55 @@ use Intervention\Image\Facades\Image;
 
 class AjaxController extends Controller
 {
-    public function ajaxLoaderSubject(Request $request){
-        $data=Subject::where('class_id',$request->class_id)->where('school_id', Auth::user()->id)->get();
- 
+    public function ajaxLoaderSubject(Request $request)
+    {
+        $data = Subject::where('class_id', $request->class_id)->where('school_id', Auth::user()->id)->get();
+
         $html = '<label><b>Subject</b></label><select class="form-select mb-3" name="subject_id" id="subject_id">
         <option value="" selected>Subject</option>';
 
-        foreach($data as $subject){
-            $html .= '<option value="'.$subject->id.'">'.$subject->subject_name.'</option>';
+        foreach ($data as $subject) {
+            $html .= '<option value="' . $subject->id . '">' . $subject->subject_name . '</option>';
         }
 
         $html .= '</select>';
 
         return $html;
     }
-    public function ajaxLoaderaccesories(Request $request){
+    public function ajaxAccesorisTransaction(Request $request)
+    {
+
+
+        $access = AccesoriesTransaction::create([
+
+            "name" => $request->name,
+            "roll" => $request->roll,
+            "class" => $request->class,
+            "section" => $request->section,
+            "amount" => $request->amount,
+            "quantity" => $request->quantity,
+            "accesories" => $request->accesories,
+            'school_id' =>  Auth::id()
+
+        ]);
+        return response()->json(['success' => true, 'access' => $access]);
+    }
+
+
+
+
+    public function ajaxLoaderaccesories(Request $request)
+    {
         Transection::create([
-            'purpose'=>'receipt Accesories Payment',
-            'payment_method'=>1,
-            'type'=>'3',
-            'amount'=>$request->amount,
-            'name'=>'admin',
+            'purpose' => 'receipt Accesories Payment',
+            'payment_method' => 1,
+            'type' => '3',
+            'amount' => $request->amount,
+            'name' => 'admin',
             'school_id' =>  Auth::id()
         ]);
-
     }
-  
+
     public function ajaxLoadStudents(Request $request)
     {
         $request->validate([
@@ -49,12 +73,12 @@ class AjaxController extends Controller
         ]);
 
         $rows = User::where(['school_id' => Auth::id(), 'shift' => $request->shift, 'class_id' => $request->classId])->get();
-    
+
         $html = '<label>Student</label>  <select class="form-select mb-3" name="student_id" required>
         <option value="0" selected>All Students</option>';
 
-        foreach($rows as $row){
-            $html .= '<option value="'.$row->phone.'">'.$row->name.'</option>';
+        foreach ($rows as $row) {
+            $html .= '<option value="' . $row->phone . '">' . $row->name . '</option>';
         }
 
         $html .= '</select>';
@@ -68,18 +92,17 @@ class AjaxController extends Controller
      */
     public function zkTeck()
     {
-        try{
-            
+        try {
+
             $zk = new ZKTeco('192.168.0.114', '4370');
 
-            if($zk->connect())
-            {
+            if ($zk->connect()) {
                 $zk->disableDevice();
                 // $zk->setUser(3, 119001, "Akbar Sir", '12345678', 0);
                 // $zk->removeUser(3);
                 // $zk->clearUsers();
                 // return  $zk->getUser();
-                
+
 
                 $att =  $zk->getAttendance();
                 // $zk->clearAttendance();
@@ -88,29 +111,25 @@ class AjaxController extends Controller
             }
 
             return "Not connect";
-        }
-        catch(Exception $e)
-        {
+        } catch (Exception $e) {
             return $e->getMessage();
         }
     }
 
 
-     public function ajaxLoaderSection(Request $request)
-     {
-        $data=Section::where('class_id',$request->class_id)->where('school_id', Auth::user()->id)->get();
- 
+    public function ajaxLoaderSection(Request $request)
+    {
+        $data = Section::where('class_id', $request->class_id)->where('school_id', Auth::user()->id)->get();
+
         $html = '<label class="form-label">Section</label><select class="form-select mb-3" name="section_id" id="section_id">
         <option value="" selected>Section</option>';
 
-        foreach($data as $section){
-            $html .= '<option value="'.$section->id.'">'.$section->section_name.'</option>';
+        foreach ($data as $section) {
+            $html .= '<option value="' . $section->id . '">' . $section->section_name . '</option>';
         }
 
         $html .= '</select>';
 
         return $html;
     }
-
-
 }
