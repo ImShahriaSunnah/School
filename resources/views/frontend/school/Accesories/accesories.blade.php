@@ -14,7 +14,8 @@
                             <table class="table" style="border:1px solid rgb(43, 60, 188">
                                 <div class="row my-3">
                                     <div class="col">
-                                        <a class="btn btn-success" href="{{route('accesoriesType')}}">+ {{__('app.Accessories')}}</a>
+                                        <a class="btn btn-success" href="{{route('accesoriesType')}}"> .+. </a>
+                                        <a class="btn btn-primary" href="{{route('receipt.Show')}}"><i class="bi bi-arrow-repeat"></i></a>
                                     </div>
                                 </div>
                                 <div class="row">
@@ -121,19 +122,18 @@
                                 <span id="day">{{date('F')}}</span> : <span id="year">{{date('d/m/Y')}}</span>
                             </div>
                             <div class="col-xs-6 col-sm-6 col-md-6 text-right">
-                                <p>Order No:1234</p>
                             </div>
                             <div class="row">
                                 </span>
                                 <table id="receipt_bill" class="table mt-3">
                                     <thead>
                                         <tr>
-                                            <th> {{__('app.nong')}}.</th>
+                                            <th class="text-center"></th>
                                             <th>{{(__('app.Accessories'))}}</th>
                                             <th>{{__('app.quantity')}}</th>
                                             <th class="text-center">{{__('app.Price')}}</th>
                                             <th class="text-center">{{__('app.total')}}</th>
-                                            <th class="text-center">{{__('app.Action')}}</th>
+
                                         </tr>
                                     </thead>
                                     <tbody id="new">
@@ -212,7 +212,6 @@
             });
         });
 
-        //add to cart 
         var count = 1;
         $('#add').on('click', function() {
 
@@ -221,8 +220,8 @@
             var roll = $("#roll").val();
 
             if (sname == "" || sectionId == "" || roll == "") {
-                // alert("Please fillup student name, section, roll");
-                // die();
+                alert("Please fillup student name, section, roll");
+                die();
             }
 
             var name = $('#accesories').val();
@@ -230,14 +229,14 @@
             var price = $('#price').text();
 
             if (accesories == "") {
-                //alert("Please  Add Accesories");
-                // die();
+                alert("Please  Add Accesories");
+                die();
             }
             if (qty == 0) {
                 alert("Please Add Quantity");
 
             } else {
-                billFunction(); // Below Function passing here 
+                billFunction();
             }
 
             function billFunction() {
@@ -248,7 +247,7 @@
                     var subTotal = 0;
                     subTotal += parseInt(total);
 
-                    var table = '<tr id="row' + count + '"><td>' + count + '</td><td>' + name + '</td><td>' + qty + '</td><td>' + price + '</td><td><strong><input type="hidden" id="total" value="' + total + '">' + total + '</strong></td><td><button class="btn btn-danger" onclick="removeRow(' + count + ')">Delete</button></td></tr>';
+                    var table = '<tr id="row' + count + '"><td><button  onclick="removeRow(' + count + ')"><i class="bi bi-x-lg"></i></button></td><td>' + name + '</td><td>' + qty + '</td><td>' + price + '</td><td><strong><input type="hidden" id="total" value="' + total + '">' + total + '</strong></td></tr>';
                     $('#new').append(table)
 
                     // Code for Sub Total of Vegitables 
@@ -275,6 +274,27 @@
 
                 });
                 count++;
+                $.ajax({
+                    url: "{{route('ajax.load.accesories.transaction')}}",
+                    type: "POST",
+                    data: {
+                        "name": $("#s_n").val(),
+                        "roll": $("#roll").val(),
+                        "class": $("#class").val(),
+                        "section": $("#section_id").val(),
+                        "amount": $("#subTotal").text(),
+                        "quantity":$("#qty").val(),
+                        "accesories": $("#accesories").val(),
+                        "_token": "{{csrf_token()}}",
+                    },
+                    success: function(res) {
+                        console.log(res);
+                    },
+                    error: function(error) {
+                        console.log(error);
+                    }
+                })
+
             }
         });
 
@@ -326,10 +346,6 @@
 </script>
 
 <script>
-    // for printing
-
-
-
     function printDiv(divName) {
         var printContents = document.getElementById(divName).innerHTML;
         var originalContents = document.body.innerHTML;

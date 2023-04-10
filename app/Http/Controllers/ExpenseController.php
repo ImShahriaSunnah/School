@@ -3,15 +3,16 @@
 namespace App\Http\Controllers;
 
 use Carbon\Carbon;
+use App\Models\School;
 use App\Models\Transection;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 
+use Illuminate\Http\Response;
 use App\Models\AccesoriesType;
 use App\Models\InstituteClass;
-use App\Models\School;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use App\Models\AccesoriesTransaction;
 
 
 class ExpenseController extends Controller
@@ -39,13 +40,13 @@ class ExpenseController extends Controller
                     $expense = Transection::where('status', true)->whereBetween('datee', [$request->searchdate, $request->enddate])->where('type', 1)->orderBy('created_at', 'asc')->get();
                     $sumFund = Transection::where('status', true)->whereBetween('datee', [$request->searchdate, $request->enddate])->where('type', 1)->sum('amount');
                     $defaultDate = Carbon::today()->format('Y-m-d');
-                    return view('frontend.school.expense.table')->with(compact('expense', 'sumFund','defaultDate'));
+                    return view('frontend.school.expense.table')->with(compact('expense', 'sumFund', 'defaultDate'));
                 } else {
 
                     $expense = Transection::where('status', true)->wheredate('datee', $request->searchdate)->where('type', 1)->orderBy('created_at', 'asc')->get();
                     $sumFund = Transection::where('status', true)->wheredate('datee', $request->searchdate)->where('type', 1)->sum('amount');
                     $defaultDate = Carbon::today()->format('Y-m-d');
-                    return view('frontend.school.expense.table')->with(compact('expense', 'sumFund','defaultDate'));
+                    return view('frontend.school.expense.table')->with(compact('expense', 'sumFund', 'defaultDate'));
                 }
             } elseif (isset($request->searchmonth)) {
                 $transectionMonth = Transection::where('status', true)->orderBy('created_at', 'asc')->get();
@@ -53,13 +54,13 @@ class ExpenseController extends Controller
                 $sumFund = Transection::where('status', true)->whereMonth('datee', $request->searchmonth)->where('type', 1)->sum('amount');
                 $expense = Transection::where('status', true)->whereMonth('datee', $request->searchmonth)->where('type', 1)->orderBy('created_at', 'asc')->get();
                 $defaultDate = Carbon::today()->format('Y-m-d');
-                return view('frontend.school.expense.table')->with(compact('sumFund', 'expense', 'searchmonth','defaultDate'));
+                return view('frontend.school.expense.table')->with(compact('sumFund', 'expense', 'searchmonth', 'defaultDate'));
             } else {
 
                 $expense = Transection::where('status', true)->where('type', 1)->latest()->get();
                 $sumFund = Transection::where('status', true)->where('type', 1)->sum('amount');
                 $defaultDate = Carbon::today()->format('Y-m-d');
-                return view('frontend.school.expense.table', compact('expense', 'sumFund','defaultDate'));
+                return view('frontend.school.expense.table', compact('expense', 'sumFund', 'defaultDate'));
             }
         }
     }
@@ -223,12 +224,12 @@ class ExpenseController extends Controller
                     $expense = Transection::where('status', true)->whereBetween('datee', [$request->searchdate, $request->enddate])->where('type', 2)->orderBy('datee', 'desc')->get();
                     $sumFund = Transection::where('status', true)->whereBetween('datee', [$request->searchdate, $request->enddate])->where('type', 2)->sum('amount');
                     $defaultDate = Carbon::today()->format('Y-m-d');
-                    return view('frontend.school.fund.table')->with(compact('expense', 'sumFund','defaultDate'));
+                    return view('frontend.school.fund.table')->with(compact('expense', 'sumFund', 'defaultDate'));
                 } else {
                     $expense = Transection::where('status', true)->wheredate('datee', $request->searchdate)->where('type', 2)->orderBy('datee', 'desc')->get();
                     $sumFund = Transection::where('status', true)->wheredate('datee', $request->searchdate)->where('type', 2)->sum('amount');
                     $defaultDate = Carbon::today()->format('Y-m-d');
-                    return view('frontend.school.fund.table')->with(compact('expense', 'sumFund','defaultDate'));
+                    return view('frontend.school.fund.table')->with(compact('expense', 'sumFund', 'defaultDate'));
                 }
             } elseif (isset($request->searchmonth)) {
                 $transectionMonth = Transection::where('status', true)->orderBy('created_at', 'asc')->get();
@@ -236,41 +237,46 @@ class ExpenseController extends Controller
                 $sumFund = Transection::where('status', true)->whereMonth('datee', $request->searchmonth)->where('type', 2)->sum('amount');
                 $defaultDate = Carbon::today()->format('Y-m-d');
                 $expense = Transection::where('status', true)->whereMonth('datee', $request->searchmonth)->where('type', 2)->orderBy('datee', 'desc')->get();
-                return view('frontend.school.fund.table')->with(compact('expense', 'searchmonth', 'sumFund','defaultDate'));
+                return view('frontend.school.fund.table')->with(compact('expense', 'searchmonth', 'sumFund', 'defaultDate'));
             } else {
                 $expense = Transection::where('status', true)->where('type', 2)->orderBy('datee', 'desc')->get();
                 $sumFund = Transection::where('status', true)->where('type', 2)->sum('amount');
                 $defaultDate = Carbon::today()->format('Y-m-d');
-                return view('frontend.school.fund.table', compact('expense', 'sumFund','defaultDate'));
+                return view('frontend.school.fund.table', compact('expense', 'sumFund', 'defaultDate'));
             }
         }
     }
 
 
     public function  accesoriesType()
-    {    
-        $data=AccesoriesType::where('school_id', Auth::id())->get();
+    {
+        $data = AccesoriesType::where('school_id', Auth::id())->get();
 
-        return view('frontend.school.Accesories.accesoriesType',compact('data'));
+        return view('frontend.school.Accesories.accesoriesType', compact('data'));
     }
-
+    public function  receiptShow()
+    {
+        $data = AccesoriesTransaction::all();
+        return view('frontend.school.Accesories.receipt', compact('data'));
+    }
     /**
      *  store accesories by school
      */
-    public function accesoriesTypePost(Request $request){
-       
+    public function accesoriesTypePost(Request $request)
+    {
+
         $request->validate([
             'accesories' => 'required',
             'price' => 'required'
         ]);
-       
+
         AccesoriesType::create([
             'school_id' =>  Auth::id(),
             'accesories' => $request->accesories,
             'price' => $request->price,
         ]);
-  
-        return back();    
+
+        return back();
     }
 
 
@@ -282,13 +288,21 @@ class ExpenseController extends Controller
         $orders = AccesoriesType::where('school_id', Auth::id())->get();
         return view("frontend.school.Accesories.accesories", compact('orders', 'school', 'class'));
     }
- 
+    public function receiptDelete($id)
+    {
+        // syllabus delete
+        AccesoriesTransaction::find($id)->delete();
+        toast('opps deleted', 'danger');
+
+        return back();
+    }
+
     public function getPrice($id)
     {
         $price  = AccesoriesType::find($id)->price;
         return $price;
-    }   
-  
+    }
+
 
 
 

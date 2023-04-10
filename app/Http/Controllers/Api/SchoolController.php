@@ -753,6 +753,7 @@ class SchoolController extends Controller
     }
 
     public function showTerm(){
+        
         $data = Term::orderby('id','desc')->where('school_id',Auth::user()->id)->get();
         return response()->json([
             'success' => true,
