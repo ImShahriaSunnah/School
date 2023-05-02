@@ -6,6 +6,16 @@
         <div class="row">
             <div class="col-xl-6 mx-auto">
 
+                @if ($errors->any())
+                    <div class="alert alert-danger">
+                        <ul>
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
+
                 <div class="card">
                     <div class="card-body">
                         <div class="border p-3 rounded">
@@ -26,9 +36,9 @@
 
                                     <div class="col-12">
                                         <label class="form-label">Total Mark <span style="color: red"> *</span></label>
-                                        <input type="text" class="form-control" placeholder="Total Mark" name="total_mark" required>
+                                        <input type="number" class="form-control" placeholder="Total Mark" name="total_mark" required>
                                     </div>
-                                    
+
                                     <div class="col-12">
                                         <div class="d-grid">
                                             <button type="submit" class="btn btn-primary">{{__('app.submit')}}</button>
@@ -40,7 +50,7 @@
                                     @csrf
                                     <div class="col-12">
                                         <label class="form-label">{{__('app.t')}}</label>
-                                        <input type="text" class="form-control" placeholder="Term name" name="term_name" value="{{$row->term_name}}">
+                                        <input type="text" class="form-control" placeholder="Term name" name="term_name" value="{{$row->term_name}}" required>
                                     </div>
 
                                     <div class="col-12">
@@ -50,9 +60,9 @@
 
                                     <div class="col-12">
                                         <label class="form-label">Total Mark <span style="color: red"> *</span></label>
-                                        <input type="text" class="form-control" placeholder="Total Mark" value="{{ $row->total_mark }}" name="total_mark" required>
+                                        <input type="number" class="form-control" placeholder="Total Mark" value="{{ $row->total_mark }}" name="total_mark" required>
                                     </div>
-                                    
+
                                     <div class="col-12">
                                         <div class="d-grid">
                                             <button type="submit" class="btn btn-primary">{{__('app.submit')}}</button>

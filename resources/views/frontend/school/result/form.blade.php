@@ -13,7 +13,7 @@
                                 @csrf
                                 <div class="mb-3">
                                     <label for=""><b>{{__('app.class')}}</b> </label>
-                                    <select class="form-control mb-3 js-select" name="class" class="form-select" id="class_id" onchange="loadSection()">
+                                    <select class="form-control mb-3 js-select" name="class" class="form-select" id="class_id" onchange="loadSection()" required>
                                         <option value="" selected>{{__('app.select')}}</option>
                                         @foreach ($data['classes'] as $class)
                                             <option value="{{$class->id}}">{{$class->class_name}}</option>
@@ -23,7 +23,7 @@
 
                                 <div class="mb-3">
                                     <label for=""><b>{{__('app.Section')}}</b> </label>
-                                    <select class="form-control mb-3 js-select" id="section" name="section">
+                                    <select class="form-control mb-3 js-select" id="section" name="section" required>
                                         <option value="" selected>{{__('app.select')}}</option>
                                     </select>
                                 </div>
@@ -31,14 +31,14 @@
 
                                 <div class="mb-3" id="subject">
                                     <label for=""><b>{{__('app.Subject')}}</b> </label>
-                                    <select name="subject" class="form-control mb-3 js-select">
+                                    <select name="subject" class="form-control mb-3 js-select" required>
                                         <option value="" selected>{{__('app.select')}}</option>
                                     </select>
                                 </div>
 
                                 <div class="mb-3">
-                                    <label for=""><b>{{__('app.Section')}}</b> </label>
-                                    <select name="term" class="form-control mb-3 js-select">
+                                    <label for=""><b>{{__('app.t')}}</b> </label>
+                                    <select name="term" class="form-control mb-3 js-select" required>
                                         <option value="" selected>{{__('app.select')}}</option>
                                         @foreach ($data['terms'] as $term)
                                             <option value="{{$term->id}}">{{$term->term_name}}</option>

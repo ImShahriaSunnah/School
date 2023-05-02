@@ -22,8 +22,9 @@
                             <form action="{{ route('update.question', $question->id) }}" method="post"
                                 enctype="multipart/form-data">
                                 @csrf
+                                <input type="hidden" id="question_type" name="question_type" value="{{ $question->type }}">
 
-                                <div class="col-md-12 d-flex justify-content-center">
+                                {{-- <div class="col-md-12 d-flex justify-content-center">
                                     <div class="col-md-3" style="border-bottom: 2px solid black; margin-bottom: 10px;">
                                         <label>Choose Question Type</label>
                                         <select class="form-control mb-3 js-select"aria-label="Default select example"
@@ -34,7 +35,7 @@
                                             <option value="Creative">Creative QN</option>
                                         </select>
                                     </div>
-                                </div>
+                                </div> --}}
 
                                 <div class="col-md-12">
                                     <div class="row">
@@ -82,7 +83,7 @@
                                                     <div class="">
                                                         <div class="">
 
-                                                            <input type="text" name="hours" value="{{ $question->hours }}" placeholder="Hours or Minutes" class="form-control" id="">
+                                                            <input type="number" min="1" name="hours" value="{{ $question->hours }}" placeholder="Hours or Minutes" class="form-control" id="">
                                                         </div>
                                                     </div>
                                                 </div>
@@ -90,7 +91,7 @@
                                                     <label class="text-center">Total Marks</label>
                                                     <div class="">
                                                         <div class="">
-                                                            <input type="text" name="total_mark" value="{{ $question->total_marks }}" placeholder="Total Mark" class="form-control" id="">
+                                                            <input type="number" name="total_mark" value="{{ $question->total_marks }}" placeholder="Total Mark" class="form-control" id="">
                                                         </div>
                                                     </div>
                                                 </div>
@@ -164,15 +165,14 @@
                                                                 <input
                                                                     name="creQuestion_mark[{{ $key }}][{{ $k }}]"
                                                                     value="{{ $question['question_mark'][$key][$k] }}"
-                                                                    class="form-control" type="text">
+                                                                    class="form-control" type="number">
                                                             </div>
 
-
+                                                        @endforeach
                                                             <div class="col-md-1">
                                                                 <button type="button" class="btn btn-danger remove"
                                                                     style="margin-top: 40px; margin-left: 27px;">-</button>
                                                             </div>
-                                                        @endforeach
                                                     </div>
                                                 @endforeach
                                             </div>
@@ -192,7 +192,7 @@
                                                 @foreach ($question->question as $key => $qn)
                                                     <div class="row">
                                                         <div class="col-md-11 mt-3">
-                                                            <textarea name="mcqQuestions[{{ $key }}]" class="editor" id="ckeditor{{ $key }}">{!! $qn !!}</textarea>
+                                                            <textarea name="mcqQuestions[{{ $key }}]" class="editor" id="ckeditor{{ $key }}">{{ $qn }}</textarea>
                                                         </div>
                                                         <div class="col-md-1">
                                                             <button type="button" class="btn btn-danger remove"
@@ -261,8 +261,8 @@
                 e.preventDefault();
                 var type = $("#question_type").val();
                 var val = +$(this).attr('data-count') + 1;
-                if (type == "Creative") {
-                    $("#creativeapeandField").append(`
+                if (type == "Written") {
+                    $("#apeandField").append(`
                         <div class="row mt-3">
                             <div class="col-md-8 mt-3">
                                 <label for="">Question Name</label>
@@ -271,7 +271,7 @@
 
                             <div class="col-md-3 mt-3">
                                 <label for="">Mark</label>
-                                <input name="question_mark[${val}]" class="form-control" type="text">
+                                <input name="question_mark[${val}]" class="form-control" type="number">
                             </div>
 
                             <div class="col-md-1" >
@@ -283,8 +283,8 @@
                             </div>
                         </div>
                     `);
-                } else if (type == "Written") {
-                    $("#apeandField").append(`
+                } else if (type == "Creative") {
+                    $("#creativeapeandField").append(`
                         <div class="row">
                                                     
                             <div class="col-md-12 mt-3">
@@ -298,7 +298,7 @@
 
                             <div class="col-md-3 mt-3">
                                 <label for="">Mark</label>
-                                <input name="creQuestion_mark[${val}][1]" class="form-control" type="text">
+                                <input name="creQuestion_mark[${val}][1]" class="form-control" type="number">
                             </div>
                             <div class="col-md-8 mt-3">
                                 <label for="">B</label>
@@ -307,7 +307,7 @@
 
                             <div class="col-md-3 mt-3">
                                 <label for="">Mark</label>
-                                <input name="creQuestion_mark[${val}][2]" class="form-control" type="text">
+                                <input name="creQuestion_mark[${val}][2]" class="form-control" type="number">
                             </div>
                             <div class="col-md-8 mt-3">
                                 <label for="">C</label>
@@ -316,7 +316,7 @@
 
                             <div class="col-md-3 mt-3">
                                 <label for="">Mark</label>
-                                <input name="creQuestion_mark[${val}][3]" class="form-control" type="text">
+                                <input name="creQuestion_mark[${val}][3]" class="form-control" type="number">
                             </div>
                             <div class="col-md-8 mt-3">
                                 <label for="">D</label>
@@ -325,7 +325,7 @@
 
                             <div class="col-md-3 mt-3">
                                 <label for="">Mark</label>
-                                <input name="creQuestion_mark[${val}][4]" class="form-control" type="text">
+                                <input name="creQuestion_mark[${val}][4]" class="form-control" type="number">
                             </div>
 
                             <div class="col-md-1" >

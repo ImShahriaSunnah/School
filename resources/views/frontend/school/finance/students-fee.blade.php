@@ -69,9 +69,9 @@
                                         </td>
                                         <td>
                                             Name: {{$student->name}} <br>
-                                            Father Name: {{$student->father_name}} <br>
-                                            Phone: {{$student->phone}} <br>
+                                            Class: {{getClassName($student->class_id)->class_name}} <br>
                                             Roll: {{$student->roll_number}} <br>
+                                            Phone: {{$student->phone}} <br>
                                         </td>
                                         <td>
                                             <a 

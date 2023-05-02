@@ -79,6 +79,18 @@
                         <h6 class="mb-0">{{Auth::user()->phone_number}}<br>
                             {{Auth::user()->address}}</h6>
                     </div>
+                    <div class="d-flex justify-content-center">
+                        @if (File::exists(public_path(Auth::user()->school_logo)) && !is_null(Auth::user()->school_logo))
+                        <img src="{{asset(Auth::user()->school_logo)}}" alt="school logo" class="img-fluid" width="80" style="width:100px; height:80px;">
+                        @endif
+                        <div class="text-center">
+                            <h4 style="margin-bottom: 0px;"> {{ strtoupper(Auth::user()->school_name) }} </h4>
+                            {{-- <p style="margin-bottom: 0px;"> {{ Auth::user()->address }} </p> --}}
+                            <h6 class="mb-0" style="margin-bottom: 0px;">{{Auth::user()->phone_number}}<br>
+                                {{Auth::user()->address}}</h6>
+                            <h5>Receipt</h5>
+                        </div>
+                    </div>
                     <div class="col-12 col-lg-6 text-md-end">
                     </div>
                 </div>

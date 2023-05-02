@@ -18,7 +18,7 @@
                                     <label class="form-label">{{__('app.Class')}} {{__('app.Name')}} <span style="color: red;">*</span></label>
                                     <div class="input-group mb-3">
                                         <select class="form-control mb-3 js-select" aria-label="Default select example" name="class_id" id="class_id" onchange="game_chf()" required>
-                                            <option value="" selected>Select One</option>
+                                            <option value="" required selected>Select One</option>
                                             @forelse($class as $key => $data)
                                                 @if($data->class_name == 'Class Nine' || $data->class_name == 'Class Ten' || $data->class_name == 'Class Eleven' || $data->class_name == 'Class Twelve')
                                                 <option value="{{$data->id}}">{{$data->class_name}} </option>
@@ -90,10 +90,10 @@
                                 @csrf
                                 <div class="col-12">
                                     <select class="form-control mb-3 js-select" aria-label="Default select example" name="class_id" id="class_id" onchange="game_chf()">
-                                        <option value="" selected>Select One</option>
+                                        <option value="" required selected>Select One</option>
                                         @forelse($class as $key => $data)
                                             @if(++$key > 8)
-                                            <option value="{{$data->id}}">{{$data->class_name}} </option>
+                                            <option value="{{$data->id}}" required {{($data->id == $sectionEdit->class_id) ? 'Selected' : ''}}>{{$data->class_name}}</option>
                                             @endif
                                         @empty
                                         <option value="">No Class Found</option>
@@ -103,7 +103,7 @@
 
                                 <div class="col-12">
                                     <label class="form-label">Group</label>
-                                    <select class="form-control mb-3 js-select" name="group_name">
+                                    <select class="form-control mb-3 js-select" required name="group_name">
                                         <option value="Science" {{($sectionEdit->group_name == 'Science') ? 'selected' : ''}}>Science</option>
                                         <option value="Humanities" {{($sectionEdit->group_name == 'Humanities') ? 'selected' : ''}}>Humanities</option>
                                         <option value="Business-studies" {{($sectionEdit->group_name == 'Business-studies') ? 'selected' : ''}}>Business-studies</option>

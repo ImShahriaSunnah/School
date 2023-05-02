@@ -14,6 +14,7 @@
                             type="file" 
                             class="form-control" 
                             name="file"
+                            accept=".xlsx,.xls"
                             required
                         />
                     </div>

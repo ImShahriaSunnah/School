@@ -56,8 +56,8 @@
     </style>
     <!--start content-->
     <main class="page-content">
-        @if(count($dataAttendance) > 0)
-
+            <x-page-title title="{{getClassName($class_id)->class_name}} {{ getSectionName($section_id)->section_name}}"/>
+                @if(count($dataAttendance) > 0)
                 <div class="row">
                     <div class="col-md-12">
                         <div class="card">

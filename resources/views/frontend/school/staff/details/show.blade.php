@@ -9,7 +9,7 @@
             <div class="card">
                 <div class="card-header py-3 bg-transparent">
                     <div class="d-sm-flex align-items-center">
-                        <h5 class="mb-2 mb-sm-0">{{__('app.Staff Data Show')}}</h5>
+                        <h5 class="mb-2 mb-sm-0">{{__('app.Stuff')}} {{__('app.List')}}</h5>
                         <div class="ms-auto">
                             <button type="button" class="btn btn-secondary" onclick="history.back()">{{__('app.back')}}</button>
                             <a href="{{route('school.staff.List.create')}}" class="btn btn-primary">{{__('app.staff create')}}</a>
@@ -23,15 +23,15 @@
                             <thead>
                                 <tr>
                                     <th>{{__('app.nong')}}</th>
-                                    <th>{{__('app.Employee')}} {{__('app.name')}}</th>
+                                    <th>{{__('app.EmployeeName')}}</th>
                                     <th>{{__('app.Phone')}} </th>
-                                    <th>{{__('app.Employee Id')}} </th>
+                                    <th>{{__('app.EmployeeId')}} </th>
                                     <th>{{__('app.image')}}</th>
                                     <th>{{__('app.Gender')}}</th>
                                     <th>{{__('app.position')}}</th>
                                     <th>{{__('app.shift')}}</th>
                                     <th>{{__('app.address')}}</th>
-                                    <th>{{__('app.salary')}}</th>
+                                    <th>{{__('app.Salary')}}</th>
                                     <th>{{__('app.action')}}</th>
                                 </tr>
                             </thead>
@@ -40,7 +40,7 @@
                                 <tr>
                                     <td>{{$key++ +1}} </td>
                                     <td>
-                                        <a href="{{route('staff.view',$data->id)}}" class="text-decoration-none">{{$data->employee_name}}</a>
+                                        <a href="{{route('staff.view',$data->id)}}" class="text-decoration-none">{{strtoupper($data->employee_name)}}</a>
                                     </td>
                                     <td>{{$data->phone_number}}</td>
                                     <td>{{$data->employee_id}}</td>
@@ -52,9 +52,9 @@
                                         @endif
                                     </td>
                                     <td>{{$data->gender}}</td>
-                                    <td>{{$data->position}}</td>
+                                    <td>{{strtoupper($data->position)}}</td>
                                     <td>{{$data->shift}}</td>
-                                    <td>{{$data->address}}</td>
+                                    <td>{{($data->address)}}</td>
                                     <td>{{$data->salary}}</td>
                                     <td>
                                         @if(Request::segment(2) == 'staff-salary')
@@ -75,10 +75,10 @@
                                         <div class="modal-dialog modal-dialog-centered">
                                             <div class="modal-content">
                                                 <div class="modal-header">
-                                                    <h5 class="modal-title" id="exampleModalLabel">Delete Class</h5>
+                                                    <h5 class="modal-title" id="exampleModalLabel">Delete staff</h5>
                                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                 </div>
-                                                <form method="get" action="{{route('school.single.staff.delete',$data->id)}}">
+                                                <form method="get" action="{{route('school.staff.delete',$data->id)}}">
                                                     <div class="modal-body">
                                                         Are you Sure To Delete ?
                                                     </div>

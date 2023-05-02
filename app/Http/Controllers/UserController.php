@@ -238,9 +238,11 @@ class UserController extends Controller
             'school_id' => Auth::user()->school_id,
             'class_id'  => Auth::user()->class_id,
             'section_id'   => Auth::user()->section_id,
+            'shift'=>Auth::user()->shift,
+
         ])->get()->groupBy('day');
         
-        $data['periods'] = DB::table('class_periods')->where('school_id', Auth::user()->school_id)->get();
+        $data['periods'] = DB::table('class_periods')->where('school_id', Auth::user()->school_id)->where('shift',Auth::user()->shift)->get();
 
         return view('frontend.user.routine.class_routine', compact('routines', 'data'));
     }

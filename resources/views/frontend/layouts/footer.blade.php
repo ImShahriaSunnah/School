@@ -11,7 +11,7 @@
                    <div class="footer__widget-title mb-25">
                       <div class="footer__logo">
                          <a href="{{url('/')}}">
-                            <img src="{{ asset('frontend/assets/img/logo/logo.webp') }}" alt="logo">
+                            <img src="{{ asset('images/logo/logo.svg') }}" alt="logo">
                          </a>
                       </div>
                    </div>

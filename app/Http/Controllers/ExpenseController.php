@@ -254,6 +254,27 @@ class ExpenseController extends Controller
 
         return view('frontend.school.Accesories.accesoriesType', compact('data'));
     }
+     public function accesoriesdelete($id){
+        accesoriesType::find($id)->delete();
+        toast('opps deleted', 'danger');
+
+        return back();
+     }
+     public function accesoriesedit(Request $request){
+        $request->validate([
+            'accesories' => 'required',
+            'price' => 'required'
+        ]);
+        $dataEdit=AccesoriesType::where('school_id', Auth::id())->get();
+
+        $dataEdit->update([
+            'accesories' => $request->accesories,
+            'price' => $request->price,
+        ]);
+        return view('frontend.school.Accesories.accesoriesType', compact('dataEdit'));
+
+        
+     }
     public function  receiptShow()
     {
         $data = AccesoriesTransaction::all();

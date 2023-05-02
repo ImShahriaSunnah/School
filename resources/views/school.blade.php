@@ -5,15 +5,15 @@
         <!--breadcrumb-->
         <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
             <div class="breadcrumb-title pe-3">{{__('app.dashboard')}}</div>
-            <div class="ms-auto">
+            {{-- <div class="ms-auto">
                 <div class="btn-group">
-{{--                    <form class="row g-3" method="post" action="{{route('send.fees.due.sms')}}" enctype="multipart/form-data">--}}
-{{--                        @csrf--}}
-{{--                        <button type="submit" class="btn btn-primary">{{__('app.dashboard1btn')}}</button>--}}
+                   <form class="row g-3" method="post" action="{{route('send.fees.due.sms')}}" enctype="multipart/form-data">
+                       @csrf
+                       <button type="submit" class="btn btn-primary">{{__('app.dashboard1btn')}}</button>
                         <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#deleteModal">{{__('app.dashboard1btn')}}</button>
-{{--                    </form>--}}
+                   </form>
                 </div>
-            </div>
+            </div> --}}
         </div>
         <!--end breadcrumb-->
 

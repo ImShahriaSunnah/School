@@ -11,40 +11,41 @@
                         <div class="border p-3 rounded" style="overflow-x:auto;">
                            <div id="printDiv">
                                 <div class="d-flex justify-content-center">
-                                    @if (File::exists(asset(Auth::user()->school_logo)) && !is_null(Auth::user()->school_logo))
-                                    <img src="{{asset(Auth::user()->school_logo)}}" alt="school logo" class="img-fluid" width="100">
+                                    @if (File::exists(public_path(Auth::user()->school_logo)) && !is_null(Auth::user()->school_logo))
+                                        <img src="{{asset(Auth::user()->school_logo)}}" alt="school logo" class="img-fluid" width="80" style="width:100px; height:80px;">
                                     @endif
                                     <div class="text-center">
-                                        <h1> {{ strtoupper(Auth::user()->school_name )}} </h1>
-                                        <p> {{ Auth::user()->address }} </p>
+                                        <h4 style="margin-bottom: 0px;"> {{ strtoupper(Auth::user()->school_name )}} </h4>
+                                        <p style="margin-bottom: 0px; font-size:12px"> {{ (Auth::user()->slogan )}} </p>
+                                        <p style="margin-bottom: 0px;"> {{ Auth::user()->address }} </p>
                                         <h5>Annual Examination Result</h5>
                                     </div>
                                 </div>
 
                                 <hr>
 
-                                <div class="d-flex mb-5 justify-content-between">
+                                <div class="d-flex mb-2">
                                     @if(File::exists(asset($studentResults->first()->user?->image)))
-                                    <img src="{{asset($studentResults->first()->user?->image)}}" class="img-fluid" alt="student image" style="height: 150px; width: 150px">
+                                    <img src="{{asset($studentResults->first()->user?->image)}}" class="img-fluid" alt="student image" style="height: 70px; width: 70px">
                                     @else
-                                    <img src="{{asset('d/no-img.jpg')}}" class="img-fluid" alt="student image" style="height: 150px; width: 150px">
+                                    <img src="{{asset('d/no-img.jpg')}}" class="img-fluid" alt="student image" style="height: 70px; width: 70px">
                                     @endif
 
-                                    <div class="h6 ms-3">
+                                    <div class="h6 ms-3" style="font-size: 12px;">
                                         <table>
                                             <tbody>
                                                 <tr>
                                                     <td>Student Name</td>
-                                                    <td>: {{ $studentResults->first()->user?->name }}</td>
+                                                    <td>: {{ strtoupper($studentResults->first()->user?->name) }}</td>
                                                 </tr>
                                                 <tr>
                                                     <td>Father Name</td>
-                                                    <td>: {{ $studentResults->first()->user?->father_name }}</td>
+                                                    <td>: {{ strtoupper($studentResults->first()->user?->father_name)  }}</td>
                                                 </tr>
-                                                <tr>
+                                                {{-- <tr>
                                                     <td>Mother Name</td>
                                                     <td>: {{ $studentResults->first()->user?->mother_name }}</td>
-                                                </tr>
+                                                </tr> --}}
                                                 <tr>
                                                     <td>Shift</td>
                                                     <td>: @if($studentResults->first()->user?->shift == 1) Morning @elseif($studentResults->first()->user?->shift == 2) Day @elseif($studentResults->first()->user?->shift == 3) Evening @endif</td>
@@ -57,7 +58,7 @@
                                         </table>
                                     </div>
 
-                                    <div class="h6 ms-3">
+                                    <div class="h6 ms-5" style="font-size: 12px;">
                                         <table>
                                             <tbody>
                                                 <tr>
@@ -80,7 +81,7 @@
                                         </table>
                                     </div>
 
-                                    <div class="ms-3">
+                                    {{-- <div class="ms-3">
                                         <table class="table table-bordered">
                                             <thead>
                                                 <tr align="center">
@@ -106,24 +107,34 @@
                                                 </tr>
                                             </tbody>
                                         </table>
-                                    </div>
+                                    </div> --}}
                                 </div>
 
-                                <table class="table table-bordered text-center">
+                                <table class="table table-bordered text-center" style="font-size: 12px;">
                                     <thead>
-                                    <tr>
-                                        <th scope="col">Subjec Name</th>
-                                        <th scope="col">Full Marks</th>
-                                        <th scope="col">Pass Marks</th>
+                                    <tr align="center">
+                                        <th>Subject Name</th>
+                                        <th>Full Marks</th>
+                                        <th>Pass Marks</th>
                                         {{-- @dd(array_slice($subjects, 0, 1, true)) --}}
                                         @foreach (array_slice($subjects, 0, 1, true) as $key => $subject)
                                             @foreach ($subject as $k => $v)
-                                                <th scope="col">{{ $k }}</th>
+                                                <th class="p-0">
+                                                    {{ $k }}
+                                                    <table class="table table-bordered m-0">
+                                                        <tr>
+                                                            <th width="25%">Written</th>
+                                                            <th width="25%">Mcq</th>
+                                                            <th width="25%">Other</th>
+                                                            <th width="25%">Total</th>
+                                                        </tr>
+                                                    </table>
+                                                </th>
                                             @endforeach
                                         @endforeach
-                                        <th scope="col">Average</th>
-                                        <th scope="col">Grade Latter</th>
-                                        <th scope="col">Grade Point</th>
+                                        <th>Average</th>
+                                        <th>Grade Latter</th>
+                                        <th>Grade Point</th>
                                     </tr>
                                     </thead>
                                     {{-- <tbody>
@@ -167,38 +178,30 @@
                                                 $total[$k] += $v['total'];
                                                 $sum += $v['total'];
                                                 // $count += 1;
-                                                $totalTermMark = \App\Models\Term::selectRaw("SUM(total_mark) as term_total_mark")->first();
+                                                $totalTermMark = \App\Models\Term::where('school_id', Auth::id())->selectRaw("SUM(total_mark) as term_total_mark")->first();
                                                 $count = $totalTermMark->term_total_mark / 100;
                                             @endphp
                                                 @if ($v['total'] != 0)
-                                                    <td>
-                                                        {{ $v['total'] }}
-                                                        <table class="table table-bordered">
+                                                    <td class="p-0">
+                                                        {{-- {{ $v['total'] }} --}}
+                                                        <table class="table table-bordered m-0">
+                                                            
                                                             <tr>
-                                                                <th>Written</th>
-                                                                <th>Mcq</th>
-                                                                <th>Other</th>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>{{ $v['written'] }}</td>
-                                                                <td>{{ $v['mcq'] }}</td>
-                                                                <td>{{ $v['other'] }}</td>
+                                                                <td width="25%">{{ $v['written'] }}</td>
+                                                                <td width="25%">{{ $v['mcq'] }}</td>
+                                                                <td width="25%">{{ $v['other'] }}</td>
+                                                                <td width="25%">{{ $v['total'] }}</td>
                                                             </tr>
                                                         </table>
                                                     </td>
                                                 @else
-                                                    <td>
-                                                        <br>
-                                                        <table class="table table-bordered">
+                                                    <td class="p-0">
+                                                        <table class="m-0 table table-bordered">
                                                             <tr>
-                                                                <th>Written</th>
-                                                                <th>Mcq</th>
-                                                                <th>Other</th>
-                                                            </tr>
-                                                            <tr>
-                                                                <td><br></td>
-                                                                <td><br></td>
-                                                                <td><br></td>
+                                                                <td width="25%"><br></td>
+                                                                <td width="25%"><br></td>
+                                                                <td width="25%"><br></td>
+                                                                <td width="25%"><br></td>
                                                             </tr>
                                                         </table>
                                                     </td>
@@ -221,13 +224,13 @@
                                                 <th>{{ $value }}</th>
                                             @endforeach
                                             <th>{{ $totalAvg }}</th>
-                                            <th>{{ finalGrade($totalAvg) }}</th>
+                                            <th>{{ finalGrade($totalAvg, Auth::id()) }}</th>
                                             <th>{{ finalGpa($totalAvg) }}</th>
                                         </tr>
                                     </tbody>
                                 </table>
                                 <div class="d-flex">
-                                    <table class="table table-bordered" style="width: 30%">
+                                    <table class="table table-bordered" style="width: 30%;font-size: 12px;">
                                         <thead>
                                             <tr>
                                                 <th>Marks Range</th>
@@ -273,7 +276,7 @@
                                             </tr>
                                         </tbody>
                                     </table>
-                                    <table class="table table-bordered ms-3 text-center" style="width: 25%">
+                                    {{-- <table class="table table-bordered ms-3 text-center" style="width: 25%">
                                         <thead>
                                             <tr>
                                                 <th colspan="2">Attendance</th>
@@ -284,17 +287,13 @@
                                                 <td>Present</td>
                                                 <td>{{ count($attendance) }}</td>
                                             </tr>
-                                            {{-- <tr>
-                                                <td>Absent</td>
-                                                <td>61</td>
-                                            </tr> --}}
                                             <tr>
                                                 <th>Place In Own Class</th>
                                                 <td>{{ $studentRank }}</td>
                                             </tr>
                                         </tbody>
-                                    </table>
-                                    <table class="table table-bordered text-center ms-3" style="width: 45%">
+                                    </table> --}}
+                                    <table class="w-100 table table-bordered text-center ms-3" style="width: 45%">
                                         <thead>
                                             <tr>
                                                 <th colspan="2">Signatures</th>
@@ -302,8 +301,8 @@
                                         </thead>
                                         <tbody>
                                             <tr style="height: 90%">
-                                                <td></td>
-                                                <td></td>
+                                                <td width="50%"></td>
+                                                <td width="50%"></td>
                                             </tr>
                                             <tr>
                                                 <th>Class Teacher</th>

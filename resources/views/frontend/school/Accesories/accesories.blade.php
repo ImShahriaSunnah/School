@@ -14,21 +14,26 @@
                             <table class="table" style="border:1px solid rgb(43, 60, 188">
                                 <div class="row my-3">
                                     <div class="col">
-                                        <a class="btn btn-success" href="{{route('accesoriesType')}}"> .+. </a>
-                                        <a class="btn btn-primary" href="{{route('receipt.Show')}}"><i class="bi bi-arrow-repeat"></i></a>
+                                        <a class="btn btn-success" href="{{route('accesoriesType')}}"> + </a>
+                                        <a class="btn btn-primary" href="{{route('receipt.Show')}}"><i class="fa-solid fa-list"></i></a>
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-8"> <input type="text" id="s_n" required onkeyup="Sname()" placeholder="Student Name" class="form-control">
+                                    <div class="col-8"> 
+                                        <label for="Student Name">Student Name</label>
+                                        <input type="text" id="s_n" required onkeyup="Sname()" placeholder="Student Name" class="form-control">
                                         <span class="mt-2" id="s_name"></span>
                                     </div>
-                                    <div class="col-4"> <input type="text" id="roll" required onkeyup="roll()" placeholder="Roll Number" class="form-control">
+                                    <div class="col-4"> 
+                                        <label for="Roll Number">Roll Number</label>
+                                        <input type="number" id="roll" required onkeyup="roll()" placeholder="Roll Number" class="form-control">
                                         <span class="mt-2" id="roll"></span>
                                     </div>
                                 </div>
                                 <br>
-                                <div class="row my-3">
+                                <div class="row mb-4">
                                     <div class="col-6">
+                                        <label for="Class">Class</label>
                                         <select class="form-control mb-3 js-select" name="class" onchange="loadSection()" id="class" class="form-control">
                                             <option value="" selected disabled> {{__('app.select')}} </option>
                                             @foreach($class as $row )
@@ -40,7 +45,7 @@
                                     </div>
 
                                     <div class="col-6">
-
+                                        <label for="Section">Section</label>
                                         <select class="form-control mb-3 js-select" name="section_id" id="section_id" onchange="section()" class="form-control">
                                         </select>
                                     </div>
@@ -69,7 +74,7 @@
                                             </select>
                                         </td>
                                         <td>
-                                            <input type="number" id="qty" min="0" value="0" class="form-control">
+                                            <input type="number" id="qty" min="1" value="1" class="form-control">
                                         </td>
                                         <td>
                                             <h5 class="mt-1" id="price"></h5>
@@ -90,16 +95,25 @@
                 <div class="col-md-7  mt-4" style="border:1px solid rgb(43, 60, 188)">
                     <div class="p-4" id="printDiv">
                         <div class="text-center">
-
+                            @if( app()->getLocale() === 'en')
                             <h4>{{$school->school_name}}</h4>
-                            <div class="row">
+                            @else
+                            <h4>{{$school->school_name_bn}}</h4>
+                            @endif
+                            @if( app()->getLocale() === 'en')
+                            <p style="margin-top:-5px !important;font-size:12px">{{$school->slogan}}</p>
+                      @else
+                      <p style="margin-top:-5px !important;font-size:12px">{{$school->slogan_bn}}</p>
+                      @endif
+                      <p style="margin-top:-5px !important;font-size:14px">{{$school->address}}</p>
+                            <div class="row text-center">
 
-                                <h5>Receipt</h5>
+                                <h5 style="margin-top:5px !important;font-size:22px;margin-bottom:10px;">Receipt</h5>
                             </div>
                         </div>
 
 
-                        <div class="row">
+                        <div class="row ">
                             <div class="col-5"> <span class="mt-2"> {{__('app.name')}}: </span><span class="mt-2" id="share"></span>
 
                             </div>
@@ -247,7 +261,8 @@
                     var subTotal = 0;
                     subTotal += parseInt(total);
 
-                    var table = '<tr id="row' + count + '"><td><button  onclick="removeRow(' + count + ')"><i class="bi bi-x-lg"></i></button></td><td>' + name + '</td><td>' + qty + '</td><td>' + price + '</td><td><strong><input type="hidden" id="total" value="' + total + '">' + total + '</strong></td></tr>';
+
+                    var table = '<tr id="row' + count + '"><td><button  onclick="removeRow(' + count + ')"><i class="fa-solid fa-trash"></i></button></td><td>' + name + '</td><td>' + qty + '</td><td>' + price + '</td><td><strong><input type="hidden" id="total" value="' + total + '">' + total + '</strong></td></tr>';
                     $('#new').append(table)
 
                     // Code for Sub Total of Vegitables 

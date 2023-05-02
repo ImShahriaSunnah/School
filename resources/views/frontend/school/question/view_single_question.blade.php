@@ -25,10 +25,10 @@
                         $subjectArray = explode(" ", strtolower($question->subject->subject_name));
                     @endphp
                     <div class="col-md-12 text-center">
-                        <h6>{{ in_array("english", $subjectArray) ? $question->school->school_name : $question->school->school_name_bn }}</h6>
-                        <h6>{{ in_array("english", $subjectArray) ? $question->term->term_name : $question->term->term_name_bn}}</h6>
-                        <h6>{{ in_array("english", $subjectArray) ? $question->class->class_name : $question->class->class_name_bn }}</h6>
-                        <h6>{{ in_array("english", $subjectArray) ? $question->subject->subject_name : $question->subject->subject_name_bn }}</h6>
+                        <h6>{{ in_array("english", $subjectArray) ? $question->school->school_name : $question->school->school_name_bn ?? " " }}</h6>
+                        <h6>{{ in_array("english", $subjectArray) ? $question->term->term_name : $question->term->term_name_bn ?? " "}}</h6>
+                        <h6>{{ in_array("english", $subjectArray) ? $question->class->class_name : $question->class->class_name_bn ?? " " }}</h6>
+                        <h6>{{ in_array("english", $subjectArray) ? $question->subject->subject_name : $question->subject->subject_name_bn ?? " " }}</h6>
                         <h6>
                             @if (in_array("english", $subjectArray))
                                 {{ $question->type }} Question
@@ -46,11 +46,13 @@
                         </h6>
                     </div>
                     @php
+                        
                         $floatNum = $question->hours / 60;
-                        $sb = substr($floatNum, 1);
+                        $sb = ($question->hours == 60) ? 1 : substr($floatNum, 1);
                         $hr = floor($floatNum);
                         $min = round($sb * 60);
                         $length = strlen($question->hours);
+
                     @endphp
                     <div class="d-flex justify-content-between">
                         <div style="width: 25%">
@@ -59,7 +61,7 @@
                                     @if (is_float($floatNum))
                                         {{ "Time : ".$hr." Hours ". $min." Minutes" }}
                                     @else
-                                    {{ "Time : ".$question->hours / 60 }} Hours                               
+                                        {{ "Time : ".$question->hours / 60 }} Hours                               
                                     @endif
                                 @else
                                     @if ($length > 1)
@@ -124,7 +126,7 @@
                             @endforeach
                         @elseif ($question->type == "MCQ")
                             @foreach ($question->question as $key => $value )
-                            <div style="width: 50%">
+                            <div style="width: 50%;">
                                 <h6 class="d-flex">{{ in_array("english", $subjectArray) ? $loop->iteration.'.' : $bnNumber[$loop->iteration].'|' }} &nbsp &nbsp {!! $value !!}</h6>
                                 <div class="row">
                                     @foreach ($question->mcq_question[$key] as $val )

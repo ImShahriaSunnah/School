@@ -117,7 +117,7 @@ blockquote {
     <div style="text-align: center; line-height: 20px;">
       <h1 style="font-size: 30px;">{{ $school->school_name }}</h1>
       <h2 style="font-size: 35px;">{{ $term->term_name }} Routine</h2>
-      <h1 style="font-size: 30px;">{{ $class->class_name }}</h1>
+      <h1 style="font-size: 30px;">{{ $class->class_name }} - ({{$shift}})</h1>
     </div>
     <table>
         <thead>

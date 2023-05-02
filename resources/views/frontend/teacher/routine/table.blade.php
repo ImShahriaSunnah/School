@@ -12,50 +12,181 @@
                            <h5 class="mb-2 mb-sm-0">Routine For {{strtoupper(Auth::user()->full_name)}}</h5>
                         </div>
                    </div>
-                    <div class="card-body">
-                        <table class="table table-bordered table-hover">
-                            <thead>
-                                <tr>
-                                    <th>Day \ Period</th>
-                                    @foreach ($data['periods'] as $key => $row)
-                                    <th>
-                                        {{ordinalNumber(++$key)}} Class <br>
-                                        ({{date("h:m A", strtotime($row->from_time)) . " - " . date("h:m A", strtotime($row->to_time))}})
-                                    </th>
-                                    @endforeach
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @forelse ($rows as $key => $row)
+                    {{-- Morning Shift --}}
+                        <div class="card-body">
+
+                            <x-page-title title="Morning Shift"/>
+
+                            <table class="table table-bordered table-hover">
+                                <thead>
                                     <tr>
-                                        <td>{{$key}}</td>
-                                        @foreach ($data['periods'] as $key3 => $item)
-                                            <td>
-                                                @foreach ($row as $key2 => $period)
-                                                    @if($item->id == $period->period_id)
-                                                        
-                                                            {{instituteSubject($period->subject_id)?->subject_name}} <br>
-                                                            {{\App\Models\InstituteClass::find($period->class_id)->class_name }}, {{\App\Models\Section::find($period->section_id)->section_name}}<br>
-                                                            @if (!is_null($period->note))
-                                                                Room No: {{$period->note}}
-                                                            @else 
-                                                            @endif
-                                                        
-                                                    @endif
-                                                @endforeach
-                                            </td>
-                                           
+                                        <th>Day \ Period</th>
+                                        @php
+                                            $keys = 0;
+                                        @endphp
+                                        @foreach ($data['periods'] as $row)
+                                            @if ($row->shift == 1) 
+                                                <th>
+                                                    {{ordinalNumber(++$keys)}} Class <br>
+                                                    ({{date("h:i A", strtotime($row->from_time)) . " - " . date("h:i A", strtotime($row->to_time))}})
+                                                </th>
+                                            @endif                                        
                                         @endforeach
-                                        
                                     </tr>
-                                @empty
-                                <tr align="center">
-                                    <td colspan="{{count($data['periods'])+1}}">Not Found</td>
-                                </tr>
-                                @endforelse
-                            </tbody>
-                        </table>
-                    </div>
+                                </thead>
+                                <tbody>
+                                    @forelse ($rows as $key => $row)
+                                        <tr>
+                                            <td>{{$key}}</td>
+                                            @foreach ($data['periods'] as $key3 => $item)
+                                                @if ($item->shift==1)
+                                                    <td>
+                                                        @foreach ($row as $key2 => $period)
+                                                            @if($item->id == $period->period_id)
+                                                                
+                                                                    {{instituteSubject($period->subject_id)?->subject_name}} <br>
+                                                                    {{\App\Models\InstituteClass::find($period->class_id)->class_name }}, {{\App\Models\Section::find($period->section_id)->section_name}}<br>
+                                                                    @if (!is_null($period->note))
+                                                                        Room No: {{$period->note}}
+                                                                    @else 
+                                                                    @endif
+                                                                
+                                                            @endif
+                                                        @endforeach
+                                                    </td>
+                                                @endif                                               
+                                            
+                                            @endforeach
+                                            
+                                        </tr>
+                                    @empty
+                                    <tr align="center">
+                                        <td colspan="{{count($data['periods'])+1}}">Not Found</td>
+                                    </tr>
+                                    @endforelse
+                                </tbody>
+                            </table>
+                        </div>
+
+                   {{-- Day Shift --}}
+                   
+                        <div class="card-body">
+
+                            <x-page-title title="Day shift"/>
+
+                            <table class="table table-bordered table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Day \ Period</th>
+                                        @php
+                                            $keys = 0;
+                                        @endphp
+                                        @foreach ($data['periods'] as $row)
+                                            @if ($row->shift == 2) 
+                                                <th>
+                                                    {{ordinalNumber(++$keys)}} Class <br>
+                                                    ({{date("h:i A", strtotime($row->from_time)) . " - " . date("h:i A", strtotime($row->to_time))}})
+                                                </th>
+                                            @endif                                        
+                                        @endforeach
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @forelse ($rows as $key => $row)
+                                        <tr>
+                                            <td>{{$key}}</td>
+                                            @foreach ($data['periods'] as $key3 => $item)
+                                                @if ($item->shift==2)
+                                                    <td>
+                                                        @foreach ($row as $key2 => $period)
+                                                            @if($item->id == $period->period_id)
+                                                                
+                                                                    {{instituteSubject($period->subject_id)?->subject_name}} <br>
+                                                                    {{\App\Models\InstituteClass::find($period->class_id)->class_name }}, {{\App\Models\Section::find($period->section_id)->section_name}}<br>
+                                                                    @if (!is_null($period->note))
+                                                                        Room No: {{$period->note}}
+                                                                    @else 
+                                                                    @endif
+                                                                
+                                                            @endif
+                                                        @endforeach
+                                                    </td>
+                                                @endif
+                                                
+                                            
+                                            @endforeach
+                                            
+                                        </tr>
+                                    @empty
+                                    <tr align="center">
+                                        <td colspan="{{count($data['periods'])+1}}">Not Found</td>
+                                    </tr>
+                                    @endforelse
+                                </tbody>
+                            </table>
+                        </div>
+                    
+
+                   {{-- Evening Shift  --}}
+
+                        <div class="card-body">
+
+                            <x-page-title title="Evening Shift"/>
+
+                            <table class="table table-bordered table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Day \ Period</th>
+                                        @php
+                                            $keys = 0;
+                                        @endphp
+                                        @foreach ($data['periods'] as $row)
+                                            @if ($row->shift == 3) 
+                                                <th>
+                                                    {{ordinalNumber(++$keys)}} Class <br>
+                                                    ({{date("h:i A", strtotime($row->from_time)) . " - " . date("h:i A", strtotime($row->to_time))}})
+                                                </th>
+                                            @endif                                        
+                                        @endforeach
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @forelse ($rows as $key => $row)
+                                        <tr>
+                                            <td>{{$key}}</td>
+                                            @foreach ($data['periods'] as $key3 => $item)
+                                                @if ($item->shift==3)
+                                                    <td>
+                                                        @foreach ($row as $key2 => $period)
+                                                            @if($item->id == $period->period_id)
+                                                                
+                                                                    {{instituteSubject($period->subject_id)?->subject_name}} <br>
+                                                                    {{\App\Models\InstituteClass::find($period->class_id)->class_name }}, {{\App\Models\Section::find($period->section_id)->section_name}}<br>
+                                                                    @if (!is_null($period->note))
+                                                                        Room No: {{$period->note}}
+                                                                    @else 
+                                                                    @endif
+                                                                
+                                                            @endif
+                                                        @endforeach
+                                                    </td>
+                                                @endif
+                                                
+                                            
+                                            @endforeach
+                                            
+                                        </tr>
+                                    @empty
+                                    <tr align="center">
+                                        <td colspan="{{count($data['periods'])+1}}">Not Found</td>
+                                    </tr>
+                                    @endforelse
+                                </tbody>
+                            </table>
+                        </div>
+                       
+                   {{-- @endif --}}
+                    
                 </div>
             </div>
 

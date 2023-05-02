@@ -21,7 +21,16 @@
       @csrf
 
       <center>
-        <h1>{{$school->school_name}}</h1>
+        @if( app()->getLocale() === 'en')
+        <h2>{{$school->school_name}}</h2>
+        @else
+        <h2>{{$school->school_name_bn}}</h2>
+        @endif
+        @if( app()->getLocale() === 'en')
+        <p style="margin-bottom: 0px; font-size:12px margin-bottom:10px;"> {{  $school->slogan}} </p>
+        @else 
+        <p style="margin-bottom: 0px; font-size:12px margin-bottom:10px;"> {{  $school->slogan_bn}} </p>
+        @endif
       </center>
       <div class="dropdown" style="margin-right:20px ;">
         <a class="btn btn-light btn-sm dropdown-toggle"  href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -49,7 +58,7 @@
       </div>
       <div class="col-2">
         <label for="inputAddress" class="form-label">{{__('app.dob')}}<strong style="color:red">*</strong></label>
-        <input type="date" class="form-control w-100" value="{{old('dob')}}"id="dob" required  placeholder="01-01-2001" name="dob">
+        <input type="date" class="form-control w-100" value="{{old('dob')}}"id="dob"   placeholder="01-01-2001" name="dob">
         @error('dob') <div class="alert alert-danger">{{$message}}</div>@enderror
       </div>
       </div>
@@ -68,7 +77,7 @@
       </div>
       <div class="col-md-3">
         <label for="inputPassword4" class="form-label">{{__('app.Occupation')}}</label>
-        <input type="text" class="form-control" placeholder="{{__('app.Occupation')}}" value="{{old('f_occupation')}}"required name="f_occupation" id="f_occupation">
+        <input type="text" class="form-control" placeholder="{{__('app.Occupation')}}" value="{{old('f_occupation')}}" name="f_occupation" id="f_occupation">
         @error('f_occupation') <div class="alert alert-danger">{{$message}}</div>@enderror
       </div>
       <div class="col-md-3">
@@ -78,7 +87,7 @@
       </div>
       <div class="col-md-3">
         <label for="inputEmail4" class="form-label">{{__('app.MName')}}<strong style="color:red">*</strong></label>
-        <input type="text" class="form-control" name="m_name" value="{{old('m_name')}}"id="m_name">
+        <input type="text" required class="form-control" name="m_name" value="{{old('m_name')}}"id="m_name">
         @error('m_name') <div class="alert alert-danger">{{$message}}</div>@enderror
       </div>
 
@@ -105,17 +114,16 @@
         <div class="gender-details-box">
           <span class="gender-title">{{__('app.Gender')}}<strong style="color:red">*</strong></span>
           <div class="gender-category">
-            <input type="radio" value="{{old('gender')}}"name="gender"required id="male">
-            <label for="male">{{__('app.Male')}}</label>
-            <input type="radio" name="gender" id="female">
-            <label for="female">{{__('app.Female')}}</label>
-            <input type="radio" name="gender" id="other">
+          <input type="radio" name="gender" value="male" {{ old('gender') == 'male' ? 'checked' : '' }}>
+            <label for="male" >{{__('app.Male')}}</label>
+            <input type="radio" name="gender"  value="female" {{ old('gender') == 'female' ? 'checked' : '' }}>
+            <label for="female" >{{__('app.Female')}}</label>
+            <input type="radio" name="gender" value="other" {{ old('gender') == 'other' ? 'checked' : '' }}>
             <label for="other">{{__('app.other')}}</label>
           </div>
         </div>
       </div>
-
-
+  
 
       <div class="col-3">
         <label for="inputAddress2" class="form-label">{{__('app.Blood_Group')}}</label>
@@ -138,17 +146,17 @@
         <label for="inputAddress2" class="form-label">{{__('app.Religion')}}<strong style="color:red">*</strong></label>
         <select class="form-control mb-3 js-select" name="religion" required class="form-control" value="{{old('religion')}}" id="religion" type="text">
           <option value="">{{__('app.select')}}</option>
-          <option value="Muslim">{{__('app.Muslim')}}</option>
-          <option value="Hindu">{{__('app.Hindu')}}</option>
-          <option value="Christian">{{__('app.Christian')}}</option>
-          <option value="Buddhism">{{__('app.Buddishm')}}</option>
+          <option value="Muslim" {{old('religion')=='Muslim' ? 'selected': '' }}>{{__('app.Muslim')}}</option>
+          <option value="Hindu"{{old('religion')=='Hindu' ? 'selected': '' }}>{{__('app.Hindu')}}</option>
+          <option value="Christian"{{old('religion')=='Christian' ? 'selected': '' }}>{{__('app.Christian')}}</option>
+          <option value="Buddhism"{{old('religion')=='Buddhism' ? 'selected': '' }}>{{__('app.Buddishm')}}</option>
         </select>
         @error('gender') <div class="alert alert-danger">{{$message}}</div>@enderror
       </div>
       </div>
       <div class="col-md-3">
         <label for="inputCity" class="form-label">{{__('app.Nationality')}}<strong style="color:red">*</strong></label>
-        <input type="text" class="form-control" value="{{old('nationality')}}" required  placeholder="{{__('app.Nationality')}}" name="nationality"  id="nationality">
+        <input type="text" class="form-control" value="{{old('nationality')}}" required  placeholder="{{__('app.Bangladeshi')}}" name="nationality"  id="nationality">
         @error('nationality') <div class="alert alert-danger">{{$message}}</div>@enderror
       </div>
 
@@ -175,7 +183,7 @@
       </div>
       <div class="col-md-3">
         <label for="inputCity" class="form-label">{{__('app.gname')}}<strong style="color:red">*</strong></label>
-        <input type="text" class="form-control" placeholder="..." value="{{old('g_name')}}" name="g_name" id="g_name">
+        <input type="text" class="form-control" placeholder="..." value="{{old('g_name')}}" required name="g_name" id="g_name">
         @error('g_name') <div class="alert alert-danger">{{$message}}</div>@enderror
       </div>
       </div>
@@ -187,8 +195,8 @@
       </div>
       </div>
       <div class="col-md-3">
-        <label for="inputCity" class="form-label">{{__('app.RelationShip')}}</label>
-        <input type="text" class="form-control" value="{{old('relation')}}" placeholder="----" name="relation" id="relation">
+        <label for="inputCity" class="form-label">{{__('app.RelationShip')}} <strong style="color:red">*</strong></label></label>
+        <input type="text" class="form-control" value="{{old('relation')}}" required placeholder="Uncle/Aunt" name="relation" id="relation">
         @error('relation') <div class="alert alert-danger">{{$message}}</div>@enderror
       </div>
       </div>
@@ -200,7 +208,7 @@
       <div class="col-md-3">
 
         <label for="class" class="form-label">{{__('app.class')}}<strong style="color:red">*</strong></label>
-        <select class="form-control mb-3 js-select" name="In_class" required class="form-control" id="class">
+        <select class="form-control mb-3 js-select" value="{{old('class')}}" name="In_class" required class="form-control" id="class">
           <option value="">{{__('app.select')}}</option>
           @foreach($classes as $class)
 
@@ -212,7 +220,7 @@
         <label class="form-label">{{__('app.Group')}}</label>
         <select class="form-control mb-3 js-select" name="group" value="{{old('group')}}" class="form-control" id="">
           <option value="">{{__('app.select')}}</option>
-          <option value="">{{__('app.General')}}</option>
+          <option value="General">{{__('app.General')}}</option>
 
           <option value="Science">{{__('app.Science')}}</option>
           <option value="Bussines">{{__('app.Bussieness_Studies')}}</option>

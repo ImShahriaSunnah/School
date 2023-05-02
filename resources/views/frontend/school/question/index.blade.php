@@ -21,8 +21,8 @@
                                 @include('frontend.layouts.message')
                             </div>
                            
-                            <form action="{{ route('question.store') }}" method="post" id="form_data" enctype="multipart/form-data">
-                                @csrf
+                            <form  id="form_data">
+                                {{-- @csrf --}}
                                 <!-- Modal -->
                                 <div class="modal fade mymodal" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
                                     <div class="modal-dialog modal-dialog-centered">
@@ -56,7 +56,9 @@
                                         </div>
                                     </div>
                                 </div>
+                                <div id="questionId">
 
+                                </div>
                                 <div class="col-md-12 d-none" id="selectOption">
                                     <div class="row">
                                         <div>
@@ -91,7 +93,7 @@
                                                     <label class="text-center">Hours/Min</label>
                                                     <div class="">
                                                         <div class="">
-                                                            <input type="text" name="hours" value="{{ old('hours') }}" placeholder="Hours or Minutes" class="form-control" id="" required>
+                                                            <input type="number" min="1" name="hours" value="{{ old('hours') }}" placeholder="Hours or Minutes" class="form-control" id="" required>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -99,7 +101,7 @@
                                                     <label class="text-center">Total Marks</label>
                                                     <div class="">
                                                         <div class="">
-                                                            <input type="text" name="total_mark" value="{{ old("total_mark") }}" placeholder="Total Mark" class="form-control" id="" required>
+                                                            <input type="number" name="total_mark" value="{{ old("total_mark") }}" placeholder="Total Mark" class="form-control" id="" required>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -119,7 +121,7 @@
                                                 </div>
                                                 <div class="col-md-3">
                                                     <label for="">Mark</label>
-                                                    <input name="question_mark[1]" value="{{ old('question_mark[1]') }}" class="form-control" type="text" >
+                                                    <input name="question_mark[1]" value="{{ old('question_mark[1]') }}" class="form-control" type="number" >
                                                 </div>
 
                                                 <div class="col-md-1" >
@@ -138,7 +140,7 @@
                                                 </div>
                                                 <div class="col-md-3">
                                                     <label for="">Mark</label>
-                                                    <input name="question_mark[2]" value=" {{ old('question_mark[1]') }}" class="form-control" type="text">
+                                                    <input name="question_mark[2]" value=" {{ old('question_mark[1]') }}" class="form-control" type="number">
                                                 </div>
 
                                                 <div class="col-md-1" >
@@ -153,7 +155,7 @@
                                         </div>
                                         <div class=" d-flex justify-content-between mt-3">
                                             <button class="btn btn-success d-block " data-count="2" id="plusbtn">+</button>
-                                            <button type="submit" class="btn btn-primary d-block">Save</button>
+                                            <button type="button" onclick="questionStore();" class="btn btn-primary d-block">Save</button>
                                         </div>
                                     </div>
                                 </div>
@@ -224,7 +226,7 @@
 
                                         <div class=" d-flex justify-content-between mt-3">
                                             <button class="btn btn-success d-block " mcq-ckeditor="3" data-count="2" id="mcqplusbtn">+</button>
-                                            <button type="submit" class="btn btn-primary d-block">Save</button>
+                                            <button type="button" onclick="questionStore();" class="btn btn-primary d-block">Save</button>
                                         </div>
                                     </div>
                                 </div>
@@ -285,7 +287,7 @@
 
                                         <div class=" d-flex justify-content-between mt-3">
                                             <button class="btn btn-success d-block " cre-ckeditor="4" data-count="1" id="creplusbtn">+</button>
-                                            <button type="submit" class="btn btn-primary d-block">Save</button>
+                                            <button type="button" onclick="questionStore();" class="btn btn-primary d-block">Save</button>
                                         </div>
                                     </div>
                                 </div>
@@ -303,14 +305,10 @@
 
 @push('js')
 
-    {{-- <script src="https://code.jquery.com/jquery-3.6.0.js"></script> --}}
     <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js"></script>
     <script src="https://cdn.ckeditor.com/4.16.2/standard/ckeditor.js"></script>
 
-    
-    <script>   
-    </script>
-
+    {{-- Question Type Wise Question Form Show --}}
     <script>
         $(document).ready(function () {
             $(".mymodal").modal('show');
@@ -342,7 +340,9 @@
             });
         });
     </script>
+    {{-- Question Type Wise Question Form Show --}}
 
+    {{-- Image Upload CkEditor --}}
     <script>
         CKEDITOR.replace('ckeditor', {
             filebrowserUploadUrl: "{{ route('ckeditor.image.upload', ['_token' => csrf_token()]) }}",
@@ -365,6 +365,7 @@
             filebrowserUploadMethod: 'form'
         });
     </script>
+    {{-- Image Upload CkEditor --}}
 
     <script>
         $(document).ready(function() {
@@ -384,10 +385,10 @@
             });
 
             $("#plusbtn").on('click', function (e) {
+                
                 e.preventDefault();
                 var val = +$(this).attr('data-count') + 1;
                 
-                console.log(val);
                 $("#apeandField").append(`
                     <div class="row mt-3">
                         <div class="col-md-8 mt-3">
@@ -414,7 +415,7 @@
                     filebrowserUploadUrl: "{{ route('ckeditor.image.upload', ['_token' => csrf_token()]) }}",
                     filebrowserUploadMethod: 'form'
                 });
-                // $(this).attr('data-count') = val + 1;
+
                 $(this).attr('data-count', val);
             });
 
@@ -422,38 +423,38 @@
                 e.preventDefault();
                 var val = +$(this).attr('data-count') + 1;
                 var mcqVal = + $(this).attr('mcq-ckeditor') + 1;
-                console.log(val);
+                
                 $("#mcqapeandField").append(`
-                   
-                <div class="row">
-                                                
-                    <div class="col-md-11 mt-3">
-                        <textarea name="mcqQuestions[${val}]" id="ckeditor${mcqVal}" ></textarea>
-                    </div>
-                    <div class="col-md-1" >
-                        <button type="button" class="btn btn-danger mcqRemove" style="margin-top: 16px; margin-left: 27px;">-</button>
-                    </div>
-                    <div class="col-md-6 mt-3">
-                        <label for="">A</label>
-                        <input name="mcqQuestion_no[${val}][1]" class="form-control" type="text">
-                    </div>
-
-                    <div class="col-md-6 mt-3">
-                        <label for="">B</label>
-                        <input name="mcqQuestion_no[${val}][2]" class="form-control" type="text">
-                    </div>
-
-                    <div class="col-md-6 mt-3">
-                        <label for="">C</label>
-                        <input name="mcqQuestion_no[${val}][3]" class="form-control" type="text">
-                    </div>
-
-                    <div class="col-md-6 mt-3">
-                        <label for="">D</label>
-                        <input name="mcqQuestion_no[${val}][4]" class="form-control" type="text">
-                    </div>
                     
-                </div>
+                    <div class="row">
+                                                    
+                        <div class="col-md-11 mt-3">
+                            <textarea name="mcqQuestions[${val}]" id="ckeditor${mcqVal}" ></textarea>
+                        </div>
+                        <div class="col-md-1" >
+                            <button type="button" class="btn btn-danger mcqRemove" style="margin-top: 16px; margin-left: 27px;">-</button>
+                        </div>
+                        <div class="col-md-6 mt-3">
+                            <label for="">A</label>
+                            <input name="mcqQuestion_no[${val}][1]" class="form-control" type="text">
+                        </div>
+
+                        <div class="col-md-6 mt-3">
+                            <label for="">B</label>
+                            <input name="mcqQuestion_no[${val}][2]" class="form-control" type="text">
+                        </div>
+
+                        <div class="col-md-6 mt-3">
+                            <label for="">C</label>
+                            <input name="mcqQuestion_no[${val}][3]" class="form-control" type="text">
+                        </div>
+
+                        <div class="col-md-6 mt-3">
+                            <label for="">D</label>
+                            <input name="mcqQuestion_no[${val}][4]" class="form-control" type="text">
+                        </div>
+                        
+                    </div>
                 `);
 
                 CKEDITOR.replace('ckeditor' + mcqVal, {
@@ -549,10 +550,15 @@
         }); 
     </script>
 
+    {{-- Question Store --}}
     <script>
         function store() {
+
+             for (var i in CKEDITOR.instances) {
+                CKEDITOR.instances[i].updateElement();
+            };
             var form_data = $("#form_data").serialize();
-           var edit = CKEDITOR.instances.ckeditor.getData();
+                     
             $.ajaxSetup({
                 headers: {
                     'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
@@ -567,19 +573,53 @@
                     $("#error").empty();
                 },
                 success: function (data) {
-                    if (data.status == "fail"){
-                        $("#error").append(` <ul> <li class="text-danger">${data.error}</li></ul> `);
-                        Swal.fire({
-                        position: 'top-end',
-                        icon: 'error',
-                        title: data.error,
-                        showConfirmButton: false,
-                        timer: 5000
-                        });
+                    $("#questionId").append(`<input name="question_id" value="${data.id}"  type="hidden">`);
+                }
+            });
+        }
+        setInterval(store, 30000);
+
+        function questionStore() {
+
+             for (var i in CKEDITOR.instances) {
+                CKEDITOR.instances[i].updateElement();
+            };
+
+            var form_data = $("#form_data").serialize();
+                     
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
+                }
+            });
+            $.ajax({
+                type: "post",
+                url: "{{ url('school/create/question/store') }}",
+                data: form_data,
+                dataType: "json",
+                beforeSend: function () {
+                    $("#error").empty();
+                },
+                success: function (data) {
+
+                    if (data.status == "fail") {
+                        $.each(data.error, function(key, value) {
+                            $("#error").append(` <ul> <li class="text-danger">${value}</li></ul> `);
+                            Swal.fire({
+                            position: 'top-end',
+                            icon: 'error',
+                            title: value,
+                            showConfirmButton: false,
+                            timer: 5000
+                            });
+                        })
+                    } else if(data.status == 'success') {
+
+                        window.location.replace("{{ route('show.question') }}");
+                        
                     }
                 }
             });
         }
-        setInterval(store, 60000);
     </script>
 @endpush

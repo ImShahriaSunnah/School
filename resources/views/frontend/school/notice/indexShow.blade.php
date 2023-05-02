@@ -9,7 +9,7 @@
                 <div class="card">
                     <div class="card-header py-3 bg-transparent">
                         <div class="d-sm-flex align-items-center">
-                            <h5 class="mb-2 mb-sm-0"></h5>
+                            <h5 class="mb-2 mb-sm-0">{{__('app.Notice')}}</h5>
                             <div class="ms-auto">
                                 <button type="button" class="btn btn-secondary" onclick="history.back()">{{__('app.back')}}</button>
                                 <a href="{{route('notice.school.admin.create')}}" class="btn btn-primary">{{__('app.Notice Create')}}</a>

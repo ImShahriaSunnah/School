@@ -17,7 +17,7 @@
 
                             <div class="col-lg mb-3">
                                 <label for=""><b>{{ __('app.Select') }} {{ __('app.shift') }}</b>
-                                    <small class="text-danger">*</small></label>
+                                     <small class="text-danger">*</small></label>
 
                                 <select name="shift" class="form-control mb-3 js-select" required>
                                     <option value="">Select One</option>
@@ -28,7 +28,7 @@
                             </div>
 
                             <div class="col-lg mb-3">
-                                <label for=""><b>{{ __('app.Select') }} {{ __('app.Class') }}</b><small
+                                <label for=""><b>{{ __('app.Select') }} {{ __('app.Class') }}</b> <small
                                         class="text-danger">*</small></label>
                                 <select name="class" class="form-control mb-3 js-select" id="class_id" onchange="loadSection()" required>
                                     <option value="">Select One</option>
@@ -40,7 +40,7 @@
                             </div>
 
                             <div class="col-lg mb-3">
-                                <label for=""><b>{{ __('app.Select') }} {{ __('app.Section') }}</b><small
+                                <label for=""><b>{{ __('app.Select') }} {{ __('app.Section') }}</b> <small
                                         class="text-danger">*</small></label>
                                 <select name="section" class="form-control mb-3 js-select"id="section_id" required>
                                     <option value="" selected disabled>Select Class First</option>

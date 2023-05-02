@@ -18,20 +18,20 @@
                                         @include('frontend.layouts.message')
                                     </div>
                                     <div class="col-12">
-                                        <label class="form-label">Notice Topic</label>
+                                        <label class="form-label">Notice Topic <span style="color:red;">*</span></label>
                                         <div class="input-group mb-3">
                                             <input type="text" class="form-control" placeholder="Notice Topic" name="topic" required>
                                         </div>
                                     </div>
                                     <div class="col-12">
-                                        <label class="form-label">Notice Description</label>
+                                        <label class="form-label">Notice Description <span style="color:red;">*</span></label>
                                         <div class="input-group mb-3">
                                             <textarea type="text" class="form-control" placeholder="Notice Description" name="description" rows="10" required></textarea>
                                         </div>
                                     </div>
 
                                     <div class="col-12">
-                                        <label class="form-label">Class Name</label>
+                                        <label class="form-label">Class Name <span style="color:red;">*</span></label>
                                         <select class="form-control mb-3 js-select"aria-label="Default select example" name="class_id" required>
                                             <option selected="">Class Name</option>
                                             <option value="0" selected>All Student</option>

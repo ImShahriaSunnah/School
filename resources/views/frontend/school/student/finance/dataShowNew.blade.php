@@ -66,7 +66,7 @@
                                                             <form class="row g-3" method="post" action="{{route('update.fees.show',$studentFeesEdit->id)}}" enctype="multipart/form-data">
                                                                 @csrf
                                                                 <div class="col-md-12">
-                                                                    <label class="form-label">Pay For {{$studentFeesEdit->month_name}}</label>
+                                                                    <label class="form-label">Pay For  {{$studentFeesEdit->month_name}}</label>
                                                                     <div class="input-group mb-3"> <span class="input-group-text" id="basic-addon1">Amount Taka</span>
                                                                         <input type="text" class="form-control"  name="amount" value="{{ (getClassName( $data->class_id)->class_fees +  $extra ) - $studentFeesEdit->amount}}">
                                                                         <input type="hidden" class="form-control"  name="student_id" value="{{$data->id }}">
