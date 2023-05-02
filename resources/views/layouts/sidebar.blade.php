@@ -54,6 +54,10 @@
                 <a href="{{ route('AppReleased.List') }}"><i class="fa fa-bell" aria-hidden="true"></i><span class="nav-label">App Released
                     </span></a>
             </li>
+            <li>
+                <a href="{{ route('AddonList') }}"><i class="fa fa-sitemap" aria-hidden="true"></i> <span class="nav-label">Addon
+                    </span></a>
+            </li>
 
 
         </ul>

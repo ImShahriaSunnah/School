@@ -31,9 +31,9 @@
                             <div class="form-group">
                                 <div class="row">
                                     <div class="col-md">
-                                        <label for="">Bank Name</label>
+                                        <label for="">Bank Name <span style="color:red;">*</span></label>
                                         
-                                        <input type="text" name="bank_name" 
+                                        <input type="text" name="bank_name" required
                                             class="form-control @error('bank_name') is-invalid @enderror"
                                             @if(isset($bankadd))
                                             value="{{ $bankadd->bank_name}}"
@@ -49,8 +49,8 @@
                                     </div>
     
                                     <div class="col-md">
-                                        <label for="">Branch</label>
-                                        <input type="text" name="branch" 
+                                        <label for="">Branch <span style="color:red;">*</span></label>
+                                        <input type="text" name="branch" required
                                             class="form-control @error('branch') is-invalid @enderror"
                                             @if(isset($bankadd))
                                             value="{{ $bankadd->branch}}"
@@ -75,8 +75,8 @@
                             <div class="form-group">
                                 <div class="row">
                                     <div class="col-md">
-                                        <label for="">Account Holder Name</label>
-                                        <input type="tel" name="account_holder" 
+                                        <label for="">Account Holder Name <span style="color:red;">*</span></label>
+                                        <input type="tel" name="account_holder" required
                                             class="form-control @error('account_holder') is-invalid @enderror"
                                             @if(isset($bankadd))
                                             value="{{ $bankadd->account_holder}}"
@@ -92,8 +92,8 @@
                                     </div>
     
                                     <div class="col-md">
-                                        <label for="">Account Number</label>
-                                        <input type="text" name="account_number" 
+                                        <label for="">Account Number <span style="color:red;">*</span></label>
+                                        <input type="text" name="account_number" required
                                             class="form-control @error('account_number') is-invalid @enderror"
                                             @if(isset($bankadd))
                                             value="{{ $bankadd->account_number }}"
@@ -109,7 +109,7 @@
                                     </div>
     
                                     <div class="col-md">
-                                        <label for="">Account Type</label>
+                                        <label for="">Account Type <span style="color:red;">*</span></label>
                                         <select class="form-control mb-3 js-select" name="account_type" id="" class="form-control @error('account_type') is-invalid @enderror" required>
                                             <option value="" selected disabled>Select One</option>
                                             <option value="Business" @if(isset($bankadd)) @if($bankadd -> account_type == 'Business'){{'selected'}} @endif @endif>Business</option>
@@ -177,7 +177,7 @@
                                     </div>
     
                                     <div class="col-md">
-                                        <label for="">Swift</label>
+                                        <label for="">Swift Number</label>
                                         <input type="text" name="swift" 
                                             class="form-control @error('swift') is-invalid @enderror"
                                             @if(isset($bankadd))

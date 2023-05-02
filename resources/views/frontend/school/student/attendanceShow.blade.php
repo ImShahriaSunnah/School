@@ -3,6 +3,7 @@
 @section('content')
     <!--start content-->
     <main class="page-content">
+        <x-page-title title='Take Attendance'/>
         <div class="row">
             <div class="col-md-8 mx-auto">
                 <div class="card">
@@ -15,7 +16,7 @@
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label">{{__('app.class')}}</label>
-                                    <select class="form-select" aria-label="Default select example" name="class_id" id="class_id" onchange="game_chf()">
+                                    <select class="form-select" aria-label="Default select example" required name="class_id" id="class_id" onchange="game_chf()">
                                         <option value=" " selected>Class Name</option>
                                         @foreach($class as $data)
                                             <option value="{{$data->id}}">{{$data->class_name}}</option>

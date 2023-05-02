@@ -30,7 +30,7 @@
                                 <div class="row">
     
                                     <div class="col-md">
-                                        <label for=""><b>Date*</b></label>
+                                        <label for=""><b>Date <span style="color: red;">*</span></b></label>
                                         <input type="date" name="datee" 
                                             class="form-control @error('datee') is-invalid @enderror"
                                             
@@ -48,7 +48,7 @@
                                     </div>
     
                                     <div class="col-md">
-                                        <label for=""><b>Purpose*</b></label>
+                                        <label for=""><b>Purpose <span style="color: red;">*</span></b></label>
                                         <input type="text" name="purpose" 
                                             class="form-control @error('purpose') is-invalid @enderror"
                                             @if(isset($expense))
@@ -65,7 +65,7 @@
                                     </div>
 
                                     <div class="col-md">
-                                        <label for=""><b>Type*</b></label>
+                                        <label for=""><b>Type <span style="color: red;">*</span></b></label>
                                         <select name="type" id="" class="form-control mb-3 js-select @error('type') is-invalid @enderror" required>
                                             <option value="" selected disabled>Select One</option>
                                             <option value="1" @if(isset($expense)) @if($expense->type == 1) {{'selected'}} @endif @endif >Expense</option>
@@ -88,8 +88,8 @@
                                 <div class="row">
     
                                     <div class="col-md">
-                                        <label for=""><b>Payment Method*</b></label>
-                                        <select name="payment_method" id="" class="form-control mb-3 js-select @error('payment_method') is-invalid @enderror" required>
+                                        <label for=""><b>Payment Method <span style="color: red;">*</span></b></label>
+                                        <select name="payment_method" id="" onchange="transection(this.value)" class="form-control mb-3 js-select @error('payment_method') is-invalid @enderror" required>
                                             <option value="" selected disabled>Select One</option>
                                             <option value="1" @if(isset($expense)) @if($expense->payment_method == 1) {{'selected'}} @endif @endif >Hand Payment</option>
                                             <option value="2" @if(isset($expense)) @if($expense->payment_method == 2) {{'selected'}} @endif @endif >Bank Payment</option>
@@ -101,10 +101,34 @@
                                             </span>
                                         @enderror
                                     </div>
+
+                                    <div class="col-md" id="account">
+                                        <label for=""><b>Account <span style="color: red;">*</span></b></label>
+                                        <select name="account" id="" class="form-control @error('account') is-invalid @enderror">
+                                            <option value="" selected disabled>Select One</option>
+                                            @foreach(\App\Models\Bank::get() as $item)
+                                            <option value="{{ $item->id }}" 
+                                                @if(isset($expense))
+                                                    {{($expense->account == $item->id)? 'selected':'' }}
+                                                @else{{(old('account')== $item->id) ? 'selected' : ''}}
+    
+                                                @endif> 
+                                           
+                                            {{$item->account_number}}</option>
+                                            @endforeach
+                                            
+                                        </select>
+    
+                                        @error('account')
+                                            <span class="invalid-feedback">
+                                                <strong>{{ $message }}</strong>
+                                            </span>
+                                        @enderror
+                                    </div>
     
                                     
-                                    <div class="col-md">
-                                        <label for=""><b>Expense By*</b></label>
+                                    <div class="col-md" style="display:none;" id="name">
+                                        <label for=""><b>Name <span style="color: red;">*</span></b></label>
                                         <input type="text" name="name" 
                                             class="form-control @error('name') is-invalid @enderror"
                                             @if(isset($expense))
@@ -121,7 +145,7 @@
                                     </div>
     
                                     <div class="col-md">
-                                        <label for=""><b>Amount*</b></label>
+                                        <label for=""><b>Amount <span style="color: red;">*</span></b></label>
                                         <input type="text" name="amount" 
                                             class="form-control @error('amount') is-invalid @enderror"
                                             @if(isset($expense))
@@ -166,3 +190,26 @@
     </main>
 
 @endsection
+
+@push('js')
+    <script>
+        
+        function transection(value){
+            const name = document.getElementById("name");
+            const account = document.getElementById("account");
+
+            if(value == '1'){
+                name.style.display = "block";
+                account.style.display = "none";
+            }  
+            else if(value == '2'){
+                
+                name.style.display = "none";
+                account.style.display = "block";
+            }
+        }
+
+        
+    </script>
+    
+@endpush

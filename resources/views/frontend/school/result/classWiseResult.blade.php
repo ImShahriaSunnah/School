@@ -5,18 +5,26 @@
     <main class="page-content">
         <div class="row">
             <div class="col-xl mx-auto">
-                <div class="card">
-                    <div class="card-body" id="printDiv"> 
-                        <div class="text-center">
-                            <h2>{{strtoupper(Auth::user()->school_name)}}</h2>
-                            <h5>Result Of {{getClassName($class)->class_name}}</h5>
-                            <h5>{{getTermName($term)->term_name}}</h5>
-                            <h6>Date: {{ date('d-m-Y') }}</h6>
-                            <hr>
+                <div class="card" id="printDiv">
+                    <div class="card-body" >
+
+                        <div class="d-flex justify-content-center">
+                            @if (File::exists(public_path(Auth::user()->school_logo)) && !is_null(Auth::user()->school_logo))
+                            <img src="{{asset(Auth::user()->school_logo)}}" alt="school logo" class="img-fluid" width="80" style="width:80px; height:80px;">
+                            @endif
+                            
+                            <div class="text-center">
+                                <h4 style="margin-bottom: 0px;"> {{ strtoupper( Auth::user()->school_name) }} </h4>
+                                <p style="margin-bottom: 0px; font-size:12px margin-bottom:10px;"> {{ (Auth::user()->slogan )}} </p>
+                                <h5>Result Of {{getClassName($class)->class_name}}</h5>
+                                <h5>{{ getTermName($term)->term_name }}</h5>
+                                <h6>Date: {{ date('d-m-Y') }}</h6>
+                            </div>
                         </div>
-                        
-                        
-                        <table class="table table-bordered text-center">
+
+                        <hr>
+
+                        <table class="table table-bordered text-center" style="font-size: 12px;">
                                 <thead>
                                   <tr>
                                     <th scope="col">Rank</th>
@@ -33,7 +41,7 @@
                                     @php
                                         $key =0;
                                     @endphp
-                                   
+
                                     @foreach ($sortedArrayOfResult as $rank => $data)
                                             <tr>
                                                 <td>{{++$key}}</td>
@@ -43,12 +51,12 @@
                                                 <td>{{ ($data['totalGpa'] > 1 && $data['resultStatus'] == 1) ? classWiseGpa($data['totalGpa']) : "F" }}</td>
                                                 <td>{{ ($data['totalGpa'] > 1 && $data['resultStatus'] == 1) ? $data['totalGpa'] : "0" }}</td>
                                                 <td>{{ ($data['resultStatus'] == 1) ? "Pass" : "Fail" }}</td>
-                                                
+
                                                 {{-- <td>{{classWisePassFail($data['totalGpa'])}}</td> --}}
                                             </tr>
-                                        
+
                                     @endforeach
-                                    
+
                                 </tbody>
                             </table>
                         </div>
@@ -59,22 +67,22 @@
                 </div>
             </div>
         </div>
-        
+
     </main>
-   
+
 @endsection
 
 @push('js')
-<script>
-    function printDiv(printDiv) {
-        var printContents = document.getElementById('printDiv').innerHTML;
-        var originalContents = document.body.innerHTML;
+    <script>
+        function printDiv(printDiv) {
+            var printContents = document.getElementById('printDiv').innerHTML;
+            var originalContents = document.body.innerHTML;
 
-        document.body.innerHTML = printContents;
+            document.body.innerHTML = printContents;
 
-        window.print();
+            window.print();
 
-        document.body.innerHTML = originalContents;
-    }
-</script>
+            document.body.innerHTML = originalContents;
+        }
+    </script>
 @endpush

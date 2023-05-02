@@ -16,9 +16,9 @@
                                 <td>{{$data['student']->name}}</td>
                                 <td rowspan="5" class="text-center" width="25%">
                                     @if(File::exists(public_path($data['student']->image)))
-                                    <img src="{{asset($data['student']->image)}}" alt="{{$data['student']->name}}" width="200">
+                                    <img src="{{asset($data['student']->image)}}" alt="{{$data['student']->name}}" width="200" height="200">
                                     @else
-                                    <img src="{{asset('d/no-img.jpg')}}" alt="{{$data['student']->name}}" width="200">
+                                    <img src="{{asset('d/no-img.jpg')}}" alt="{{$data['student']->name}}" width="200" height="200">
                                     @endif
                                 </td>
                                </tr>
@@ -26,7 +26,7 @@
                                 <td>Father Name</td>
                                 <td>{{$data['student']->father_name}}</td>
                                </tr>
-                               
+
                                <tr>
                                 <td>Mother Name</td>
                                 <td>{{$data['student']->mother_name}}</td>
@@ -40,11 +40,11 @@
                                <tr>
                                 <td>Shift</td>
                                 <td>
-                                    @if ($data['student']->shift == 1) 
+                                    @if ($data['student']->shift == 1)
                                     <span class="badge bg-success px-2">{{strtoupper("Morning")}}</span>
-                                    @elseif ($data['student']->shift == 2) 
+                                    @elseif ($data['student']->shift == 2)
                                     <span class="badge bg-success px-2">{{strtoupper("Day")}}</span>
-                                    @else 
+                                    @else
                                     <span class="badge bg-success px-2">{{strtoupper("Evening")}}</span>
                                     @endif
                                 </td>
@@ -70,7 +70,98 @@
                                 <td>{{$data['student']->unique_id}}</td>
                                </tr>
 
-                               <tr>
+                                <form action="{{route('student.school.scholarship',$data['student']->id)}}" method="post">
+                                    @method('put')
+                                    @csrf
+                                    <tr>
+                                        <td>scholarship</td>
+
+                                        <td class="row">
+                                            <div class="col-2">
+                                                @if ($data['student']->scholarship == 1)
+                                                <span class="badge bg-secondary">Normal</span>
+                                                @elseif($data['student']->scholarship == 2)
+                                                <span class="badge bg-primary text-light">Half Free</span>
+                                                @elseif($data['student']->scholarship == 0)
+                                                <span class="badge bg-success text-light">Full Free</span>
+                                                @endif
+                                            </div>
+                                            <div class="col-6">
+                                                <select  class="form-control mb-3 js-select" name="scholarship" class="form-select">
+                                                    <option value="">Select One</option>
+                                                    <option value="1" {{($data['student']->scholarship == 1) ? 'selected' : ''}}>Normal</option>
+                                                    <option value="2" {{($data['student']->scholarship == 2) ? 'selected' : ''}}>Half Free</option>
+                                                    <option value="0" {{($data['student']->scholarship == 0) ? 'selected' : ''}}>Full Free</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-2">
+                                                <button class="btn btn-primary" type="submit" style="border-radius:7px;">Update</button>
+                                            </div>
+                                            
+                                        </td>
+                                        <td></td>
+                                    </tr>
+                                </form>
+
+                                {{-- <tr>
+                                    <td>Scholarship</td>
+                                    <td class="col-2">
+                                        @if ($data['student']->scholarship == 1)
+                                        <span class="badge bg-warning">Normal</span>
+                                        @elseif($data['student']->scholarship == 2)
+                                        <span class="badge bg-success text-light">Half Free</span>
+                                        @elseif($data['student']->scholarship == 0)
+                                        <span class="badge bg-success text-light">Full Free</span>
+                                        @endif
+                                    </td>
+                                    <td class="col-2">
+
+                                        <div class="d-inline-block dropdown">
+                                            <button type="button" data-toggle="dropdown" aria-haspopup="true"
+                                                aria-expanded="false" class="dropdown-toggle btn btn-sm btn-info text-nowrap" id="dropdownId">
+                                                Change Scholarship
+                                            </button>
+                                            <div tabindex="-1" role="menu" aria-hidden="true"
+                                                class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownId">
+                                                <ul class="nav flex-column">
+                                                    @if ($data['student']->scholarship != 1)
+                                                        <li class="nav-item">
+                                                            <a class="nav-link" href="javascript::"
+                                                                onclick="if(confirm('Are you sure? you are changing the status of this record')){ location.replace('{{route('scholarship.status', [$data['student']->id, 1])}}'); }">
+                                                                <i class="nav-link-icon fa fa-handshake"></i>
+                                                                <span>Normal</span>
+                                                            </a>
+                                                        </li>
+                                                    @endif
+
+                                                    @if ($data['student']->scholarship != 2)
+                                                    <li class="nav-item">
+                                                        <a class="nav-link" href="javascript::"
+                                                            onclick="if(confirm('Are you sure? you are changing the status of this record')){ location.replace('{{route('scholarship.status', [$data['student']->id, 2])}}'); }">
+                                                            <i class="nav-link-icon fa fa-handshake"></i>
+                                                            <span>Half Free</span>
+                                                        </a>
+                                                    </li>
+                                                    @endif
+
+                                                    @if ($data['student']->scholarship != 0)
+                                                    <li class="nav-item">
+                                                        <a class="nav-link" href="javascript::"
+                                                            onclick="if(confirm('Are you sure? you are changing the status of this record')){ location.replace('{{route('scholarship.status', [$data['student']->id, 0])}}'); }">
+                                                            <i class="nav-link-icon fa fa-ban"></i>
+                                                            <span>Full Free</span>
+                                                        </a>
+                                                    </li>
+                                                    @endif
+
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr> --}}
+
+
+                                <tr>
                                     <td>Select Month</td>
                                     <td>
                                         <select  class="form-control mb-3 js-select" name="month" class="form-select" onchange="feesShow(this.value)">
@@ -90,15 +181,36 @@
                                </tr>
 
                                <tr>
+                                
                                 <table class="table table-bordered w-50 mx-auto">
                                     @if(isset($data['assignFees']['fees_details']))
                                     <tbody>
+                                        <tr>
+                                            <td width="70%">Monthly Fee</td>
+                                            @if($data['student']->scholarship == 2)
+                                                <td class="text-end">৳ {{$monthlyFee /2}}</td>
+                                            @elseif ($data['student']->scholarship == 1)
+                                                <td class="text-end">৳ {{$monthlyFee }}</td>
+                                            @else 
+                                                <td class="text-end">৳ 0</td>
+                                            @endif
+                                        </tr>
+                                        @php
+                                            $sum = 0;                                            
+                                        @endphp
+                                        
                                         @if(is_array($data['assignFees']['fees_details']))
                                             @foreach ($data['assignFees']['fees_details'] as $key => $item)
                                                 <tr>
                                                     <td width="70%">{{Str::title($key)}}</td>
                                                     <td class="text-end">৳ {{$item}}</td>
                                                 </tr>
+
+                                                @php
+                                                    $sum += $item;
+                                                    
+                                                @endphp
+                                                
                                             @endforeach
                                         @else
                                             @foreach (json_decode($data['assignFees']['fees_details']) as $key => $item)
@@ -106,11 +218,23 @@
                                                     <td width="70%">{{Str::title($key)}}</td>
                                                     <td class="text-end">৳ {{$item}}</td>
                                                 </tr>
+                                                @php
+                                                    $sum += $item;
+                                                    
+                                                @endphp
                                             @endforeach
                                         @endif
                                         <tr class="text-end">
                                             <td>In Total: </td>
-                                            <td>৳ {{$data['studentFees']->amount}}</td>
+                                            @if($data['student']->scholarship == 2)
+                                                <td>৳ {{$sum + ($monthlyFee /2)}}</td>
+                                            @elseif ($data['student']->scholarship == 1)
+                                                <td>৳ {{$sum + $monthlyFee }}</td>
+                                            @else 
+                                            <td>৳ {{$sum}}</td>
+                                            @endif
+
+                                            
                                         </tr>
                                         <tr class="text-end">
                                             <td>Status</td>
@@ -126,14 +250,14 @@
                                             <td></td>
                                             <td class="text-end">
                                                 {{-- @if($data['studentFees']->status == 0) --}}
-                                                <form action="{{route('school.finance.fees.received')}}" method="post" id="paymentRecivedForm">
+                                                <form action="{{url('/school/finance/payment/receive')}}" method="post" id="paymentRecivedForm">
                                                     @csrf
                                                     <input type="hidden" name="studentId" value="{{$data['student']->id}}">
                                                     <input type="hidden" name="monthId" value="{{$data['month']}}">
                                                     <input type="hidden" name="amount" value="{{$data['studentFees']->amount}}">
                                                     <input type="hidden" name="assignFeesId" value="{{$data['assignFees']->id}}">
 
-                                                    <button class="btn-sm btn-primary">Received</button>
+                                                    <button class="btn-sm btn-primary" id="receivebtn">Received</button>
                                                 </form>
                                                 {{-- @endif --}}
                                             </td>
@@ -154,7 +278,7 @@
                     </div>
                 </div>
             </div>
-        </div>  
+        </div>
     </main>
 
     <div class="hidden-reciet" style="display:none">
@@ -171,20 +295,22 @@
 
         $("#paymentRecivedForm").submit(function(e){
             e.preventDefault();
-            
+            var j = $("#paymentRecivedForm").serialize();
             $.ajax({
-                url: "{{route('school.finance.fees.received')}}",
+                url: "{{url('/school/finance/payment/receive')}}",
                 type: "POST",
                 data: $("#paymentRecivedForm").serialize(),
                 success: function(resp){
-                    // console.log(resp);
-                    $("#payment-reciept").html(resp.data.html);
+                    $("#payment-reciept").html(resp.html);
                     printDiv("payment-reciept");
-                    location.reload();                    
+                    location.reload();
                 },
                 error: function(error){
-                    console.log(error);
-                    alert(error.responseJSON.message);
+                    Swal.fire({
+                        title: "Try Later",
+                        text: 'Have Some Problem. Please Try Again Later.',
+                        inputPlaceholder: 'Nombre',
+                    });
                 }
             })
         });

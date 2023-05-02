@@ -132,9 +132,9 @@
                                     <th scope="col">{{__('app.date')}}</th>
                                     <th scope="col">{{__('app.Expense Purpose')}}</th>
                                     <th scope="col">{{__('app.Payment Method')}}</th>
-                                    <th scope="col">{{__('app.Type')}}</th>
-                                    <th scope="col">{{__('app.Amount')}}</th>
+                                    <th scope="col">{{__('app.Account')}}</th>
                                     <th scope="col">{{__('app.Expense by')}}</th>
+                                    <th scope="col">{{__('app.Amount')}}</th>
                                     <th scope="col">{{__('app.Remark')}}</th>
                                     <th scope="col">{{__('app.action')}}</th>
                                 </tr>
@@ -150,22 +150,18 @@
                                         @else 
                                         @endif
                                     </td>
-                                    <td>@if( $item->type == 1) Expense
-                                        @elseif( $item->type == 2) Fund
-                                        @else 
-                                        @endif
-                                    </td>
-                                    <td>{{$item->amount}}</td>
+                                    <td>{{ \App\Models\Bank::find($item->account)->account_number ?? ""}}</td>
                                     <td>{{$item->name}}</td>
+                                    <td>{{$item->amount}}</td>
                                     <td>{{$item->remark}}</td>
                                     <td class="text-nowrap">
                                             <a href="{{ route('expense.edit', $item->id) }}" class="btn btn-sm btn-primary">
-                                            <i class="fas fa-pen"></i>
+                                                {{__('app.Edit')}}
                                         </a>
             
                                         <button class="btn btn-sm btn-primary"
                                             onclick="if(confirm('Are you sure? you are going to delete this record')){ location.replace('delete/{{$item->id}}'); }">
-                                            <i class="fas fa-trash"></i>
+                                            {{__('app.Delete')}}
                                         </button> 
                                     </td>
                                     

@@ -40,8 +40,8 @@
                                         <tr>
                                             <td>{{ $key++ + 1 }}</td>
                                             <td>
-                                            @if(session('locale')=='en')
-                                           {{ $data->term_name }}
+                                                @if( app()->getLocale() === 'en')
+                                                {{ $data->term_name }}
                                             @else
                                                 {{ $data->term_name_bn }}</td>
                                             

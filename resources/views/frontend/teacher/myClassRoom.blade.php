@@ -2,6 +2,15 @@
 @section('content')
 
     <main class="page-content">
+        @if ($errors->any())
+            <div class="alert alert-danger">
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
         <div class="row">
             @foreach($data as $s)
                 <div class="col-md-4 mt-3">
@@ -19,7 +28,8 @@
                                             <li><a class="dropdown-item" href="{{route('teacher.attendance.upload',['class_id'=>$s->class_id,'section_id'=>$s->section_id,'group_id' => is_null($s->group_id) ? 0 : $s->group_id ,'subject_id'=>$s->subject_id])}}">Attendance</a>
                                             </li>
                                         @endif
-                                        <li><a class="dropdown-item" href="{{ route('teacher.result.upload',['subject_id'=>$s->subject_id,'class_id'=>$s->class_id,'section_id'=>$s->section_id,'group_id' => is_null($s->group_id) ? 0 : $s->group_id ,'subject_id'=>$s->subject_id ] ) }}">Result</a>
+                                        {{-- <li><a class="dropdown-item" href="{{ route('teacher.result.upload',['subject_id'=>$s->subject_id,'class_id'=>$s->class_id,'section_id'=>$s->section_id,'group_id' => is_null($s->group_id) ? 0 : $s->group_id ,'subject_id'=>$s->subject_id ] ) }}">Result</a> --}}
+                                        <li><button class="dropdown-item btn" data-bs-toggle="modal" data-bs-target="#termModal{{ $s->id }}">Result</button>
                                         </li>
                                         <li>
                                             <hr class="dropdown-divider">
@@ -57,11 +67,32 @@
                         </div>
                     </div>
                 </div>
+                
+                <!-- Modal -->
+                <div class="modal fade" id="termModal{{ $s->id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content" style="height: 80px;">
+                            <form action="{{ route('teacher.result.upload') }}" method="GET">
+                                <div class="modal-body m-auto d-flex">
+                                    <input type="hidden" name="subject_id" value="{{ $s->subject_id }}">
+                                    <input type="hidden" name="class_id" value="{{ $s->class_id }}">
+                                    <input type="hidden" name="section_id" value="{{ $s->section_id }}">
+                                    <select class="form-select" name="term_name" aria-label="Default select example" style="padding-right: 90px; padding-left: 90px;">
+                                        <option value=" " selected>Select Term</option>
+                                        @foreach ($dataTerm as $term )
+                                            <option value="{{ $term->id }}">{{ $term->term_name }}</option>
+                                        @endforeach
+                                    </select>
+                                    <button type="submit" class="btn btn-primary ms-3" >Next</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
             @endforeach
             
             @foreach($classes as $s => $s2)
-
-                @if(App\Models\AssignTeacher::where('subject_id',$s2[0]->subject_id)->exists())
+                @if(App\Models\AssignTeacher::where('subject_id', $s2[0]->subject_id)->exists())
                     
                 @else
                     <div class="col-md-4 mt-3">
@@ -74,8 +105,9 @@
                                     <div class="dropdown ms-auto">
                                         <a class="dropdown-toggle dropdown-toggle-nocaret" href="#" data-bs-toggle="dropdown" aria-expanded="false"><i class="bx bx-dots-horizontal-rounded font-22 text-option"></i></a>
                                         <ul class="dropdown-menu" style="">
-                                            <li><a class="dropdown-item" href="{{ route('teacher.result.upload',['subject_id'=>$s2[0]->subject_id,'class_id'=>$s2[0]->class_id,'section_id'=>$s2[0]->section_id,'group_id' => is_null($s2[0]->group_id) ? 0 : $s2[0]->group_id ,'subject_id'=>$s2[0]->subject_id ] ) }}">Result</a>
-                                            </li>
+                                            {{-- <li><a class="dropdown-item" href="{{ route('teacher.result.upload',['subject_id'=>$s2[0]->subject_id,'class_id'=>$s2[0]->class_id,'section_id'=>$s2[0]->section_id,'group_id' => is_null($s2[0]->group_id) ? 0 : $s2[0]->group_id ,'subject_id'=>$s2[0]->subject_id ] ) }}">Result</a>
+                                            </li> --}}
+                                            <li><button class="dropdown-item btn" data-bs-toggle="modal" data-bs-target="#classTermModal{{ $s2[0]->id }}">Result</button>
                                             <li>
                                                 <hr class="dropdown-divider">
                                             </li>
@@ -112,6 +144,32 @@
                             </div>
                         </div>
                     </div>
+
+                <!-- Modal -->
+                <div class="modal fade" id="classTermModal{{ $s2[0]->id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content" style="height: 80px;">
+                            <form action="{{ route('teacher.result.upload') }}" method="GET">
+                                <div class="modal-body m-auto d-flex">
+                                    <input type="hidden" name="subject_id" value="{{ $s2[0]->subject_id }}">
+                                    <input type="hidden" name="class_id" value="{{ $s2[0]->class_id }}">
+                                    <input type="hidden" name="section_id" value="{{ $s2[0]->section_id }}">
+                                    <select class="form-select" name="term_name" aria-label="Default select example" style="padding-right: 90px; padding-left: 90px;">
+                                        <option value=" " selected>Select Term</option>
+                                        @foreach ($dataTerm as $term )
+                                            <option value="{{ $term->id }}">{{ $term->term_name }}</option>
+                                        @endforeach
+                                    </select>
+                                    <button type="submit" class="btn btn-primary ms-3" >Next</button>
+                                </div>
+                                {{-- <div class="d-flex justify-content-center"> --}}
+                                    {{-- <button type="submit" class="btn btn-primary" >Next</button> --}}
+                                    {{-- <a href="{{ route('teacher.result.upload',['subject_id'=>$s->subject_id,'class_id'=>$s->class_id,'section_id'=>$s->section_id,'group_id' => is_null($s->group_id) ? 0 : $s->group_id ,'subject_id'=>$s->subject_id ] ) }}" class="btn btn-primary" >Next</a> --}}
+                                {{-- </div> --}}
+                            </form>
+                        </div>
+                    </div>
+                </div>
                 @endif
             @endforeach
         

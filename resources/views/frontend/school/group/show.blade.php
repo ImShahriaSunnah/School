@@ -36,7 +36,7 @@
 
                     @foreach(\App\Models\InstituteClass::where('school_id', Auth::id())->get() as $key => $class)
                         @if ($class->class_name == "Class Nine" || $class->class_name == "Class Ten" || $class->class_name == "Class Eleven" || $class->class_name == "Class Twelve")
-                        <tr>
+                        <tr >
                             <td>{{ ++$key1 }}</td>
                             <td>{{$class->class_name}}</td>
                             <td>
@@ -66,8 +66,8 @@
                                                             {{__('app.surecall')}} ?
                                                         </div>
                                                         <div class="modal-footer">
-                                                            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">{{__('app.no')}}</button>
-                                                            <button type="submit" class="btn btn-primary">{{__('app.yes')}}</button>
+                                                            <button type="button" class="btn btn-primary" data-bs-dismiss="modal">{{__('app.no')}}</button>
+                                                            <button type="submit" class="btn btn-danger">{{__('app.yes')}}</button>
                                                         </div>
                                                     </form>
 

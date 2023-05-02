@@ -8,7 +8,7 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="border p-3 rounded">
-                            <h6 class="mb-0 text-uppercase">{{__('app.Teacher')}} {{__('app.Create')}}</h6>
+                            <h6 class="mb-0 text-uppercase"> {{__('app.Assign')}} {{__('app.Class')}} {{__('app.Teacher')}}</h6>
                             <hr/>
                             <form class="row g-3" method="post" action="{{route('assign.teacher.create.show.post')}}" enctype="multipart/form-data">
                                 @csrf
@@ -16,7 +16,8 @@
                                     @include('frontend.layouts.message')
                                 </div>
                                 <div class="col-12">
-                                    <select class="form-control mb-3 js-select" aria-label="Default select example" name="class_id" id="class_id" onchange="loadSection()">
+                                    <label for="Select Class">{{__('app.select')}} {{__('app.class')}}</label>
+                                    <select class="form-control mb-3 js-select" aria-label="Default select example" name="class_id" id="class_id" onchange="loadSection()" required>
                                         <option value="" selected>Class Name</option>
                                         @foreach($class as $data)
                                             <option value="{{$data->id}}">{{$data->class_name}}</option>
@@ -25,14 +26,14 @@
                                 </div>
                                 <div class="col-12">
                                     <label class="form-label">{{__('app.Section')}} {{__('app.Name')}}</label>
-                                    <select class="form-control mb-3 js-select" id="section_id" name="section_id" onchange="loadGroup()">
+                                    <select class="form-control mb-3 js-select" id="section_id" name="section_id" onchange="loadGroup()" required>
                                         <option selected>Select one</option>
                                     </select>
                                 </div>
 
                                 <div class="col-12">
                                     <label class="form-label">{{__('app.Subject')}}</label>
-                                    <select class="form-control mb-3 js-select" id="subject_id" name="subject_id" onchange="loadTeacher()">
+                                    <select class="form-control mb-3 js-select" id="subject_id" name="subject_id" onchange="loadTeacher()" required>
                                         <option value="" selected >Select Subject</option>
                                         @foreach ($subjects as $item)
                                             <option value="{{ $item->id }}">{{$item->subject_name}}</option>
@@ -42,10 +43,10 @@
 
                                 <div class="col-12">
                                     <label class="form-label">{{__('app.Teacher')}}</label>
-                                    <select class="form-control mb-3 js-select" name="teacher_id" id="teacher_id">
-                                        <option value=" " selected >Select Teacher</option>                                        
+                                    <select class="form-control mb-3 js-select" name="teacher_id" id="teacher_id" required>
+                                        <option value=" " selected >Select Teacher</option>
                                         @foreach ($teachers as $teacher )
-                                            <option value="{{ $teacher->id }}" >{{ $teacher->full_name }}</option>                                        
+                                            <option value="{{ $teacher->id }}" >{{ $teacher->full_name }}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -93,7 +94,7 @@
                                             <td>{{$key++ +1}}</td>
                                             <td>{{\App\Models\Subject::find($data->subject_id)->subject_name}}</td>
                                             {{-- <td>{{isset(getSubjectName($data->subject_id)->subject_name) ? getSubjectName($data->subject_id)->subject_name : 'NO'}}</td> --}}
-                                            <td>{{isset(getTeacherName($data->teacher_id)->full_name) ? getTeacherName($data->teacher_id)->full_name : 'NO'}}</td>
+                                            <td>{{isset(getTeacherName($data->teacher_id)->full_name) ? strtoupper(getTeacherName($data->teacher_id)->full_name) : 'NO'}}</td>
                                             <td>{{isset(getClassName($data->class_id)->class_name) ? getClassName($data->class_id)->class_name : 'NO'}}</td>
                                             <td>{{isset(getSectionName($data->section_id)->section_name) ? getSectionName($data->section_id)->section_name : 'NO'}}</td>
                                             {{-- <td>{{isset(getGroupname($data->group_id)->group_name) ? getGroupname($data->group_id)->group_name : 'NO'}}</td> --}}
@@ -155,7 +156,7 @@
             // let groupElement = `<label class="form-label">Group Name</label>
             //                     <select class="form-select mb-3" id="group_id" name="group_id">
             //                         <option selected>Select one</option>
-            //                     </select>`;            
+            //                     </select>`;
 
             $.ajax({
                 url:'{{route('admin.show.section')}}',
@@ -167,7 +168,7 @@
 
                 success: function (response) {
                     $('#section_id').html(response.html);
-                    
+
                     // if(response.class > 8)
                     // {
                     //     $("#group-select").html(groupElement);
@@ -189,7 +190,7 @@
 
                 success: function (response) {
                     $('#subject_id').html(response.html);
-                    
+
                 }
             });
 
@@ -216,15 +217,6 @@
         // }
 
 
-
-
-
-
-
-
-
-
-
         function loadTeacher() {
             let subjectId = $("#subject_id").val();
             // alert(subjectId);
@@ -245,5 +237,4 @@
         }
 
     </script>
-    
 @endpush

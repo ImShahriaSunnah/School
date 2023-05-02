@@ -29,12 +29,11 @@
 
                         <form action="{{route('school.finance.assign.fees.store')}}" method="POST">
                             @csrf
-                            
                             <div class="row">
                                 <div class="col-md mb-3">
                                     <label for=""><b>{{__('app.Class')}}</b></label>
                                     <select  class="form-control mb-3 js-select"name="class[]" multiple class="js-example-responsive form-control">
-                                        <option value="" disabled>Select Class</option>
+                                        <option value=" " disabled="disabled">Select Class</option>
 
                                         @foreach ($data['classes'] as $class)
                                         <option value="{{$class->id}}">{{$class->class_name}}</option>
@@ -45,10 +44,10 @@
                                 <div class="col-md mb-3">
                                     <label for=""><b>{{__('app.Month')}}</b></label>
                                     <select class="form-control mb-3 js-select" name="month[]" multiple class="js-example-responsive form-control">
-                                        <option value="" disabled>Select Month</option>
+                                        <option value=" " disabled="disabled"> Select Month</option>
 
                                         @foreach ($data['months'] as $key => $month)
-                                        <option value="{{$key}}" {{(++$key == date("m"))? "selected" : ""}}>{{$month}}</option>
+                                        <option value="{{$key}}" {{(++$key == date("m"))? "selected" : " "}}> {{$month}} </option>
                                         @endforeach
                                     </select>
                                 </div>

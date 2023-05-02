@@ -46,30 +46,58 @@
                                             </tr>
                                             <tr>
                                                 <td>{{__('app.Balance')}}</td>
-                                                <td align="right" class="text-success"><h5 class="m-0">{{ $item->balance}} ৳</h5></td>
+                                                @php
+                                                    $add = App\Models\Transection::where('school_id', Auth::user()->id) 
+                                                        ->where('type', 2)
+                                                        ->where('account', App\Models\Bank::where('account_number',$item->account_number)->first()->id)
+                                                        ->where('payment_method', 2)
+                                                        ->sum('amount') ;
+                                                    $sub = App\Models\Transection::where('school_id', Auth::user()->id) 
+                                                        ->where('type', 1)
+                                                        ->where('account', App\Models\Bank::where('account_number',$item->account_number)->first()->id)
+                                                        ->where('payment_method', 2)
+                                                        ->sum('amount') ;
+                                                @endphp
+                                                <td align="right" class="text-success"><h5 class="m-0">{{ ( $item->balance + $add ) - $sub }} ৳</h5></td>
                                             </tr>
                                             <tr>
                                                 <td>{{__('app.action')}}</td>
                                                 <td align="right">
                                                     <a href="{{ route('bankadd.edit', $item->id) }}" title="Edit" class="btn btn-sm btn-primary">
-                                                        <i class="fas fa-pen"></i>
+                                                        {{__('app.Edit')}}
                                                     </a>
                             
-                                                    <button class="btn btn-sm btn-primary" title="Delte"
-                                                    onclick="if(confirm('Are you sure? you are going to delete this record')){ location.replace('delete/{{$item->id}}'); }">
-                                                        <i class="fas fa-trash"></i>
+                                                    <button class="btn btn-sm btn-primary" 
+                                                    onclick="if(confirm('Are you sure? you are going to delete this record')){ location.replace('/school/bankadd/delete/{{$item->id}}'); }">
+                                                    {{__('app.Delete')}}
                                                     </button>
                                                 </td>
+
+
+                                                <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" style="display: none;">
+                                                    <div class="modal-dialog modal-dialog-centered">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title" id="exampleModalLabel">{{__('app.Delete')}} {{__('app.Bank Account')}}</h5>
+                                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                            </div>
+                                                            <form method="get" action="{{route('bankadd.delete',['key'=>$item->id])}}">
+                                                                <div class="modal-body">
+                                                                    {{__('app.surecall')}}  ?
+                                                                </div>
+                                                                <div class="modal-footer">
+                                                                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">{{__('app.no')}}</button>
+                                                                    <button type="submit" class="btn btn-primary">{{__('app.yes')}}</button>
+                                                                </div>
+                                                            </form>
+            
+                                                        </div>
+                                                    </div>
+                                                </div>
+
                                             </tr>
                                         </tbody>
                                     </table>
-
-                                    {{-- <h6><b>{{__('app.Bank Name')}}: </b><br>{{ $item->bank_name }}</h6>
-                                    <h6><b>{{__('app.Branch')}}: </b><br>{{ $item->branch}}</h6>
-                                    <h6><b>{{__('app.Account Holder')}}: </b><br>{{ $item->account_holder}}</h6>
-                                    <h6><b>{{__('app.Account Type')}}: </b><br>{{ $item->account_type}}</h6>
-                                    <h6><b>{{__('app.Account Number')}}: </b><br>{{ $item->account_number}}</h6>
-                                    <h6><b>{{__('app.Account Balance')}}: </b><br>{{ $item->balance}}</h6>--}}
                                     
                                 </div>
                             </div>

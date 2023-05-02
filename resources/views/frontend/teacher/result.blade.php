@@ -1,98 +1,117 @@
 @extends('layouts.teacher.master')
-
 @section('content')
-
     <main class="page-content">
-        <div class="row">
-            <div class="col-xl-6 mx-auto">
-                <div class="card">
-                </div>
+        @if ($errors->any())
+            <div class="alert alert-danger">
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
             </div>
-        </div>
+        @endif
         <div class="row">
             <div class="col-xl-12">
-
                 <div class="card">
                     <form method="post" action="{{route('teacher.result.create.post')}}" enctype="multipart/form-data">
                         @csrf
                         <div class="card-body">
-
                             <div class="table-responsive">
                                 <table id="example" class="table table-striped table-bordered" style="width:100%">
                                     <thead>
-                                    <tr>
-                                        <th>No</th>
-                                        <th>Student Name</th>
-                                        <th>Student Roll Number</th>
-                                        <th style="text-align: center;">{{$dataSubject->subject_name}}</th>
-                                        {{--                                    <th>Action</th>--}}
-                                    </tr>
+                                        <tr>
+                                            <th>No</th>
+                                            <th>Student Name</th>
+                                            <th>Roll</th>
+                                            <th style="text-align: center;">{{$dataSubject->subject_name}}</th>
+                                            <th>Total</th>
+                                            <th>Grade</th>
+                                            <th>GPA</th>
+                                        </tr>
                                     </thead>
                                     <tbody>
-                                    @foreach($dataStudent as $key => $data)
-                                        <tr>
-                                            <td>{{$key++ +1}}</td>
-                                            <td>
-                                                <div class="d-flex align-items-center gap-3 cursor-pointer">
-                                                    <img src="{{asset('profile/img/'.$data->image)}}" class="rounded-circle" width="44" height="44" alt="">
-                                                    <div class="">
-                                                        <p class="mb-0">{{$data->name}}</p>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td>{{$data->roll_number}}</td>
-                                            <?php
-                                            $resultHaveorNot =  getResultHaveorNotUser($data->id,$dataSubject->id,$dataTerm->id);
-                                            $resultHaveorNotById =  getResultHaveorNotByIdUser($data->id,$dataSubject->id,$dataTerm->id);
-
-                                            ?>
-                                            {{--                                        @if($resultHaveorNotById != 0)--}}
-                                            {{--                                        <form method="post" action="{{route('result.update.post',$resultHaveorNotById)}}" enctype="multipart/form-data">--}}
-                                            {{--                                        @else--}}
-                                            {{--                                        @endif--}}
-                                            {{--                                            @csrf--}}
-                                            <td>
-                                                <input type="hidden" class="form-control" name="student_id[]" value="{{$data->id}}">
-                                                <input type="hidden" class="form-control" name="student_roll_number[]" value="{{$data->roll_number}}">
-                                                <input type="hidden" class="form-control" name="subject_id" value="{{$dataSubject->id}}">
-                                                <input type="hidden" class="form-control" name="term_id" value="{{$dataTerm->id}}">
-                                                <div class="row">
-                                                    <div class="col-md-4">
-                                                        <label>Written</label>
-                                                        <input type="text" class="form-control" name="written[]" value="{{  (!isset($resultHaveorNot->written)) ? '' : $resultHaveorNot->written }}">
-                                                    </div>
-                                                    <div class="col-md-4">
-                                                        <label>Mcq</label>
-                                                        <input type="text" class="form-control" name="mcq[]" value="{{  (!isset($resultHaveorNot->mcq)) ? '' : $resultHaveorNot->mcq }}">
-                                                    </div>
-                                                    <div class="col-md-4">
-                                                        <label>Practical</label>
-                                                        <input type="text" class="form-control" name="practical[]" value="{{  (!isset($resultHaveorNot->practical)) ? '' : $resultHaveorNot->practical }}">
-                                                    </div>
-                                                </div>
-                                            <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" style="display: none;">
-                                                <div class="modal-dialog modal-dialog-centered">
-                                                    <div class="modal-content">
-                                                        <div class="modal-header">
-                                                            <h5 class="modal-title" id="exampleModalLabel">Delete Class</h5>
-                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        @foreach($dataStudent as $key => $data)
+                                            <tr>    
+                                                <td>{{$key++ +1}}</td>
+                                                <td>    
+                                                    <div class="cursor-pointer">
+                                                        @if ($data->image != null && file_exists($data->image))
+                                                            <img src="{{asset($data->image)}}" class="rounded-circle" width="44" height="44" alt=" "> <br>
+                                                        @else
+                                                            @if ($data->gender == "Female")
+                                                                <img src="{{asset('d/no-img-female.png')}}" class="rounded-circle" width="44" height="44" alt=" "> <br>
+                                                            @else
+                                                                <img src="{{asset('d/no-img.png')}}" class="rounded-circle" width="44" height="44" alt=" "> <br>
+                                                            @endif
+                                                        @endif
+                                                        <div class="">
+                                                            <p class="mb-0">{{$data->name}}</p>
                                                         </div>
-                                                        <form method="get" action="{{route('student.delete',['id'=>$data->id])}}">
-                                                            <div class="modal-body">
-                                                                Are you Sure To Delete ?
-                                                            </div>
-                                                            <div class="modal-footer">
-                                                                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">No</button>
-                                                                <button type="submit" class="btn btn-primary">Yes</button>
-                                                            </div>
-                                                        </form>
-
                                                     </div>
-                                                </div>
-                                            </div>
+                                                </td>
+                                                <td>{{$data->roll_number}}</td>
 
-                                        </tr>
-                                    @endforeach
+                                                @php
+                                                    $resultHaveorNot =  getResultHaveorNotUser($data->id, $dataSubject->id, $dataTermId);
+                                                    $resultHaveorNotById =  getResultHaveorNotByIdUser($data->id, $dataSubject->id, $dataTermId);
+                                                    $subjectTotalMark = 0;
+                                                @endphp
+
+                                                <td>
+                                                    <input type="hidden" class="form-control" name="student_id[]" value="{{$data->id}}">
+                                                    <input type="hidden" class="form-control" name="student_roll_number[]" value="{{$data->roll_number}}">
+                                                    <input type="hidden" class="form-control" name="subject_id" value="{{$dataSubject->id}}">
+                                                    <input type="hidden" class="form-control" name="term_id" value="{{$dataTermId}}">
+                                                    <input type="hidden" class="form-control" name="class_id" value="{{$class_id}}">
+                                                    <div class="row">
+                                                        @foreach ($markTypes as $markType)
+                                                            <div class="col-md-4">
+                                                                <label for="">{{ $markType->mark_type == "Class_Test" ? "Class Test" : $markType->mark_type }}</label>
+                                                                <input type="text" class="form-control" name="{{ $markType->mark_type }}[]" value="{{ (teacherGetResultMarks($data->id, $dataSubject->id, $dataTermId, $markType->mark_type) == NULL) ? ' ' : teacherGetResultMarks($data->id, $dataSubject->id, $dataTermId, $markType->mark_type)  }}">
+                                                            </div>
+                                                            @php
+                                                                $subjectTotalMark += teacherGetResultMarks($data->id, $dataSubject->id, $dataTermId, $markType->mark_type);
+                                                            @endphp
+                                                        @endforeach
+                                                    </div>
+                                                </td>
+
+                                                @php
+                                                    $termName = \App\Models\Term::where('id', $dataTermId)->first();
+                                                    $totalMark = $subjectTotalMark * 100 / $termName->total_mark;
+                                                    $grading_scale = array(
+                                                        'A+' => 80, 'A' => 70, 'A-' => 60, 'B' => 50, 'C' => 40, 'D' => 33, 'F' => 0
+                                                    );
+
+                                                    $grading_point = array(
+                                                        '5' => 80, '4' => 70, '3.5' => 60, '3' => 50, '2' => 40, '1' => 33, '0' => 0
+                                                    );
+
+                                                    $markInvalid = $totalMark > 100 || $totalMark < 0;
+                                                    if ($markInvalid) {
+                                                        $invalidMsg =  "Mark is invalid";
+                                                    } else {
+                                                        foreach ($grading_scale as $grade => $minimum_score) {
+                                                            if ($totalMark >= $minimum_score) {
+                                                                $final_grade = $grade;
+                                                                break;
+                                                            }
+                                                        }
+
+                                                        foreach ($grading_point as $gpa => $minimum_score) {
+                                                            if ($totalMark >= $minimum_score) {
+                                                                $gpa_point = $gpa;
+                                                                break;
+                                                            }
+                                                        }
+                                                    }
+                                                @endphp
+
+                                                <td><h5 style="margin-top: 5px;">{{ $subjectTotalMark }}</h5></td>
+                                                <td><h5 style="margin-top: 5px;">{{ $markInvalid ? $invalidMsg : $final_grade }}</h5></td>
+                                                <td><h5 style="margin-top: 5px;">{{ $markInvalid ? $invalidMsg : $gpa_point }}</h5></td>
+                                            </tr>
+                                        @endforeach
                                     </tbody>
                                 </table>
                             </div>
@@ -102,9 +121,7 @@
                         </div>
                     </form>
                 </div>
-
             </div>
         </div>
     </main>
-
 @endsection

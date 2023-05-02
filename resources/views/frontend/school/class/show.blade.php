@@ -29,8 +29,9 @@
                                 <thead>
                                 <tr>
                                     <th>{{__('app.nong')}}</th>
+
                                     <th>{{__('app.Class')}} {{__('app.Name')}}</th>
-                                    <th>{{__('app.Class')}} {{__('app.Fees')}}</th>
+                                    <th>{{__('app.Monthly Fees')}}</th>
                                     {{-- <th>Active</th> --}}
                                     <th>{{__('app.Action')}}</th>
                                 </tr>
@@ -39,7 +40,12 @@
                                 @foreach($class as $key => $data)
                                 <tr>
                                     <td>{{$key++ +1}}</td>
-                                    <td>{{$data->class_name}}</td>
+                                    <td>@if( app()->getLocale() === 'en')
+                                    {{$data->class_name}}
+                                                @else
+                                                    {{ $data->class_name_bn }}
+                                                @endif
+                                                </td>
                                     <td>{{$data->class_fees}}</td>
                                     {{-- <td>{{($data->active == 1) ? 'ON' : 'OFF'}}</td> --}}
                                     <td>
@@ -61,8 +67,8 @@
                                                         {{__('app.surecall')}}  ?
                                                     </div>
                                                     <div class="modal-footer">
-                                                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">{{__('app.no')}}</button>
-                                                        <button type="submit" class="btn btn-primary">{{__('app.yes')}}</button>
+                                                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">{{__('app.no')}}</button>
+                                                        <button type="submit" class="btn btn-danger">{{__('app.yes')}}</button>
                                                     </div>
                                                 </form>
 

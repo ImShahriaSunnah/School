@@ -32,95 +32,83 @@
                         </div>
                     </div>
                     <div class="card-body">
-                        <div class="table-responsive">
-                            <table id="example" class="table table-striped table-bordered text-center" style="width:100%">
-                                <thead>
-                                    <tr>
-                                        <th>{{ __('app.no') }}</th>
-                                        <th>{{ __('app.t') }}</th>
-                                        <th>{{ __('app.type') }}</th>
-                                        <th>{{ __('app.class') }}</th>
-                                        <th>{{ __('app.subject') }}</th>
-                                        <th>{{ __('app.active') }}</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="show">
-                                    @foreach ($questions as $key => $question)
-                                        <tr class="hide">
-                                            <td>{{ $loop->iteration }}</td>
-                                            <td>{{ $question->term?->term_name }}</td>
-                                            <td>{{ $question->type }}</td>
-                                            <td>{{ $question->class?->class_name }}</td>
-                                            <td>{{ $question->subject?->subject_name }}</td>
-                                            <td>
-                                                <div class="btn-group mr-2" role="group" aria-label="First group">
-                                                    @if ($question->type == 'MCQ' || $question->type == 'Creative')
-                                                        <a href="{{ route('view.mcq.creative.question', $question->id) }}"
-                                                            class="btn btn-outline-info">View</a>
-                                                    @else
-                                                        <a href="{{ route('view.mcq.creative.question', $question->id) }}"
-                                                            class="btn btn-outline-info">View</a>
-                                                        {{-- <button onclick="showData({{ $question->id }})" data-bs-toggle="modal" data-bs-target="#view_question" class="btn btn-outline-info">View</button> --}}
-                                                    @endif
-                                                    <a href="{{ route('edit.question', $question->id) }}"
-                                                        class="btn btn-outline-success"
-                                                        style="margin-left: 5px; margin-right: 5px;">Edit</a>
-
-                                                    <button type="button" class="btn btn-outline-danger"
-                                                        data-bs-toggle="modal"
-                                                        data-bs-target="#deleteModal{{ $key }}">Delete</button>
-                                                    {{-- <a href="{{ route('pdf.question', $question->id) }}" class="btn btn-outline-warning" style="margin-left: 5px; margin-right: 5px;">PdF</a> --}}
-                                                </div>
-                                            </td>
-                                            <div class="modal fade" id="deleteModal{{ $key }}" tabindex="-1"
-                                                aria-labelledby="exampleModalLabel" aria-hidden="true"
-                                                style="display: none;">
-                                                <div class="modal-dialog modal-dialog-centered">
-                                                    <div class="modal-content">
-                                                        <div class="modal-header">
-                                                            <h5 class="modal-title" id="exampleModalLabel">Delete Question
-                                                            </h5>
-                                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                                aria-label="Close"></button>
-                                                        </div>
-                                                        <form method="get"
-                                                            action="{{ route('delete.question', $question->id) }}">
-                                                            <div class="modal-body">
-                                                                Are you sure delete this question !?
-                                                            </div>
-                                                            <div class="modal-footer">
-                                                                <button type="button" class="btn btn-danger"
-                                                                    data-bs-dismiss="modal">No</button>
-                                                                <button type="submit" class="btn btn-primary">Yes</button>
-                                                            </div>
-                                                        </form>
-
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div class="modal fade modalHide" id="view_question" tabindex="-1"
-                                                aria-labelledby="exampleModalLabel" aria-hidden="true"
-                                                style="display: none;">
-                                                <div class="modal-dialog modal-lg modal-dialog-centered">
-                                                    <div class="modal-content">
-                                                        <div class="modal-body" id="question">
-
-                                                        </div>
-
-                                                        {{-- <div class="modal-footer">
-                                                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">No</button>
-                                                        <button onclick="qnPrint('question')" class="btn btn-primary">Print</button>
-                                                    </div> --}}
-                                                    </div>
-                                                </div>
-                                            </div>
+                        @if (count($questions) > 0)
+                            
+                            <div class="table-responsive">
+                                <table id="example" class="table table-striped table-bordered text-center" style="width:100%">
+                                    <thead>
+                                        <tr>
+                                            <th>{{ __('app.no') }}</th>
+                                            <th>{{ __('app.t') }}</th>
+                                            <th>{{ __('app.type') }}</th>
+                                            <th>{{ __('app.class') }}</th>
+                                            <th>{{ __('app.subject') }}</th>
+                                            <th>{{ __('app.active') }}</th>
                                         </tr>
-                                    @endforeach
+                                    </thead>
+                                    <tbody id="show">
+                                        @foreach ($questions as $key => $question)
+                                            <tr class="hide">
+                                                <td>{{ $loop->iteration }}</td>
+                                                <td>{{ $question->term?->term_name }}</td>
+                                                <td>{{ $question->type }}</td>
+                                                <td>{{ $question->class?->class_name }}</td>
+                                                <td>{{ $question->subject?->subject_name }}</td>
+                                                <td>
+                                                    <div class="btn-group mr-2" role="group" aria-label="First group">
+                                                        @if ($question->type == 'MCQ' || $question->type == 'Creative')
+                                                            <a href="{{ route('view.mcq.creative.question', $question->id) }}"
+                                                                class="btn btn-outline-info">View</a>
+                                                        @else
+                                                            <a href="{{ route('view.mcq.creative.question', $question->id) }}"
+                                                                class="btn btn-outline-info">View</a>
+                                                        @endif
+                                                        <a href="{{ route('edit.question', $question->id) }}"
+                                                            class="btn btn-outline-success"
+                                                            style="margin-left: 5px; margin-right: 5px;">Edit</a>
 
-                                </tbody>
-                            </table>
-                        </div>
+                                                        <button type="button" class="btn btn-outline-danger"
+                                                            data-bs-toggle="modal"
+                                                            data-bs-target="#deleteModal{{ $key }}">Delete</button>
+                                                    </div>
+                                                </td>
+                                                <div class="modal fade" id="deleteModal{{ $key }}" tabindex="-1"
+                                                    aria-labelledby="exampleModalLabel" aria-hidden="true"
+                                                    style="display: none;">
+                                                    <div class="modal-dialog modal-dialog-centered">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title" id="exampleModalLabel">Delete Question
+                                                                </h5>
+                                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                                    aria-label="Close"></button>
+                                                            </div>
+                                                            <form method="get"
+                                                                action="{{ route('delete.question', $question->id) }}">
+                                                                <div class="modal-body">
+                                                                    Are you sure delete this question !?
+                                                                </div>
+                                                                <div class="modal-footer">
+                                                                    <button type="button" class="btn btn-danger"
+                                                                        data-bs-dismiss="modal">No</button>
+                                                                    <button type="submit" class="btn btn-primary">Yes</button>
+                                                                </div>
+                                                            </form>
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </tr>
+                                        @endforeach
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        @else
+                            <div>
+                                <h3 class="text-danger text-center">Right Now Question Unavailable</h3>
+                            </div>
+                        @endif
                     </div>
                 </div>
             </div>

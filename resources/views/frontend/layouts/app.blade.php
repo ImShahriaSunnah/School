@@ -10,8 +10,8 @@
    <meta name="keywords" content="{{isset($seo_array['seoKeyword']) ? $seo_array['seoKeyword'] : "CC School | CodeCell LTD" }}">
 
    <!-- Place favicon.ico in the root directory -->
-   <link rel="shortcut icon" type="image/x-icon" href="{{asset('images/favicon.png')}}">
-   <link rel="icon" href="{{asset('images/favicon.png')}}" type="image/png">
+   <link rel="shortcut icon" type="image/x-icon" href="{{asset('images/favicon.svg')}}">
+   <link rel="icon" href="{{asset('images/favicon.svg')}}" type="image/svg">
 
    <!-- CSS here -->
    @include('frontend.partials.style')

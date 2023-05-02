@@ -8,7 +8,7 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="border p-3 rounded">
-                            <h6 class="mb-0 text-uppercase">{{__('app.Student')}} {{__('app.List')}}</h6>
+                            <h6 class="mb-0 text-uppercase">{{__('app.Student')}} {{__('app.search')}}</h6>
                             <hr/>
                             <form class="row g-3" method="get" action="{{route('student.find')}}">
                                 {{-- @csrf --}}
@@ -75,6 +75,8 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="card">
+                            <h6 class="mb-0 text-uppercase">{{__('app.Student')}} {{__('app.List')}}</h6>
+                            <hr/>
                             
                         <div class="table-responsive">
                             <table id="example" class="table table-striped table-bordered" style="width:100%">
@@ -83,6 +85,7 @@
                                     <th>{{__('app.nong')}}</th>
                                     <th>{{__('app.RollNumber')}}</th>
                                     <th>{{__('app.Student')}} {{__('app.Name')}}</th>
+                                    <th>{{__('app.UniqueId')}}</th>
                                     <th>{{__('app.Class')}}</th>
                                     <th>{{__('app.Section')}}</th>
                                     <th>{{__('app.Shift')}}</th>
@@ -107,7 +110,8 @@
                                                     <p class="mb-0">{{ strtoupper($data->name)}}</p>
                                                 </a>
                                             </div></td>
-                                        <td>{{isset(getClassName($data->class_id)->class_name) ? getClassName($data->class_id)->class_name : 'NO'}}</td>
+                                            <td>{{$data->unique_id}}</td>
+                                            <td>{{isset(getClassName($data->class_id)->class_name) ? getClassName($data->class_id)->class_name : 'NO'}}</td>
                                         <td>{{isset(getSectionName($data->section_id)->section_name) ? getSectionName($data->section_id)->section_name : 'NO'}}</td>
                                         <td>@if ($data->shift == 1)Morning
                                             @elseif ($data->shift == 2) Day
@@ -128,7 +132,6 @@
                                             <div class="btn-group mr-2" role="group" aria-label="First group">
                                                 <a  href="{{route('student.singleShow',$data->id)}}" class="btn btn-primary"><i class="bi bi-eye-fill"></i></a>
                                                 <a  href="{{route('student.edit',$data->id)}}" class="btn btn-success"><i class="bi bi-pencil-square"></i></a>
-                                               {{-- <a href="{{route('student.delete',['id'=>$data->id])}}" class="btn btn-danger"><i class="bi bi-trash-fill" ></i></a> --}}
                                                 <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{{$data->id}}"><i class="bi bi-trash-fill" ></i></button>
                                             </div>
                                         </td>

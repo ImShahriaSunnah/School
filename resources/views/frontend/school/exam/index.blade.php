@@ -18,6 +18,7 @@
                                 <table class="table d-none" id="tableShow">
                                     <thead>
                                       <tr>
+                                        <th scope="col">{{__('app.shift')}}</th>
                                         <th scope="col">{{__('app.class')}}</th>
                                         <th scope="col">{{__('app.t')}}</th>
                                         <th scope="col">{{__('app.subject')}}</th>
@@ -45,7 +46,7 @@
                                 <div class="row">
                                     <div id="term_class">
                                         <div class="row">
-                                            <div class="col-md-6">
+                                            <div class="col-md">
                                                 <label>{{__('app.t')}}</label>
                                                 <select class="form-control mb-3 js-select" aria-label="Default select example"  id="term_id" required>
                                                     <option selected="" value="">--{{__('app.select')}}--</option>
@@ -55,8 +56,19 @@
                                                 </select>
                                                 <span class="text-danger text-error exam_term_error"></span>
                                             </div>
+
+                                            <div class="col-md">
+                                                <label>{{__('app.shift')}}</label>
+                                                <select class="form-control mb-3 js-select" id="shift_id" required>
+                                                    <option selected="" value="">--{{__('app.select')}}--</option>
+                                                    @foreach([1 => "Morning", 2=>"Day", 3=>"Evening"] as $key => $shift)
+                                                        <option value="{{ $key }}" >{{ $shift }}</option>
+                                                    @endforeach
+                                                </select>
+                                                <span class="text-danger text-error exam_term_error"></span>
+                                            </div>
                                             
-                                            <div class="col-md-6" id="class">
+                                            <div class="col-md" id="class">
                                                 <label>{{__('app.class')}}</label>
                                                 <select class="form-control mb-3 js-select"aria-label="Default select example"  onchange="showExamRoutine()"  id="class_id"  required>
                                                     <option selected="" value="">--{{__('app.select')}}--</option>
@@ -92,7 +104,7 @@
                                                 <span class="text-danger text-error date_error"></span>
                                         </div>
                                         <div class="col-md-6">
-                                            <label class="text-center">{{__('app.end_time')}} :</label>
+                                            <label class="text-center">{{__('app.start_time')}} :</label>
                                             <div class="">
                                                 <div class="mt-1">
                                                     <input type="time" name="start_time" class="form-control" id="start_time">
@@ -116,10 +128,9 @@
                                 </div>
                                 <div class="col-12 py-4">
                                     <div class="d-grid">
-                                        <button type="submit" id="save" class="btn btn-primary">{{__('app.Submit')}}</button>
+                                        <button type="submit" id="save" onclick="hello();" class="btn btn-primary">{{__('app.Submit')}}</button>
                                     </div>
                                 </div>
-                                
                             </form>
                         </div>
                     </div>
@@ -212,6 +223,7 @@
                     });
                 e.preventDefault();
                 var class_id = $("#class_id").val();
+                var shift_id = $("#shift_id").val();
                 var subject_id = $("#subject_id").val();
                 var date = $("#datepicker").val();
                 var start_time = $("#start_time").val();
@@ -222,7 +234,7 @@
                     type: "POST",
                     url: "{{ url('school/student/store/exam/routine') }}",
                     datatype: "json",
-                    data: {class_id: class_id, subject_id: subject_id, date: date, start_time: start_time, end_time: end_time, exam_term: exam_term},
+                    data: {class_id: class_id, subject_id: subject_id, date: date, start_time: start_time, end_time: end_time, exam_term: exam_term, shift_id: shift_id},
                     beforeSend:function () {
                         $(".text-error").text('');
                     },
@@ -251,9 +263,10 @@
             event.preventDefault();
             var class_id = $("#class_id").val();
             var term_id  = $("#term_id").val();
+            var shift_id  = $("#shift_id").val();
             $.ajax({
                     type: "GET",
-                    url: "{{ url('/school/student/get/routine/') }}/" + class_id +"/"+ term_id,
+                    url: "{{ url('/school/student/get/routine/') }}/" + class_id +"/"+ term_id +"/"+ shift_id,
                     datatype: "json",
                     success: function(data) {
                         $("#show_routine").append(`
@@ -263,11 +276,21 @@
                                       <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#resultModal"><i class="bi bi-eye-fill"></i></a> 
                                 </td>
                             </tr> 
-                            `);
+                        `);
+
+                        var shift = "Day";
 
                         $.each(data, function (key, value) {
                             
+                            if(value.shift_id == 1){
+                                shift = "Morning";
+                            }else if(value.shift_id == 3)
+                            {
+                                shift = "Evening";
+                            }
+
                             $("#show_routine").prepend(`<tr>
+                                    <td> <span class="badge bg-primary">${shift}</span> </td>
                                     <td> ${value.class.class_name} </td>
                                     <td> ${value.term.term_name} </td>
                                     <td> ${value.subject.subject_name} </td>
@@ -280,25 +303,21 @@
                                     
                                 </tr>
                             `);
-                                $("#resultDataWithModal").append(`
-                                    <tr style="height: 75px;">
-                                        <td>${value.subject.subject_name}</td>
-                                        <td>${value.date}</td>
-                                        <td>${value.day}</td>
-                                        <td>${value.start_time} - ${value.end_time}</td>
-                                    </tr>
-                                `);
-                                
-                                var term = value.term.term_name;
-                                var cls = value.class.class_name;
-                            });
+                            $("#resultDataWithModal").append(`
+                                <tr style="height: 75px;">
+                                    <td>${value.subject.subject_name}</td>
+                                    <td>${value.date}</td>
+                                    <td>${value.day}</td>
+                                    <td>${value.start_time} - ${value.end_time}</td>
+                                </tr>
+                            `);
+                        });
 
-                            $(".termName").append(`
-                                ${term}
-                            `);
-                            $(".className").append(`
-                                ${cls}
-                            `);
+                        var term = data[0].term.term_name;
+                        var cls = data[0].class.class_name;
+
+                        $(".termName").append(`${term}`);
+                        $(".className").append(`${cls} - (${shift})`);
                     }
                 });
         }

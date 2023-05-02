@@ -10,8 +10,8 @@
             <div class="col-12 col-lg-12 col-xl-12 d-flex">
                 <div class="card radius-10 w-100">
                     <div class="card-body">
-                        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-2 row-cols-xl-3 row-cols-xxl-3 g-3">
-                            <div class="col">
+                        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-2 row-cols-xl-3 row-cols-xxl-3 row-cols-xl-4 row-cols-xxl-4 g-3">
+                        <div class="col">
                                 <a href="{{route('teacher.salary.Show')}}">
                                     <div class="card radius-10 bg-tiffany mb-0">
                                         <div class="card-body text-center">
@@ -24,16 +24,72 @@
                                     </div>
                                 </a>
                             </div>
+
+                            <div class="col">
+                                <a href="{{route('teacher.salary.Show')}}">
+                                    <div class="card radius-10 bg-info mb-0">
+                                        <div class="card-body text-center">
+                                            <div class="widget-icon mx-auto mb-3 bg-white-1 text-white">
+                                                <i class="bi bi-person-check-fill"></i>
+                                            </div>
+                                            <h3 class="text-white">{{$teacherPaidSalary}}</h3>
+                                            <p class="mb-0 text-white">{{__('app.Total Teacher Salary Paid')}}</p>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+
+                            <div class="col">
+                                <a href="{{route('teacher.salary.Show')}}">
+                                    <div class="card radius-10 bg-orange mb-0">
+                                        <div class="card-body text-center">
+                                            <div class="widget-icon mx-auto mb-3 bg-white-1 text-white">
+                                                <i class="bi bi-person-check-fill"></i>
+                                            </div>
+                                            <h3 class="text-white">{{$teacherSalary-$teacherPaidSalary}}</h3>
+                                            <p class="mb-0 text-white">{{__('app.Total Teacher Salary Due')}}</p>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
                           
                             <a href="{{route('school.staff.salary.List')}}">
                                 <div class="col">
-                                    <div class="card radius-10 bg-success mb-0">
+                                    <div class="card radius-10 bg-purple mb-0">
                                         <div class="card-body text-center">
                                             <div class="widget-icon mx-auto mb-3 bg-white-1 text-white">
                                                 <i class="bi bi-people-fill"></i>
                                             </div>
                                             <h3 class="text-white">{{$StaffSalary}}</h3>
                                             <p class="mb-0 text-white">{{__('app.Staff Salary')}} </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+
+                            <a href="{{route('school.staff.salary.List')}}">
+                                <div class="col">
+                                    <div class="card radius-10 bg-info mb-0">
+                                        <div class="card-body text-center">
+                                            <div class="widget-icon mx-auto mb-3 bg-white-1 text-white">
+                                                <i class="bi bi-people-fill"></i>
+                                            </div>
+                                            <h3 class="text-white">{{$StaffPaidSalary}}</h3>
+                                            <p class="mb-0 text-white">{{__('app.Staff Salary Paid')}} </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+
+                            <a href="{{route('school.staff.salary.List')}}">
+                                <div class="col">
+                                    <div class="card radius-10 bg-orange mb-0">
+                                        <div class="card-body text-center">
+                                            <div class="widget-icon mx-auto mb-3 bg-white-1 text-white">
+                                                <i class="bi bi-people-fill"></i>
+                                            </div>
+                                            <h3 class="text-white">{{$StaffSalary - $StaffPaidSalary}}</h3>
+                                            <p class="mb-0 text-white">{{__('app.Staff Salary Due')}} </p>
                                         </div>
                                     </div>
                                 </div>
@@ -55,7 +111,7 @@
                         
                             <a href="{{route('school.finance.students')}}">
                                 <div class="col">
-                                    <div class="card radius-10 bg-purple mb-0">
+                                    <div class="card radius-10 bg-success mb-0">
                                         <div class="card-body text-center">
                                             <div class="widget-icon mx-auto mb-3 bg-white-1 text-white">
                                                 <i class="bi bi-tags-fill"></i>
@@ -83,7 +139,7 @@
 
                             <div class="col">
                                 <a href="{{route('school.finance.students')}}">
-                                    <div class="card radius-10 bg-danger mb-0">
+                                    <div class="card radius-10 bg-purple mb-0">
                                         <div class="card-body text-center">
                                             <div class="widget-icon mx-auto mb-3 bg-white-1 text-white">
                                                 <i class="bi bi-hdd-fill"></i>
@@ -111,7 +167,7 @@
                             
                             <div class="col">
                                 <a href="#">
-                                    <div class="card radius-10 bg-purple mb-0">
+                                    <div class="card radius-10 bg-secondary mb-0">
                                         <div class="card-body text-center">
                                             <div class="widget-icon mx-auto mb-3 bg-white-1 text-white">
                                                 <i class="bi bi-hdd-fill"></i>
@@ -125,7 +181,7 @@
                             
                             <div class="col">
                                 <a href="#">
-                                    <div class="card radius-10 bg-primary mb-0">
+                                    <div class="card radius-10 bg-purple mb-0">
                                         <div class="card-body text-center">
                                             <div class="widget-icon mx-auto mb-3 bg-white-1 text-white">
                                                 <i class="bi bi-hdd-fill"></i>

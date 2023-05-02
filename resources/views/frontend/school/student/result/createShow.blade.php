@@ -3,10 +3,12 @@
 @section('content')
     <!--start content-->
     <main class="page-content">
+        
         <div class="row">
             <div class="col-xl-6 mx-auto">
                 <div class="card">
                     <div class="card-body">
+                        <x-page-title title='Result Input'/>
                         <div class="border p-3 rounded">
                             
                             <form class="row g-3" method="get" action="{{route('result.school.create.show.post')}}" enctype="multipart/form-data">
