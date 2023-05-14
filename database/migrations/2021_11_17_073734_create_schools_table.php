@@ -31,6 +31,9 @@ class CreateSchoolsTable extends Migration
             $table->string('city')->nullable()->collation('utf8mb4_unicode_ci');
             $table->string('postcode')->nullable()->collation('utf8mb4_unicode_ci');
             $table->string('school_logo')->nullable()->collation('utf8mb4_unicode_ci');
+            $table->string('slogan')->nullable();
+            $table->string('slogan_bn')->nullable();
+            $table->string('ein_number')->nullable();
             $table->boolean('is_editor')->default(false);
             $table->rememberToken();
             $table->timestamps();

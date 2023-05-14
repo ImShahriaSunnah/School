@@ -32,6 +32,7 @@ class CreateUsersTable extends Migration
             $table->foreignId('class_id')->constrained('institute_classes')->cascadeOnDelete();
             $table->foreignId('section_id')->constrained('sections')->cascadeOnDelete();
             $table->integer('group_id')->nullable();
+            $table->integer('scholarship')->default(1);
             $table->foreignId('school_id')->constrained('schools')->cascadeOnDelete();
             $table->tinyInteger('shift')->default(2)->comment('1=morning, 2=day, 3=eveing');
             $table->rememberToken();

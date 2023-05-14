@@ -143,10 +143,10 @@ Route::middleware('language')->group(function () {
             // send sms for result
             Route::get('sms/result', [SMSController::class, 'index'])->name('sms.result');
             Route::post('sms/result', [SMSController::class, 'resultSendToSms'])->name('send.sms.result');
-            // ## send sms for result
 
             // fingerprint device
             Route::get('device', [DeviceController::class, 'index'])->name('device.index');
+            Route::post('device/fetch-log', [DeviceController::class, 'getFetchLog'])->name('device.fetch.log');
             Route::post('device/update', [DeviceController::class, 'update'])->name('device.update');
             Route::get("get/attendance", [AttendanceController::class, 'getAttendanceFromDevice'])->name('get.attendance.device');
 
@@ -439,7 +439,12 @@ Route::middleware('language')->group(function () {
 
                     //expenses
 
-                    Route::get('/expense/show', [App\Http\Controllers\ExpenseController::class, 'expenselist'])->name('expense.show');
+                    Route::get('/expense/show', [App\Http\Controllers\ExpenseController::class, 'expenseShow'])->name('expense.show');
+                    Route::get('/expense/list', [App\Http\Controllers\ExpenseController::class, 'expenselist'])->name('expense.list');
+
+                    Route::get('/fund/list', [App\Http\Controllers\ExpenseController::class, 'AllFundlist'])->name('fund.list');
+
+
                     Route::get('/expense/create', [App\Http\Controllers\ExpenseController::class, 'expensecreate'])->name('expense.create');
                     Route::post('/expense/store', [App\Http\Controllers\ExpenseController::class, 'expensestore'])->name('expense.store');
                     Route::get('/expense/{key}', [App\Http\Controllers\ExpenseController::class, 'expenseedit'])->name('expense.edit');
@@ -708,10 +713,11 @@ Route::middleware(['auth:schools', 'language'])
 /** ----------- School Accesories Type (SUNNAH)
  * ================================================================*/
 Route::middleware(['auth:schools', 'language'])
-
     ->group(function () {
         Route::get('/receipt/show', [App\Http\Controllers\ExpenseController::class, 'receipt'])->name('reciept.create');
         Route::get('/receipt/delete/{id}', [App\Http\Controllers\ExpenseController::class, 'receiptDelete'])->name('receipt.delete');
+        Route::put('/receipt/edit/{id}', [App\Http\Controllers\ExpenseController::class, 'receiptHistoryEdit'])->name('receipt.history.edit');
+
 
         Route::get('/getPrice/{id}', [App\Http\Controllers\ExpenseController::class, 'getPrice'])->name('getPrice');
         Route::get('/receipt/Show', [App\Http\Controllers\ExpenseController::class, 'receiptShow'])->name('receipt.Show')->middleware('language');
@@ -747,6 +753,7 @@ Route::middleware(['auth:schools', 'language'])
         Route::get('/school/finance/students', [FinanceController::class, 'students'])->name('students');
         Route::get('/school/finance/student/{sid}/{month?}/fee', [FinanceController::class, 'findStudent'])->name('find.student.fee');
     //    Route::put('/school/finance/student/school/scholarship/{id}', [FinanceController::class, 'studentSchoolScholarship'])->name('student.school.scholarship');
+        Route::post('school/finance/history/get', [FinanceController::class, 'getFinanceHistory'])->name('history');
 
         // received student fees
         Route::post('/school/finance/payment/receive', [FinanceController::class, 'receivedFees'])->name('fees.received');
@@ -825,7 +832,17 @@ Route::middleware('auth:schools', 'language')
     });
 //** ====================== Addon checkout page end here  ======================*/
 
-
+/** ----------- Document of Student (LIZA)
+ * ================================================================*/
+Route::middleware('auth:schools', 'language')
+    ->prefix('school/student/')
+    ->group(function () {
+        Route::post('documentpost', [StudentController::class, 'documentpost'])->name('document.post');
+        Route::get('document/delete/{id}', [StudentController::class, 'document_delete'])->name('document.delete');
+        Route::get('document/download/{uploadfile}', [StudentController::class, 'document_download'])->name('document.download');
+        Route::get('document/view/{id}', [StudentController::class, 'document_view'])->name('document.view');
+    });
+//** ====================== Transfer and testimonial certificate end here  ======================*/
 //Cache Clear (sazzad)
 Route::get('/cache-clear', function () {
     Artisan::call('cache:clear');

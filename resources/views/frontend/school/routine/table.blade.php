@@ -66,7 +66,7 @@
                             <form action="{{route('routine.store')}}" method="post">
                                 @csrf
                                 <div class="mb-3">
-                                    <label for=""><b>{{__('app.Select')}} {{__('app.a')}} {{__('app.Day')}}</b> <small class="text-danger">(* Required)</small> </label>
+                                    <label for=""><b>{{__('app.Select Day')}}</b> <small class="text-danger">(* Required)</small> </label>
                                     <select name="day" class="form-control mb-3 js-select" id="select_day" required>
                                         <option value="" selected>Select One</option>
                                         <option value="Saturday"> Saturday</option>
@@ -97,12 +97,12 @@
                                         <input type="hidden" name="period[]" id="period_id" value="{{$item->id}}" >
 
                                         <div class="col-lg mb-3">
-                                            <label for=""><b>{{__('app.Select')}} {{__('app.Subject')}}</b><small class="text-danger">*</small></label>
+                                            <label for=""><b>{{__('app.Select Subject')}}</b> <small class="text-danger">*</small></label>
                                             <select name="subject[]" onchange="teacher({{ $item->id }});" class="form-control mb-3 js-select">
                                                 <option value="">Select One</option>
 
                                                 @foreach ($data['subjects'] as $subject)
-                                                <option value="{{$subject->id}}">{{$subject->subject_name}}</option>
+                                                    <option value="{{$subject->id}}">{{$subject->subject_name}}</option>
                                                 @endforeach
                                             </select>
                                         </div>
@@ -115,7 +115,7 @@
                                         </div> --}}
 
                                         <div class="col-lg mb-3">
-                                            <label for=""><b>{{__('app.Select')}} {{__('app.Teacher')}}</b><small class="text-danger">*</small></label>
+                                            <label for=""><b>{{__('app.Select Teacher')}}</b> <small class="text-danger">*</small></label>
                                             <select name="teacher[]" id="teacherAdd{{ $item->id }}" class="form-control mb-3 js-select">
                                                 <option value=" ">Select Teacher</option>
                                             </select>

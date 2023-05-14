@@ -85,7 +85,8 @@
                                                                         <input type="hidden" class="form-control" name="subject_id" value="{{$tabName->id}}">
                                                                         <input type="hidden" class="form-control" name="term_id" value="{{$termName->id}}">
                                                                         <input type="hidden" class="form-control" name="class_id" value="{{$data->class_id}}">
-                                                                        
+                                                                        <input type="hidden" class="form-control" name="section_id" value="{{$section_id}}">
+                                                                         
                                                                         @foreach ($markTypes as $markType)
                                                                             <td>    
                                                                                 <div class="col-md-12">

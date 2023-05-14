@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Routine;
+use App\Models\ClassPeriod;
 use Exception;
+use App\Models\Routine;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use App\Models\InstituteClass;
+use App\Models\Teacher;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 use RealRashid\SweetAlert\Facades\Alert;
 
 class RoutineController extends Controller
@@ -15,7 +18,7 @@ class RoutineController extends Controller
     public $school;
 
     public function __construct()
-    {   
+    {
         $this->middleware(function($request, $next){
             $this->school = Auth::user(); //auth user details
 
@@ -32,7 +35,7 @@ class RoutineController extends Controller
     {
         $classes = DB::table('institute_classes')->where('school_id',$this->school->id)->get();
         $sections = DB::table('sections')->where('school_id',$this->school->id)->get();
-        
+
 
         //return $abc =  $this->school->id;
 
@@ -53,29 +56,33 @@ class RoutineController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  
-     * @param   $request
+     * @param  \Illuminate\Http\Request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    {   
-        // return $request;
-
+    {
         try{
             for($i=0; $i < count($request->period); $i++)
             {
-                // if(!is_null($request['subject'][$i]) && !is_null($request['teacher'][$i]) && !is_null($request['period'][$i])):
+                $teacherExist = Routine::where(['shift' => $request['shift'], 'day'   => $request['day'], 'period_id'   => $request['period'][$i], 'teacher_id' =>  $request['teacher'][$i]])->exists();
+                if($request->edit != "update_routine") {
+                    if($teacherExist) {
+                        toast('Teacher have already class. Select another teacher', 'error');
+                        return back();
+                    }
+                }
                     Routine::updateOrCreate([
                         'school_id'  =>  $this->school->id,
                         'class_id'  =>  $request['class'],
                         'section_id'  =>  $request['section'],
-                        'subject_id'  =>  $request['subject'][$i],
-                        'teacher_id'  =>  $request['teacher'][$i],
                         'period_id'   =>  $request['period'][$i],
                         'shift'   =>  $request['shift'],
                         'day'  =>  $request['day'],
-                    ], ['note'  =>  $request['note'][$i]]);
-                // endif;
+                    ], [
+                        'note'  =>  $request['note'][$i],
+                        'subject_id'  =>  $request['subject'][$i],
+                        'teacher_id'  =>  $request['teacher'][$i],
+                    ]);
             }
 
             toast('Routine Create Successfully', 'success');
@@ -84,7 +91,7 @@ class RoutineController extends Controller
         {
             toast($e->getMessage(), 'error');
         }
-        
+
         return redirect(url("/school/routine/show?shift={$request['shift']}&class={$request['class']}&section={$request['section']}"));
     }
 
@@ -104,8 +111,9 @@ class RoutineController extends Controller
         ])->get()->groupBy('day');
 
         $data = $request->only('class', 'section', 'shift');
+        $data['dataFor'] = "create";
         $data['subjects'] = DB::table('subjects')->where('class_id', $data['class'])->get();
-        $data['teachers'] = DB::table('teachers')->where('school_id', $this->school->id)->get();
+        $data['teachers'] = DB::table('teachers')->where('school_id', $this->school->id)->where('active',1)->get();
         $data['periods'] = DB::table('class_periods')->where('school_id', $this->school->id)->where('shift', $request->shift)->get();
 
         if($data['periods']->count() > 0)
@@ -132,21 +140,33 @@ class RoutineController extends Controller
     }
 
 
-    public function editRoutine($classId, $sectionId, $periodId, $shift, $day)
+    public function editRoutine(Request $request)
     {
+        $data = $request->only('class', 'section', 'shift', 'period', 'day');
+
         $rows = Routine::where([
             'school_id' => $this->school->id,
-            'class_id'  => $classId,
-            'section_id'   => $sectionId,
-            'shift'   => $shift,
+            'class_id'  => $data['class'],
+            'section_id'   => $data['section'],
+            'shift'   => $data['shift'],
         ])->get()->groupBy('day');
 
-        
 
-        $data = $request->only('class', 'section', 'shift');
+        $data['editRoutine'] = Routine::where([
+                                    'school_id' => $this->school->id,
+                                    'class_id'  => $data['class'],
+                                    'section_id'   => $data['section'],
+                                    'shift'   => $data['shift'],
+                                    'day'   => $data['day'],
+                                ])
+                                ->get();
+
+        $data['dataFor'] = "edit";
+
         $data['subjects'] = DB::table('subjects')->where('class_id', $data['class'])->get();
         $data['teachers'] = DB::table('teachers')->where('school_id', $this->school->id)->get();
-        $data['periods'] = DB::table('class_periods')->where('school_id', $this->school->id)->where('shift', $request->shift)->get();
+        $data['periods'] = DB::table('class_periods')->where('school_id', $this->school->id)->where('shift', $data['shift'])->get();
+
 
         if($data['periods']->count() > 0)
         {
@@ -155,7 +175,7 @@ class RoutineController extends Controller
         else
         {
             Alert::info("Message", "Please create class period first");
-            return redirect(route('period.create', $request->shift));
+            return redirect(route('period.create', $data['shift']));
         }
     }
 
@@ -181,4 +201,75 @@ class RoutineController extends Controller
     {
         //
     }
+
+    public function school_Routine_view(){
+        $rows = Routine::where(['school_id' => $this->school->id])->get()
+        ->groupBy('day');
+        $class = Routine::where(['school_id' => $this->school->id])->get()->groupBy('class_id');
+        // return($rows);
+        $data['institute_classes'] = DB::table('institute_classes')->where('school_id', $this->school->id)->get();
+        $data['section'] = DB::table('sections')->where('school_id', $this->school->id)->get();
+        $data['periods'] = DB::table('class_periods')->where('school_id', $this->school->id)->get();
+        $data['subjects'] = DB::table('subjects')->get();
+
+        $data['teachers'] = DB::table('teachers')->where('school_id', $this->school->id)->where('active',1)->get();
+
+        // $days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+        // $classes = InstituteClass::with('section:id,class_id,section_name')->where('school_id', Auth::id())->get(['id','class_name']);
+
+        // $resp = [];
+
+        // foreach($days as $day)
+        // {
+        //     $routine = [];
+        //     // return $classes;
+        //     foreach($classes as $class)
+        //     {
+        //         if(isset($class->id) && isset($class->section->id))
+        //         {
+        //             return $routine[] = Routine::where('day', $day)->get();
+        //         }
+        //     }
+
+
+        //     $resp[] = [
+        //         "day"   =>  $day,
+        //         "classes"   =>  $classes,
+        //         "routine" => $routine
+        //     ];
+        // }
+
+        //return $resp;
+
+        return view('frontend.school.routine.School_Routine',compact('rows','data','class'));
+    }
+
+     /**
+     * Get Teacher by ajax request
+     * 
+     * @param Request
+     * @param $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getTeacher(Request $request)
+    {   
+        $period = ClassPeriod::select('id')->where('shift', $request->shift)->where('school_id', Auth::user()->id)->pluck('id')->toArray();
+        $teachers = [];
+        foreach ($period as $key => $value) {
+            $teacher_id = Routine::where(['shift' => $request['shift'], 'day'   => $request['day']])->where('period_id', $value)->first();
+            if (isset($teacher_id->teacher_id)) {
+                $teachers[] = Teacher::where('school_id', Auth::user()->id)->whereNotIn('id', [$teacher_id->teacher_id])->get();
+            } else {
+                $teachers[] = Teacher::where('school_id', Auth::user()->id)->get();
+            }
+        }
+        return response()->json(['teacher' => $teachers, 'period' => $period]);
+
+        // $period = ClassPeriod::select('id')->where('shift', $request->shift)->where('school_id', Auth::user()->id)->pluck('id')->toArray();
+        // $teacher = Routine::where(['shift' => $request['shift'], 'day'   => $request['day'], 'period_id' => $request['period']])->first();
+        // $teachers = Teacher::where('school_id', Auth::user()->id)->whereNotIn('id', [$teacher->teacher_id])->get();
+        // return response()->json(['teacher' => $teachers, 'period' => $period]);
+        
+    }
+
 }

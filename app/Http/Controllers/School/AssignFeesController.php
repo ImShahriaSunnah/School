@@ -34,11 +34,11 @@ class AssignFeesController extends Controller
      * show form assign fees 
      */
     public function store(Request $request)
-    {
+    {   
         $request->validate(
             [
-                'class' =>  ['array', 'required'],
-                'month' =>  ['array', 'required'],
+                'class' =>  ['required', 'array'],
+                'month' =>  ['required', 'array'],
                 'feesTypeId'    => 'required|array',
             ],
             [
@@ -47,11 +47,12 @@ class AssignFeesController extends Controller
         );
 
         foreach($request['class'] as $classId)
-        {
+        {   
             try{
-
                 foreach($request['month'] as $month)
-                {
+                {   
+                    AssignStudentFee::where(['class_id'=> $classId, 'month_id' => $month])->delete();
+
                     $data = [];
                     $inTotalFee = 0;
                     

@@ -57,7 +57,7 @@
                                     </div>
                                 </div>
                                 <div id="questionId">
-
+                                    {{-- <input name="question_id" id="question_id" value=""  type="hidden"> --}}
                                 </div>
                                 <div class="col-md-12 d-none" id="selectOption">
                                     <div class="row">
@@ -101,7 +101,7 @@
                                                     <label class="text-center">Total Marks</label>
                                                     <div class="">
                                                         <div class="">
-                                                            <input type="number" name="total_mark" value="{{ old("total_mark") }}" placeholder="Total Mark" class="form-control" id="" required>
+                                                            <input type="number" min="1" name="total_mark" value="{{ old("total_mark") }}" placeholder="Total Mark" class="form-control" id="" required>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -248,7 +248,7 @@
 
                                                 <div class="col-md-3 mt-3">
                                                     <label for="">Mark</label>
-                                                    <input name="creQuestion_mark[1][1]" class="form-control" type="text">
+                                                    <input name="creQuestion_mark[1][1]" class="form-control" type="number" min="1">
                                                 </div>
                                                 <div class="col-md-8 mt-3">
                                                     <label for="">B</label>
@@ -257,7 +257,7 @@
 
                                                 <div class="col-md-3 mt-3">
                                                     <label for="">Mark</label>
-                                                    <input name="creQuestion_mark[1][2]" class="form-control" type="text">
+                                                    <input name="creQuestion_mark[1][2]" class="form-control" type="number" min="1">
                                                 </div>
                                                 <div class="col-md-8 mt-3">
                                                     <label for="">C</label>
@@ -266,7 +266,7 @@
 
                                                 <div class="col-md-3 mt-3">
                                                     <label for="">Mark</label>
-                                                    <input name="creQuestion_mark[1][3]" class="form-control" type="text">
+                                                    <input name="creQuestion_mark[1][3]" class="form-control" type="number" min="1">
                                                 </div>
                                                 <div class="col-md-8 mt-3">
                                                     <label for="">D</label>
@@ -275,7 +275,7 @@
 
                                                 <div class="col-md-3 mt-3">
                                                     <label for="">Mark</label>
-                                                    <input name="creQuestion_mark[1][4]" class="form-control" type="text">
+                                                    <input name="creQuestion_mark[1][4]" class="form-control" type="number" min="1">
                                                 </div>
 
                                                 <div class="col-md-1" >
@@ -398,7 +398,7 @@
 
                         <div class="col-md-3 mt-3">
                             <label for="">Mark</label>
-                            <input name="question_mark[${val}]" class="form-control" type="text">
+                            <input name="question_mark[${val}]" class="form-control" type="number" min="1">
                         </div>
 
                         <div class="col-md-1" >
@@ -487,7 +487,7 @@
 
                             <div class="col-md-3 mt-3">
                                 <label for="">Mark</label>
-                                <input name="creQuestion_mark[${creVal}][1]" class="form-control" type="text">
+                                <input name="creQuestion_mark[${creVal}][1]" class="form-control" type="number" min="1">
                             </div>
                             <div class="col-md-8 mt-3">
                                 <label for="">B</label>
@@ -496,7 +496,7 @@
 
                             <div class="col-md-3 mt-3">
                                 <label for="">Mark</label>
-                                <input name="creQuestion_mark[${creVal}][2]" class="form-control" type="text">
+                                <input name="creQuestion_mark[${creVal}][2]" class="form-control" type="number" min="1">
                             </div>
                             <div class="col-md-8 mt-3">
                                 <label for="">C</label>
@@ -505,7 +505,7 @@
 
                             <div class="col-md-3 mt-3">
                                 <label for="">Mark</label>
-                                <input name="creQuestion_mark[${creVal}][3]" class="form-control" type="text">
+                                <input name="creQuestion_mark[${creVal}][3]" class="form-control" type="number" min="1">
                             </div>
                             <div class="col-md-8 mt-3">
                                 <label for="">D</label>
@@ -514,7 +514,7 @@
 
                             <div class="col-md-3 mt-3">
                                 <label for="">Mark</label>
-                                <input name="creQuestion_mark[${creVal}][4]" class="form-control" type="text">
+                                <input name="creQuestion_mark[${creVal}][4]" class="form-control" type="number" min="1">
                             </div>
 
                             <div class="col-md-1" >
@@ -573,7 +573,14 @@
                     $("#error").empty();
                 },
                 success: function (data) {
-                    $("#questionId").append(`<input name="question_id" value="${data.id}"  type="hidden">`);
+                    if (data.status == "fail") {
+                        $.each(data.error, function(key, value) {
+                            $("#error").append(` <ul> <li class="text-danger">${value}</li></ul> `);
+                        })
+                    }
+                    if(data.id != null) {
+                        $("#questionId").append(`<input name="question_id" value="${data.id}"  type="hidden">`);
+                    }
                 }
             });
         }

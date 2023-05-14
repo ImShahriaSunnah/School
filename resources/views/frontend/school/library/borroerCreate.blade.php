@@ -1,4 +1,7 @@
 @extends('layouts.school.master')
+@push('css')
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.1/themes/base/jquery-ui.css">
+@endpush
 
 @section('content')
     <main class="page-content">
@@ -59,16 +62,14 @@
                                         <div class="row">
                                             <div class="col-md-6">
                                                 <label>{{ __('app.borrow_date') }}</label>
-                                                <input type="date" id="borrow_date" class="form-control" placeholder=""
-                                                    name="borrow_date" value="{{ $defaultDate }}" required>
+                                                <input type="text" id="datepicker" class="form-control" placeholder="YYYY-MM-DD" name="borrow_date" value="{{ $defaultDate }}" required>
                                                 @error('borrow_date')
                                                     <div class="alert alert-danger">{{ $message }}</div>
                                                 @enderror
                                             </div>
                                             <div class="col-md-6">
                                                 <label>{{ __('app.p_return_date') }}</label>
-                                                <input type="date" id="return_date" class="form-control" placeholder=""
-                                                    name="possible_borrow_date" required>
+                                                <input type="text" id="datepicker2" class="form-control" placeholder="YYYY-MM-DD" name="possible_borrow_date" required>
                                                 @error('possible_borrow_date')
                                                     <div class="alert alert-danger">{{ $message }}</div>
                                                 @enderror
@@ -102,6 +103,27 @@
     </main>
 @endsection
 @push('js')
+
+    <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js"></script>
+    <script>
+        $(document).ready(function(){
+            $("#datepicker").datepicker({
+                dateFormat: "yy-mm-dd",
+                changeMonth: true,
+                changeYear: true,
+            });
+        })
+    </script>
+    <script>
+        $(document).ready(function(){
+            $("#datepicker2").datepicker({
+                dateFormat: "yy-mm-dd",
+                changeMonth: true,
+                changeYear: true,
+            });
+        })
+    </script>
+
     <script type="text/javascript">
         $(function() {
             var dtToday = new Date();
@@ -114,7 +136,7 @@
             if (day < 10)
                 day = '0' + day.toString();
             var maxDate = year + '-' + month + '-' + day;
-            $('#borrow_date').attr('min', maxDate);
+            $('#datepicker').attr('min', maxDate);
         });
         $(function() {
             var dtToday = new Date();
@@ -127,7 +149,7 @@
             if (day < 10)
                 day = '0' + day.toString();
             var maxDate = year + '-' + month + '-' + day;
-            $('#return_date').attr('min', maxDate);
+            $('#datepicker').attr('min', maxDate);
         });
     </script>
 @endpush

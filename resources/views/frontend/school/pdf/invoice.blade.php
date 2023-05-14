@@ -135,7 +135,7 @@
                     <table class="table table-invoice">
                         <thead>
                         <tr>
-                            <th>Fees DESCRIPTION</th>
+                            <th>Fees Description</th>
                             <th class="text-center" width="10%">Fees Amount</th>
                         </tr>
                         </thead>
@@ -154,7 +154,6 @@
                                 <small></small>
                             </td>
                             <td class="text-center">{{$data->fees_amount}} Taka</td>
-
                         </tr>
                         @endforeach
                         <?php
@@ -199,7 +198,7 @@
                 <hr>
                 <!-- begin invoice-note -->
                 <div class="my-3">
-                    * Make all cheques payable to [Your Company Name]<br>
+                    * Make all cheques payable to {{Auth::user()->school_name}}<br>
                     * Payment is due within 30 days<br>
                     * If you have any questions concerning this invoice, contact  [Name, Phone Number, Email]
                 </div>

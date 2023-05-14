@@ -1,5 +1,8 @@
 @extends('layouts.school.master')
+@push('css')
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.1/themes/base/jquery-ui.css">
 
+@endpush
 @section('content')
     <!--start content-->
     <main class="page-content">
@@ -16,8 +19,8 @@
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label">{{__('app.class')}}</label>
-                                    <select class="form-select" aria-label="Default select example" required name="class_id" id="class_id" onchange="game_chf()">
-                                        <option value=" " selected>Class Name</option>
+                                    <select class="form-select js-select" aria-label="Default select example" required name="class_id" id="class_id" onchange="game_chf()">
+                                        <option value="" >Class Name</option>
                                         @foreach($class as $data)
                                             <option value="{{$data->id}}">{{$data->class_name}}</option>
                                         @endforeach
@@ -25,17 +28,17 @@
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label">{{__('app.section')}}</label>
-                                    <select class="form-select" id="section_id" name="section_id" onchange="group_chf()" required>
-                                        <option selected>Select one</option>
+                                    <select class="form-select js-select" id="section_id" name="section_id" onchange="group_chf()" required>
+                                        <option>Select one</option>
                                     </select>
                                 </div>
-
-                                <div class="col-md-6 mb-4">
-                                    <label class="form-label">{{__('app.date')}}</label>
-                                    <input type="date" name="date" class="form-control" value="{{ $defaultDate }}" required>
                                 
+                                <div class="col-md-6 mb-4">
+                                    <label class="form-label">{{__('app.date')}} </label>                                               
+                                    <input type="text" id="datepicker" class="form-control"  name="date" value="{{ $defaultDate }}" required>
                                 </div>
 
+                                
                                 <div class="col-md-6" id="group-select">
                                     {{-- <label class="form-label">Group Name</label>
                                     <select class="form-select mb-3" id="group_id" name="group_id">
@@ -70,6 +73,18 @@
 @endsection
 
 @push('js')
+
+    <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js"></script>
+    <script>
+        $(document).ready(function(){
+            $("#datepicker").datepicker({
+                dateFormat: "yy-mm-dd",
+                changeMonth: true,
+                changeYear: true,
+            });
+        })
+    </script>
+
     <script>
         function game_chf() {
             let class_id = $("#class_id").val();

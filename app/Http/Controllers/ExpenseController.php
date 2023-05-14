@@ -7,12 +7,16 @@ use App\Models\School;
 use App\Models\Transection;
 use Illuminate\Http\Request;
 
+use App\Models\TeacherSalary;
 use Illuminate\Http\Response;
 use App\Models\AccesoriesType;
+use App\Models\EmployeeSalary;
 use App\Models\InstituteClass;
+use App\Models\StudentMonthlyFee;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use App\Models\AccesoriesTransaction;
+use RealRashid\SweetAlert\Facades\Alert;
 
 
 class ExpenseController extends Controller
@@ -21,7 +25,7 @@ class ExpenseController extends Controller
 
     //expense list show 
 
-    public function expenselist(Request $request)
+    public function expenseShow(Request $request)
     {
         if (Auth::user()->status == 0) {
             return redirect()->route('school.payment.info');
@@ -64,7 +68,168 @@ class ExpenseController extends Controller
             }
         }
     }
+    public function expenselist(Request $request)
+    {
 
+        if (Auth::user()->is_editor != 3) {
+            return back();
+        } else {
+
+            $date = $request;
+            if (isset($request->searchdate)) {
+                if (isset($request->enddate)) {
+                    $expenses = Transection::where('school_id', Auth::user()->id)->whereBetween('datee', [$request->searchdate, $request->enddate])->where('type', '=', '1')->where('amount', '!=', '0')->get();
+                    $teacher = TeacherSalary::where('school_id', Auth::user()->id)->whereBetween('updated_at', [$request->searchdate, $request->enddate])->where('amount', '!=', '0')->get();
+                    $sum = TeacherSalary::where('school_id', Auth::user()->id)->whereBetween('updated_at', [$request->searchdate, $request->enddate])->where('amount', '!=', '0')->sum('amount');
+                    $sumstaff = EmployeeSalary::where('school_id', Auth::user()->id)->whereBetween('updated_at', [$request->searchdate, $request->enddate])->where('amount', '!=', '0')->sum('amount');
+                    $sumexpenses = Transection::where('school_id', Auth::user()->id)->whereBetween('datee', [$request->searchdate, $request->enddate])->where('type', '=', '1')->where('amount', '!=', '0')->sum('amount');
+                    $data = [
+                        'sum' => $sum,
+                        'sumstaff' => $sumstaff,
+                        'sumexpenses' => $sumexpenses
+                    ];
+                    $sumFund = $data['sum'] + $data['sumstaff'] + $data['sumexpenses'];
+                    $staff = EmployeeSalary::where('school_id', Auth::user()->id)->whereBetween('updated_at', [$request->searchdate, $request->enddate])->where('amount', '!=', '0')->get();
+                    $defaultDate = Carbon::today()->format('Y-m-d');
+                    return view('frontend.school.expense.expenseList')->with(compact('expenses', 'sumFund', 'sum', 'teacher', 'staff', 'defaultDate'));
+                } else {
+                    $expenses = Transection::where('school_id', Auth::user()->id)->wheredate('datee', $request->searchdate)->where('type', '=', '1')->where('amount', '!=', '0')->get();
+                    $teacher = TeacherSalary::where('school_id', Auth::user()->id)->wheredate('updated_at', $request->searchdate)->where('amount', '!=', '0')->get();
+                    $sum = TeacherSalary::where('school_id', Auth::user()->id)->wheredate('updated_at', $request->searchdate)->where('amount', '!=', '0')->sum('amount');
+                    $sumstaff = EmployeeSalary::where('school_id', Auth::user()->id)->wheredate('updated_at', $request->searchdate)->where('amount', '!=', '0')->sum('amount');
+                    $sumexpenses = Transection::where('school_id', Auth::user()->id)->wheredate('datee', $request->searchdate)->where('type', '=', '1')->where('amount', '!=', '0')->sum('amount');
+                    $data = [
+                        'sum' => $sum,
+                        'sumstaff' => $sumstaff,
+                        'sumexpenses' => $sumexpenses
+                    ];
+                    $sumFund = $data['sum'] + $data['sumstaff'] + $data['sumexpenses'];
+                    $staff = EmployeeSalary::where('school_id', Auth::user()->id)->whereDate('updated_at', $request->searchdate)->where('amount', '!=', '0')->get();
+                    $defaultDate = Carbon::today()->format('Y-m-d');
+                    return view('frontend.school.expense.expenseList')->with(compact('expenses', 'sumFund', 'sum', 'teacher', 'staff', 'defaultDate'));
+                }
+            } elseif (isset($request->searchmonth)) {
+                $transectionMonth = Transection::where('status', true)->orderBy('created_at', 'asc')->get();
+                $searchmonth = $request->searchmonth;
+                $expenses = Transection::where('school_id', Auth::user()->id)->where('type', '=', '1')->whereMonth('datee', $request->searchmonth)->where('amount', '!=', '0')->get();
+                $teacher = TeacherSalary::where('school_id', Auth::user()->id)->whereMonth('updated_at', $request->searchmonth)->where('amount', '!=', '0')->get();
+                $sum = TeacherSalary::where('school_id', Auth::user()->id)->whereMonth('updated_at', $request->searchmonth)->where('amount', '!=', '0')->sum('amount');
+                $sumstaff = EmployeeSalary::where('school_id', Auth::user()->id)->whereMonth('updated_at', $request->searchmonth)->where('amount', '!=', '0')->sum('amount');
+                $sumexpenses = Transection::where('school_id', Auth::user()->id)->whereMonth('datee', $request->searchmonth)->where('type', '=', '1')->where('amount', '!=', '0')->sum('amount');
+                $staff = EmployeeSalary::where('school_id', Auth::user()->id)->whereMonth('updated_at', $request->searchmonth)->where('amount', '!=', '0')->get();
+                $data = [
+                    'sum' => $sum,
+                    'sumstaff' => $sumstaff,
+                    'sumexpenses' => $sumexpenses
+                ];
+                $sumFund = $data['sum'] + $data['sumstaff'] + $data['sumexpenses'];
+                $defaultDate = Carbon::today()->format('Y-m-d');
+                return view('frontend.school.expense.expenseList')->with(compact('expenses', 'sumFund', 'sum', 'teacher', 'staff', 'defaultDate'));
+            } else {
+                $expenses = Transection::where('school_id', Auth::user()->id)->where('type', '=', '1')->where('amount', '!=', '0')->get();
+                $teacher = TeacherSalary::where('school_id', Auth::user()->id)->where('amount', '!=', '0')->get();
+                $sum = TeacherSalary::where('school_id', Auth::user()->id)->where('amount', '!=', '0')->sum('amount');
+                $sumstaff = EmployeeSalary::where('school_id', Auth::user()->id)->where('amount', '!=', '0')->sum('amount');
+                $sumexpenses = Transection::where('school_id', Auth::user()->id)->where('type', '=', '1')->where('amount', '!=', '0')->sum('amount');
+                $data = [
+                    'sum' => $sum,
+                    'sumstaff' => $sumstaff,
+                    'sumexpenses' => $sumexpenses
+                ];
+                $sumFund = $data['sum'] + $data['sumstaff'] + $data['sumexpenses'];
+                $staff = EmployeeSalary::where('school_id', Auth::user()->id)->where('amount', '!=', '0')->get();
+                $defaultDate = Carbon::today()->format('Y-m-d');
+                return view('frontend.school.expense.expenseList')->with(compact('expenses', 'sumFund', 'sum', 'teacher', 'staff', 'defaultDate'));
+            }
+        }
+    }
+
+
+
+
+    public function  AllFundlist(Request $request)
+    {
+        if (Auth::user()->status == 0) {
+            return redirect()->route('school.payment.info');
+        } elseif (Auth::user()->status == 2) {
+            toast('Sorry Admin can Inactive Your Account Please Contact', 'error');
+            return back();
+        }
+        if (Auth::user()->is_editor != 3) {
+            return back();
+        } else {
+
+            $date = $request;
+            if (isset($request->searchdate)) {
+                if (isset($request->enddate)) {
+
+                    $fund = Transection::where('school_id', Auth::user()->id)->whereBetween('datee', [$request->searchdate, $request->enddate])->where('type', '=', '2')->where('amount', '!=', '0')->get();
+                    $student = StudentMonthlyFee::where('school_id', Auth::user()->id)->whereBetween('updated_at', [$request->searchdate, $request->enddate])->where('status', '2')->get();
+                    $accesories = AccesoriesTransaction::where('school_id', Auth::user()->id)->whereBetween('updated_at', [$request->searchdate, $request->enddate])->get();
+                    $sumfund = Transection::where('school_id', Auth::user()->id)->where('type', '=', '2')->whereBetween('datee', [$request->searchdate, $request->enddate])->where('amount', '!=', '0')->sum('amount');
+                    $sumstudent = StudentMonthlyFee::where('school_id', Auth::user()->id)->whereBetween('updated_at', [$request->searchdate, $request->enddate])->where('status', '2')->sum('amount');
+                    $sumaccesories = AccesoriesTransaction::where('school_id', Auth::user()->id)->whereBetween('updated_at', [$request->searchdate, $request->enddate])->sum('amount');
+
+                    $data = [
+                        'sumfund' => $sumfund,
+                        'sumstudent' => $sumstudent,
+                        'sumaccesories' => $sumaccesories
+                    ];
+                    $sumFund = $data['sumfund'] + $data['sumstudent'] + $data['sumaccesories'];
+                    return view('frontend.school.fund.fundList', compact('student', 'accesories', 'fund', 'sumFund'));
+                } else {
+
+
+                    $fund = Transection::where('school_id', Auth::user()->id)->wheredate('datee', $request->searchdate)->where('type', '=', '2')->where('amount', '!=', '0')->get();
+                    $student = StudentMonthlyFee::where('school_id', Auth::user()->id)->wheredate('updated_at', $request->searchdate)->where('status', '2')->get();
+                    $accesories = AccesoriesTransaction::where('school_id', Auth::user()->id)->wheredate('updated_at', $request->searchdate)->get();
+                    $sumfund = Transection::where('school_id', Auth::user()->id)->wheredate('datee', $request->searchdate)->where('type', '=', '2')->where('amount', '!=', '0')->sum('amount');
+                    $sumstudent = StudentMonthlyFee::where('school_id', Auth::user()->id)->wheredate('updated_at', $request->searchdate)->where('status', '2')->sum('amount');
+                    $sumaccesories = AccesoriesTransaction::where('school_id', Auth::user()->id)->wheredate('updated_at', $request->searchdate)->sum('amount');
+
+                    $data = [
+                        'sumfund' => $sumfund,
+                        'sumstudent' => $sumstudent,
+                        'sumaccesories' => $sumaccesories
+                    ];
+                    $sumFund = $data['sumfund'] + $data['sumstudent'] + $data['sumaccesories'];
+                    return view('frontend.school.fund.fundList', compact('student', 'accesories', 'fund', 'sumFund'));
+                }
+            } elseif (isset($request->searchmonth)) {
+                $searchmonth = $request->searchmonth;
+
+                $fund = Transection::where('school_id', Auth::user()->id)->whereMonth('datee', $request->searchmonth)->where('type', '=', '2')->where('amount', '!=', '0')->get();
+                $student = StudentMonthlyFee::where('school_id', Auth::user()->id)->whereMonth('updated_at', $request->searchmonth)->where('status', '2')->get();
+                $accesories = AccesoriesTransaction::where('school_id', Auth::user()->id)->whereMonth('updated_at', $request->searchmonth)->get();
+                $sumfund = Transection::where('school_id', Auth::user()->id)->whereMonth('datee', $request->searchmonth)->where('type', '=', '2')->where('amount', '!=', '0')->sum('amount');
+                $sumstudent = StudentMonthlyFee::where('school_id', Auth::user()->id)->whereMonth('updated_at', $request->searchmonth)->where('status', '2')->sum('amount');
+                $sumaccesories = AccesoriesTransaction::where('school_id', Auth::user()->id)->whereMonth('updated_at', $request->searchmonth)->sum('amount');
+
+                $data = [
+                    'sumfund' => $sumfund,
+                    'sumstudent' => $sumstudent,
+                    'sumaccesories' => $sumaccesories
+                ];
+                $sumFund = $data['sumfund'] + $data['sumstudent'] + $data['sumaccesories'];
+                return view('frontend.school.fund.fundList', compact('student', 'accesories', 'fund', 'sumFund'));
+            } else {
+                $fund = Transection::where('school_id', Auth::user()->id)->where('type', '=', '2')->where('amount', '!=', '0')->get();
+                $student = StudentMonthlyFee::where('school_id', Auth::user()->id)->where('status', '2')->get();
+                $accesories = AccesoriesTransaction::where('school_id', Auth::user()->id)->get();
+                $sumfund = Transection::where('school_id', Auth::user()->id)->where('type', '=', '2')->where('amount', '!=', '0')->sum('amount');
+                $sumstudent = StudentMonthlyFee::where('school_id', Auth::user()->id)->where('status', '2')->sum('amount');
+                $sumaccesories = AccesoriesTransaction::where('school_id', Auth::user()->id)->sum('amount');
+
+                $data = [
+                    'sumfund' => $sumfund,
+                    'sumstudent' => $sumstudent,
+                    'sumaccesories' => $sumaccesories
+                ];
+                $sumFund = $data['sumfund'] + $data['sumstudent'] + $data['sumaccesories'];
+                return view('frontend.school.fund.fundList', compact('student', 'accesories', 'fund', 'sumFund'));
+            }
+        }
+    }
     /** --------------- expense data table
      * =============================================*/
     public function expensecreate()
@@ -101,7 +266,7 @@ class ExpenseController extends Controller
                 'purpose'  => 'required',
                 'payment_method' => 'required',
                 'type' => 'required',
-                'name' => 'required',
+
 
 
             ]);
@@ -161,7 +326,6 @@ class ExpenseController extends Controller
                 'purpose'  => 'required',
                 'payment_method' => 'required',
                 'type' => 'required',
-                'name' => 'required',
             ]);
 
 
@@ -176,6 +340,14 @@ class ExpenseController extends Controller
                 return redirect()->route('fund.show')->with('success', 'Record created successfully');
             }
         }
+    }
+    public function receiptDelete($id)
+    {
+        // syllabus delete
+        AccesoriesTransaction::find($id)->delete();
+        toast('opps deleted', 'danger');
+
+        return back();
     }
     /** --------------- Delete expense
      * =============================================*/
@@ -248,85 +420,6 @@ class ExpenseController extends Controller
     }
 
 
-    public function  accesoriesType()
-    {
-        $data = AccesoriesType::where('school_id', Auth::id())->get();
-
-        return view('frontend.school.Accesories.accesoriesType', compact('data'));
-    }
-     public function accesoriesdelete($id){
-        accesoriesType::find($id)->delete();
-        toast('opps deleted', 'danger');
-
-        return back();
-     }
-     public function accesoriesedit(Request $request){
-        $request->validate([
-            'accesories' => 'required',
-            'price' => 'required'
-        ]);
-        $dataEdit=AccesoriesType::where('school_id', Auth::id())->get();
-
-        $dataEdit->update([
-            'accesories' => $request->accesories,
-            'price' => $request->price,
-        ]);
-        return view('frontend.school.Accesories.accesoriesType', compact('dataEdit'));
-
-        
-     }
-    public function  receiptShow()
-    {
-        $data = AccesoriesTransaction::all();
-        return view('frontend.school.Accesories.receipt', compact('data'));
-    }
-    /**
-     *  store accesories by school
-     */
-    public function accesoriesTypePost(Request $request)
-    {
-
-        $request->validate([
-            'accesories' => 'required',
-            'price' => 'required'
-        ]);
-
-        AccesoriesType::create([
-            'school_id' =>  Auth::id(),
-            'accesories' => $request->accesories,
-            'price' => $request->price,
-        ]);
-
-        return back();
-    }
-
-
-    public function receipt()
-    {
-        $class = InstituteClass::where('school_id', Auth::user()->id)->get();
-
-        $school = School::find(Auth::user()->id);
-        $orders = AccesoriesType::where('school_id', Auth::id())->get();
-        return view("frontend.school.Accesories.accesories", compact('orders', 'school', 'class'));
-    }
-    public function receiptDelete($id)
-    {
-        // syllabus delete
-        AccesoriesTransaction::find($id)->delete();
-        toast('opps deleted', 'danger');
-
-        return back();
-    }
-
-    public function getPrice($id)
-    {
-        $price  = AccesoriesType::find($id)->price;
-        return $price;
-    }
-
-
-
-
     /** --------------- expense data table
      * =============================================*/
     public function fundcreate()
@@ -365,7 +458,6 @@ class ExpenseController extends Controller
                 'purpose'  => 'required',
                 'payment_method' => 'required',
                 'type' => 'required',
-                'name' => 'required',
 
 
             ]);
@@ -431,7 +523,6 @@ class ExpenseController extends Controller
                 'purpose'  => 'required',
                 'payment_method' => 'required',
                 'type' => 'required',
-                'name' => 'required',
             ]);
 
 
@@ -473,5 +564,89 @@ class ExpenseController extends Controller
                 return redirect()->route('fund.show')->with('success', 'Record created successfully');
             }
         }
+    }
+
+    // this oart is for accesories 
+
+    public function  accesoriesType()
+    {
+        $data = AccesoriesType::where('school_id', Auth::id())->get();
+
+        return view('frontend.school.Accesories.accesoriesType', compact('data'));
+    }
+
+    /**
+     *  store accesories by school
+     */
+    public function accesoriesTypePost(Request $request)
+    {
+
+        $request->validate([
+            'accesories' => 'required',
+            'price' => 'required'
+        ]);
+
+        AccesoriesType::create([
+            'school_id' =>  Auth::id(),
+            'accesories' => $request->accesories,
+            'price' => $request->price,
+        ]);
+
+        return back();
+    }
+    public function accesoriesTypeListdelete($id)
+    {
+        AccesoriesType::find($id)->delete();
+        toast('opps deleted', 'danger');
+
+        return back();
+    }
+    public function  accesoriesEditPost(Request $request, $id)
+    {
+        $update = AccesoriesType::find($id);
+        $update->update([
+            'accesories' => $request->accesories,
+            'price' => $request->price,
+        ]);
+        Alert::success('Success', "Updated Succesfully");
+
+        return back();
+    }
+    public function   receiptHistoryEdit(Request $request, $id)
+    {
+        $update = AccesoriesTransaction::find($id);
+        $update->update([
+            'name' => $request->name,
+            'class' => $request->class,
+            'roll' => $request->roll,
+            'section' => $request->section,
+            'accesories' => $request->accesories,
+            'amount' => $request->amount,
+            'quantity' => $request->quantity
+        ]);
+        Alert::success('Success', "Updated Succesfully");
+
+        return back();
+    }
+
+    public function receipt()
+    {
+        $class = InstituteClass::where('school_id', Auth::user()->id)->get();
+
+        $school = School::find(Auth::user()->id);
+        $orders = AccesoriesType::where('school_id', Auth::id())->get();
+        return view("frontend.school.Accesories.accesories", compact('orders', 'school', 'class'));
+    }
+    public function  receiptShow()
+    {
+
+        $data = AccesoriesTransaction::with('Class', 'Section')->get();
+        return view('frontend.school.Accesories.receipt', compact('data'));
+    }
+
+    public function getPrice($id)
+    {
+        $price  = AccesoriesType::find($id)->price;
+        return $price;
     }
 }

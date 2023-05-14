@@ -67,7 +67,7 @@
                                             @endforeach
                                         </select>
                                     </div>
-
+                                    
                                     {{-- <div class="col-12 mb-3">
                                         <label>{{__('app.Section')}} {{__('app.Name')}} <span style="color:red;"></span></label>
                                         <select class="form-control mb-3 js-select"id="student_wise_section_id" name="section_id">

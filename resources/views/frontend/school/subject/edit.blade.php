@@ -23,7 +23,7 @@
                                     </div>
                                 </div>
                                 <div class="col-12">
-                                    <select class="form-select mb-3" aria-label="Default select example" name="class_id" id="class_id" onchange="game_chf()">
+                                    <select class="form-select mb-3 js-select" aria-label="Default select example" name="class_id" id="class_id" onchange="game_chf()">
                                         <option value="">Class Name</option>
                                         <option value="{{$subject->class_id}}" selected>{{getClassName($subject->class_id)->class_name}}</option>
                                         @foreach($class as $data)

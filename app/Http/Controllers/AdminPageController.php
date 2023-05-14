@@ -13,6 +13,7 @@ use App\Models\Employee;
 use App\Models\Tutorial;
 use App\Models\ContactUs;
 use App\Models\SchoolFee;
+use App\Models\AddonModel;
 use App\Models\AppReleased;
 use App\Models\FeatureMenu;
 use Illuminate\Support\Str;
@@ -568,4 +569,68 @@ class AdminPageController extends Controller
         }
           return redirect()->route('AppReleased.List');
         }
+        public function AddonList(){
+            $addons=AddonModel::all();
+            return view('backend.admin.addon.addonlist',compact('addons'));
+        }
+        public function Addon_form(){
+            return view('backend.admin.addon.addonform');
+        }
+        public function Addon_create(Request $request){
+            $request->validate([
+                'title' => 'required|min:18|max:25',
+                'price' => 'required',
+                'month' => 'required',
+            ]);
+            try{
+                AddonModel::create([
+                    'title'=>$request->title,
+                    'price'=>$request->price,
+                    'month'=>$request->month,
+                    'description'=>$request->description,
+                ]);
+                Toastr::success('Addon Create successfully');
+                return redirect()->route('AddonList'); 
+            } 
+            catch (Exception $e) {
+                Toastr::error('Error');
+                return redirect()->route('Addon.Form');
+            }
+            
+        }
+        public function Addon_Delete($id){
+            AddonModel::find($id)->delete();
+            Toastr::success('Addon delete successfully');
+                return back();
+        }
+        public function Addon_Edit($id){
+            $editAddon= AddonModel::find($id);
+            return view('backend.admin.addon.addonform',compact('editAddon'));
+        }
+        public function Addon_Update(Request $request ,$id){
+            $request->validate([
+                'title' => 'required|min:18|max:25',
+                'price' => 'required',
+                'month' => 'required',
+                'description' => 'max:255',
+            ]);
+            $updateAddon =AddonModel::find($id);
+            try{
+                $updateAddon->update([
+                    'title'=>$request->title,
+                    'price'=>$request->price,
+                    'month'=>$request->month,
+                    'description'=>$request->description,
+                ]);
+                Toastr::success('Addon Update successfully');
+                return redirect()->route('AddonList'); 
+            }
+            catch(Exception $e){
+                Toastr::error('Error');
+                return redirect()->route('Addon.Edit');
+            }
+        }
+        
  }
+
+        

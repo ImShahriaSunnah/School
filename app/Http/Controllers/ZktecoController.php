@@ -3,26 +3,32 @@
 namespace App\Http\Controllers;
 
 use App\Models\School;
+use App\Models\User;
+use DateTime;
+use DateTimeZone;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Rats\Zkteco\Lib\ZKTeco;
 
 class ZktecoController extends Controller
 {
-    public function zkteco(){
+    public function zkteco()
+    {
 
         // ini_set('max_execution_time', 300); //300 seconds = 5 minutes
         // set_time_limit(300);
 
-        $zk = new ZKTeco('192.168.0.117', 4370);
-        $zk->connect(); 
+        $zk = new ZKTeco('192.168.0.115', 5005);
+        $zk->connect();
         //$zk->deviceName('K12/D'); 
         //$zk->enableDevice(); 
         // $zk->setUser('15', '1567', 'Rakibul Islam', 'abcdabcd');
         // $zk->disconnect();
 
-        return $zk->getUser();
+        // return $zk->getUser();
          //return $abc = $zk->serialNumber();
-        $zk->disconnect();
+        return $zk->deviceName();
 
         // return $abc;
     }
@@ -30,14 +36,6 @@ class ZktecoController extends Controller
 
     public function testOnly()
     {
-        // return $dateStudent = \App\Models\Attendance::where('student_id',83)
-        //                     ->where('class_id',8)
-        //                     ->where('section_id',6)
-        //                     ->where('group_id',null)
-        //                     ->whereDate('created_at','2023-03-29')
-        //                     ->first();
-
-
-        // return \App\Models\Attendance::whereDate('created_at','2023-03-29')->get();
+        
     }
 }

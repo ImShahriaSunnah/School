@@ -23,11 +23,6 @@ class CreateAccesoriesTransactionsTable extends Migration
             $table->string('accesories')->nullable();
             $table->string('amount')->nullable();
             $table->foreignId('school_id')->constrained('schools')->cascadeOnDelete();
-
-
-
-
-
             $table->timestamps();
         });
     }

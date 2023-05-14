@@ -3,9 +3,9 @@
 @section('main')
  <!-- hero area start -->
  <section class="hero__area hero__height p-relative d-flex align-items-center">
-    <!-- <div class="hero__area__img">
+    {{-- <!-- <div class="hero__area__img">
        <img src="{{ asset('frontend/assets/img/header/header.png') }}" alt="">
-    </div> -->
+    </div> --> --}}
  <div class="hero__shape">
     <img class="hero-circle-1" src="{{ asset('frontend/assets/img/icon/hero/home-1/circle-1.png') }}" alt="">
     <img class="hero-circle-2" src="{{ asset('frontend/assets/img/icon/hero/home-1/circle-2.png') }}" alt="">
@@ -16,7 +16,7 @@
     <div class="row align-items-center" style="margin-top: -80px">
        <div class="col-xxl-6 col-xl-6 col-lg-6">
           <div class="hero__content pr-80">
-            <h3 class="hero__title wow fadeInUp" data-wow-delay=".3s" style="font-size: 50px;">{{__('app.header_title')}}</h3>
+            <h3 class="hero__title wow fadeInUp" data-wow-delay=".3s">{{__('app.header_title')}}</h3>
             <p class="wow fadeInUp mt-3 fw-light fs-6">{{__('app.header_paragraph')}}</p>
              <div class="hero__search wow fadeInUp" data-wow-delay=".7s">
                 <form method="get" action="{{route('getStarted.post')}}" enctype="multipart/form-data">

@@ -12,7 +12,7 @@
                            <div id="printDiv">
                                 <div class="d-flex justify-content-center">
                                     @if (File::exists(public_path(Auth::user()->school_logo)) && !is_null(Auth::user()->school_logo))
-                                        <img src="{{asset(Auth::user()->school_logo)}}" alt="school logo" class="img-fluid" width="80" style="width:100px; height:80px;">
+                                        <img src="{{asset(Auth::user()->school_logo)}}" alt="school logo" class="img-fluid" width="80" style="width:100px; height:80px; margin-right:20px;">
                                     @endif
                                     <div class="text-center">
                                         <h4 style="margin-bottom: 0px;"> {{ strtoupper(Auth::user()->school_name )}} </h4>
@@ -24,14 +24,14 @@
 
                                 <hr>
 
-                                <div class="d-flex mb-2">
+                                <div class="d-flex mb-2 justify-content-between">
                                     @if(File::exists(asset($studentResults->first()->user?->image)))
-                                    <img src="{{asset($studentResults->first()->user?->image)}}" class="img-fluid" alt="student image" style="height: 70px; width: 70px">
+                                    <img src="{{asset($studentResults->first()->user?->image)}}" class="img-fluid" alt="student image" style="height: 70px; width: 70px; margin-right:20px;">
                                     @else
-                                    <img src="{{asset('d/no-img.jpg')}}" class="img-fluid" alt="student image" style="height: 70px; width: 70px">
+                                    <img src="{{asset('d/no-img.jpg')}}" class="img-fluid" alt="student image" style="height: 70px; width: 70px; margin-right:20px;">
                                     @endif
 
-                                    <div class="h6 ms-3" style="font-size: 12px;">
+                                    <div class="h6 col-md-3" style="font-size: 12px;">
                                         <table>
                                             <tbody>
                                                 <tr>
@@ -58,7 +58,7 @@
                                         </table>
                                     </div>
 
-                                    <div class="h6 ms-5" style="font-size: 12px;">
+                                    <div class="h6 col-md-4" style="font-size: 12px;">
                                         <table>
                                             <tbody>
                                                 <tr>
@@ -81,8 +81,8 @@
                                         </table>
                                     </div>
 
-                                    {{-- <div class="ms-3">
-                                        <table class="table table-bordered">
+                                    <div class="ml-auto d-flex justify-content-end">
+                                        <table class="table table-bordered" style="font-size: 8px;">
                                             <thead>
                                                 <tr align="center">
                                                     <th colspan="2">Performance In Class</th>
@@ -90,24 +90,24 @@
                                             </thead>
                                             <tbody>
                                                 <tr>
-                                                    <td>Excelent</td>
-                                                    <td width="20%"></td>
+                                                    <td style="padding:1px;">Excelent</td>
+                                                    <td width="20%" style="padding:1px;"></td>
                                                 </tr>
                                                 <tr>
-                                                    <td>Very Good</td>
-                                                    <td></td>
+                                                    <td style="padding:1px;magrin-left:2px;">Very Good</td>
+                                                    <td style="padding:1px;"></td>
                                                 </tr>
                                                 <tr>
-                                                    <td>Good</td>
-                                                    <td></td>
+                                                    <td style="padding:1px;">Good</td>
+                                                    <td style="padding:1px;"></td>
                                                 </tr>
                                                 <tr>
-                                                    <td>Need Improvment</td>
-                                                    <td></td>
+                                                    <td style="padding:1px;">Poor</td>
+                                                    <td style="padding:1px;"></td>
                                                 </tr>
                                             </tbody>
                                         </table>
-                                    </div> --}}
+                                    </div>
                                 </div>
 
                                 <table class="table table-bordered text-center" style="font-size: 12px;">
@@ -137,20 +137,8 @@
                                         <th>Grade Point</th>
                                     </tr>
                                     </thead>
-                                    {{-- <tbody>
-                                        @foreach ($results as $result)
-                                        <tr>
-                                            <td>{{ $result->student_roll_number }}</td>
-                                            <td>{{ $result->user->name }}</td>
-                                            <td>{{ $result->total }}</td>
-                                            <td>{{ finalGrade($result->total) }}</td>
-                                            <td>{{ finalGpa($result->total) }}</td>
-                                            <td>{{ ($result->total * 100 / 300 < 33) ? "Fail" : "Pass" }}</td>
-                                        </tr>
-                                        @endforeach
-                                    </tbody> --}}
+                                    
                                     <tbody>
-                                        {{-- @dd($subjects) --}}
                                         @php
                                             $totalAvg = 0;
                                         @endphp
@@ -167,23 +155,18 @@
                                             <td>100</td>
                                             <td>33</td>
                                             @php
-                                                $sum = 0;
-                                                // $count = 0;
-                                                // $total = [];
-                                                
+                                                $sum = 0;                                                
                                             @endphp
                                             
                                             @foreach ($subject as $k => $v)
                                             @php
                                                 $total[$k] += $v['total'];
                                                 $sum += $v['total'];
-                                                // $count += 1;
                                                 $totalTermMark = \App\Models\Term::where('school_id', Auth::id())->selectRaw("SUM(total_mark) as term_total_mark")->first();
                                                 $count = $totalTermMark->term_total_mark / 100;
                                             @endphp
                                                 @if ($v['total'] != 0)
                                                     <td class="p-0">
-                                                        {{-- {{ $v['total'] }} --}}
                                                         <table class="table table-bordered m-0">
                                                             
                                                             <tr>
@@ -217,7 +200,6 @@
                                         @endphp
                                         </tr>
                                         @endforeach
-                                        {{-- @dd($total) --}}
                                         <tr>
                                             <th colspan="3">Total Mark And GPA</th>
                                             @foreach ($total as $value)
@@ -229,87 +211,105 @@
                                         </tr>
                                     </tbody>
                                 </table>
-                                <div class="d-flex">
-                                    <table class="table table-bordered" style="width: 30%;font-size: 12px;">
-                                        <thead>
-                                            <tr>
-                                                <th>Marks Range</th>
-                                                <th>Grade</th>
-                                                <th>GPA</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                                <td>80 - 100</td>
-                                                <td>A+</td>
-                                                <td>5.00</td>
-                                            </tr>
-                                            <tr>
-                                                <td>70 - 79</td>
-                                                <td>A</td>
-                                                <td>4.00</td>
-                                            </tr>
-                                            <tr>
-                                                <td>60 - 59</td>
-                                                <td>A-</td>
-                                                <td>3.50</td>
-                                            </tr>
-                                            <tr>
-                                                <td>50 - 59</td>
-                                                <td>B</td>
-                                                <td>3.00</td>
-                                            </tr>
-                                            <tr>
-                                                <td>40 - 49</td>
-                                                <td>C</td>
-                                                <td>2.00</td>
-                                            </tr>
-                                            <tr>
-                                                <td>33 - 39</td>
-                                                <td>D</td>
-                                                <td>1.00</td>
-                                            </tr>
-                                            <tr>
-                                                <td>00 - 32</td>
-                                                <td>F</td>
-                                                <td>0.00</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                    {{-- <table class="table table-bordered ms-3 text-center" style="width: 25%">
-                                        <thead>
-                                            <tr>
-                                                <th colspan="2">Attendance</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                                <td>Present</td>
-                                                <td>{{ count($attendance) }}</td>
-                                            </tr>
-                                            <tr>
-                                                <th>Place In Own Class</th>
-                                                <td>{{ $studentRank }}</td>
-                                            </tr>
-                                        </tbody>
-                                    </table> --}}
-                                    <table class="w-100 table table-bordered text-center ms-3" style="width: 45%">
-                                        <thead>
-                                            <tr>
-                                                <th colspan="2">Signatures</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr style="height: 90%">
-                                                <td width="50%"></td>
-                                                <td width="50%"></td>
-                                            </tr>
-                                            <tr>
-                                                <th>Class Teacher</th>
-                                                <th>Principal</th>
-                                            </tr>
-                                        </tbody>
-                                    </table>
+                                <div class="row justify-content-between">
+
+                                    <div class="col-6" style="font-size: 12px;">
+                                        <table class=" table table-bordered text-center" >
+                                            <thead>
+                                                <tr>
+                                                    <th colspan="3">Signatures</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr style="height: 90%">
+                                                    <td style="height: 70px; width:150px;"></td>
+                                                    <td style="height: 70px; width:150px;"></td>
+                                                    <td style="height: 70px; width:150px;"></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Class Teacher</td>
+                                                    <td>Principal</td>
+                                                    <td>Guardian</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+        
+                                    <div class="col-3">
+                                        <div>
+                                            <table class=" table table-bordered text-center" style="font-size: 12px;">
+        
+                                                <tbody>
+                                                    <tr class="row">
+                                                        <td class="col-8">Total Days</td>
+                                                        <td class="col-4"></td>
+                                                    </tr>
+                                                    <tr class="row">
+                                                        <td class="col-8">Total Attendance</td>
+                                                        <td class="col-4"></td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+        
+                                        <div>
+                                            <table class=" table table-bordered text-center" style="font-size: 12px;">
+        
+                                                <tbody>
+                                                    <tr class="row">
+                                                        <td class="col-8">Position in Class</td>
+                                                        <td class="col-4">{{$studentRank}}</td>
+                                                    </tr>
+                                                    <tr class="row">
+                                                        <td class="col-8">Position in Section</td>
+                                                        <td class="col-4">{{$section_studentRank}}</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+        
+                                    </div>
+        
+                                    <div class="ml-auto col-2">
+                                        <table class="table table-bordered" style="font-size: 9px;">
+                                            <thead>
+                                                <tr align="center">
+                                                    <th colspan="2">Mark Grade</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td style="padding:1px;">80-100</td>
+                                                    <td width="20%" style="padding:1px;">A+</td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="padding:1px;">70-79</td>
+                                                    <td style="padding:1px;">A</td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="padding:1px;">60-69</td>
+                                                    <td style="padding:1px;">A-</td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="padding:1px;">50-59</td>
+                                                    <td style="padding:1px;">B</td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="padding:1px;">40-49</td>
+                                                    <td style="padding:1px;">C</td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="padding:1px;">33-39</td>
+                                                    <td style="padding:1px;">D</td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="padding:1px;">0-32</td>
+                                                    <td style="padding:1px;">F</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+        
                                 </div>
                             </div>
                         </div> 

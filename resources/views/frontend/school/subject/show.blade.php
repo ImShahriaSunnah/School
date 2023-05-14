@@ -8,7 +8,7 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="border p-3 rounded">
-                            <h6 class="mb-0 text-uppercase"> {{__('app.Subject')}}</h6>
+                            <h6 class="mb-0 text-uppercase">{{__('app.add')}} {{__('app.Subject')}}</h6>
                             <hr/>
                                 <form class="row g-3" method="post" action="{{route('subject.create.post')}}" enctype="multipart/form-data">
                                     @csrf
@@ -18,7 +18,7 @@
                                     <div class="col-12">
                                         <label class="form-label">{{__('app.Subject')}} {{__('app.Name')}}</label>
                                         <div class="input-group mb-3">
-                                            <input type="text" class="form-control" placeholder="{{__('app.Subject')}} {{__('app.Name')}}" name="subject_name">
+                                            <input type="text" class="form-control" placeholder="{{__('app.Subject')}} {{__('app.Name')}}" name="subject_name" required>
                                             <input type="hidden" class="form-control"   name="class_id" value="{{$class_id}}">
 
                                         </div>
@@ -48,7 +48,7 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="table-responsive">
-                            <table id="example" class="table table-striped table-bordered" style="width:100%">
+                            <table class="table table-striped table-bordered" style="width:100%">
                                 <thead>
                                 <tr>
                                     <th>{{__('app.nong')}}</th>

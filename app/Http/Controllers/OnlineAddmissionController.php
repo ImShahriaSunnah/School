@@ -20,7 +20,7 @@ class OnlineAddmissionController extends Controller
 
         return view('frontend.school.admission.admissionForm',compact('school', 'classes'));
     }
- 
+
     public function onlineAdmissionSingleShow($id){
         $data = OnlineAdmission::find($id);
         return view('frontend.school.admission.RequestStudentView',compact('data'));
@@ -28,17 +28,13 @@ class OnlineAddmissionController extends Controller
 
 
     public function onlineAdmissionFormPost(Request $request)
-    { 
+    {
         $request->validate([
-            'name'=>'required', 
+            'name'=>'required',
             'dob'=>'required',
-            'image'=>'required|file',
             'f_name'=>'required',
             'm_name'=> 'required',
-            'pre_address'=>'required',
-            'par_address'=>'required',
             'g_name'=>'required',
-            'g_phone'=>'required',
             'relation'=>'required',
             'religion'=>'required',
             'In_class'=>'required',
@@ -50,7 +46,7 @@ class OnlineAddmissionController extends Controller
             $fileName=date('Ymdhmsis').'.'.$request->file('image')->
             getclientOriginalExtension();
             $request->file('image')->storeAs('/up',$fileName);
-        }    
+        }
 
         OnlineAdmission::create([
             'name'=>$request->name,
@@ -85,7 +81,7 @@ class OnlineAddmissionController extends Controller
         return back();
 
     }
-    
+
     public function onlineAdmissionEdit($id){
 
         $school = school::find(Auth::user()->id);
@@ -94,12 +90,12 @@ class OnlineAddmissionController extends Controller
         $edit=onlineAdmission::find($id);
         return view('frontend.school.admission.AdmissionEdit',compact('edit','school','classes'));
     }
-        
-        
+
+
     public function onlineAdmissionEditPost(Request $request,$id)
     {
         $request->validate([
-            'name'=>'required', 
+            'name'=>'required',
             'dob'=>'required',
             'image'=>'required|file',
             'f_name'=>'required',
@@ -136,11 +132,11 @@ class OnlineAddmissionController extends Controller
             'm_phone'=>$request->m_phone,
             'm_nid'=>$request->m_nid,
             'f_nid'=>$request->f_nid,
-            
+
             'blood_group'=>$request->blood_group,
             'gender'=>$request->gender,
             'pre_address'=>$request->pre_address,
-            
+
             'par_address'=>$request->par_address,
             'g_name'=>$request->g_name,
             'g_phone'=>$request->g_phone,
@@ -168,7 +164,7 @@ class OnlineAddmissionController extends Controller
 
     public function onlineAdmissionFormList(){
         $list=OnlineAdmission::all();
-    
-        return view('frontend.school.admission.admissionFormList',compact('list'));   
+
+        return view('frontend.school.admission.admissionFormList',compact('list'));
     }
 }

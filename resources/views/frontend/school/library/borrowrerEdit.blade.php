@@ -1,5 +1,9 @@
 @extends('layouts.school.master')
 
+@push('css')
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.1/themes/base/jquery-ui.css">
+@endpush 
+
 @section('content')
 
 <main class="page-content">
@@ -61,12 +65,12 @@
                                     <div class="row">
                                         <div class="col-md-6">
                                             <label>borrow date</label>
-                                            <input type="date" id="borrow_date" value="{{$borrowrer->borrow_date}}" class="form-control" placeholder="" name="borrow_date" required>
+                                            <input type="text"  value="{{$borrowrer->borrow_date}}" id="datepicker" class="form-control" placeholder="" name="borrow_date" required>
                                             @error('borrow_date')<div class="alert alert-danger">{{$message}}</div>@enderror
                                         </div>
                                         <div class="col-md-6">
                                             <label>Return date</label>
-                                            <input type="date" id="return_date" value="{{ $defaultDate }}" class="form-control" placeholder="" name="return_date" required>
+                                            <input type="text" id="return_date" value="{{ $defaultDate }}" class="form-control" placeholder="" name="return_date" required>
                                             @error('return_date')<div class="alert alert-danger">{{$message}}</div>@enderror
                                         </div>
                                     </div>
@@ -76,7 +80,7 @@
                                     <div class="row">
                                         <div class="col-md-6">
                                             <label>Possible return date</label>
-                                            <input type="date" value="{{$borrowrer->possible_borrow_date}}" class="form-control" placeholder="" name="possible_borrow_date">
+                                            <input type="text" id="datepicker2" value="{{$borrowrer->possible_borrow_date}}" class="form-control" placeholder="" name="possible_borrow_date">
                                         </div>
 
                                     </div>
@@ -106,32 +110,52 @@
 </main>
 @endsection
 @push('js')
-<script type="text/javascript">
-    $(function() {
-        var dtToday = new Date();
 
-        var month = dtToday.getMonth() + 1;
-        var day = dtToday.getDate();
-        var year = dtToday.getFullYear();
-        if (month < 10)
-            month = '0' + month.toString();
-        if (day < 10)
-            day = '0' + day.toString();
-        var maxDate = year + '-' + month + '-' + day;
-        $('#borrow_date').attr('min', maxDate);
-    });
-    $(function() {
-        var dtToday = new Date();
+    <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js"></script>
+    <script>
+        $(document).ready(function(){
+            $("#datepicker").datepicker({
+                dateFormat: "yy-mm-dd",
+                changeMonth: true,
+                changeYear: true,
+            });
+        })
+    </script>
 
-        var month = dtToday.getMonth() + 1;
-        var day = dtToday.getDate();
-        var year = dtToday.getFullYear();
-        if (month < 10)
-            month = '0' + month.toString();
-        if (day < 10)
-            day = '0' + day.toString();
-        var maxDate = year + '-' + month + '-' + day;
-        $('#return_date').attr('min', maxDate);
-    });
+    <script>
+        $(document).ready(function(){
+            $("#datepicker2").datepicker({
+                dateFormat: "yy-mm-dd",
+                changeMonth: true,
+                changeYear: true,
+            });
+        })
+    </script>
+
+<script>
+    $(document).ready(function(){
+        $("#return_date").datepicker({
+            dateFormat: "yy-mm-dd",
+            changeMonth: true,
+            changeYear: true,
+        });
+    })
 </script>
+
+    <script type="text/javascript">
+    
+        $(function() {
+            var dtToday = new Date();
+
+            var month = dtToday.getMonth() + 1;
+            var day = dtToday.getDate();
+            var year = dtToday.getFullYear();
+            if (month < 10)
+                month = '0' + month.toString();
+            if (day < 10)
+                day = '0' + day.toString();
+            var maxDate = year + '-' + month + '-' + day;
+            $('#return_date').attr('min', maxDate);
+        });
+    </script>
 @endpush

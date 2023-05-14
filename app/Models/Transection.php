@@ -10,4 +10,5 @@ class Transection extends Model
     use HasFactory;
 
     protected $guarded=[];
+
 }

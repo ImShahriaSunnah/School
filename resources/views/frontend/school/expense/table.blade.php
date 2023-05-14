@@ -3,24 +3,14 @@
 @section('content')
     <!--start content-->
     <!--start content-->
-    <main class="page-content">
-
-        
+    <main class="page-content">       
 
 
         <div class="row">
-            <div class="col-xl-12"> 
-                {{-- <div class="d-sm-flex align-items-center">
-                    <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                        <h1 class="h3 mb-0 text-gray-800">Expenses List</h1>
-                        <a href="{{ route('expense.create') }}" class="btn btn-primary shadow-sm float-right">
-                            <i class="fas fa-plus fa-sm text-white-50"></i> Add new expense
-                        </a>
-                    </div>
-                </div> --}}
+            <div class="col-xl-12">                 
                 <div class="card-header py-3 bg-transparent">
                     <div class="d-sm-flex align-items-center">
-                        <h5 class="mb-2 mb-sm-0">{{__('app.expenses_list')}}</h5>
+                        <h5 class="mb-2 mb-sm-0" ><a href="{{route('expense.show')}}"><span style="color:black;"> {{__('app.expenses_list')}}</span></a></h5>
                         <div class="ms-auto">
                             <button type="button" class="btn btn-secondary" onclick="history.back()">{{__('app.back')}}</button>
                             <a href="{{route('expense.create')}}" class="btn btn-primary">{{__('app.Add new expense')}}</a>
@@ -28,7 +18,6 @@
                         </div>
                     </div>
                 </div>
-
 
                 <div class="row" >
                     <div class="col">
@@ -45,7 +34,7 @@
             
                                                 <div class="col-md">
                                                     <label for=""><b>{{__('app.Search On Date/Start Date')}}</b></label>
-                                                    <input type="date" name="searchdate" value= {{$defaultDate}}
+                                                    <input type="date" name="searchdate" 
                                                         class="form-control @error('searchdate') is-invalid @enderror">
             
                                                     @error('searchdate')
@@ -74,18 +63,18 @@
                                                     <label for=""><b>{{__('app.Search On month')}}</b></label>
                                                     <select  class="form-control mb-3 js-select" name="searchmonth" class="form-control @error('searchmonth') is-invalid @enderror">
                                                     <option value="0" selected>{{__('app.Month')}} {{__('app.select')}}</option>
-                                                    <option value="1" >January</option>
-                                                    <option value="2" >February</option>
-                                                    <option value="3" >March</option>
-                                                    <option value="4" >April</option>
-                                                    <option value="5" >May</option>
-                                                    <option value="6" >June</option>
-                                                    <option value="7" >July</option>
-                                                    <option value="8" >August</option>
-                                                    <option value="9" >September</option>
-                                                    <option value="10" >October</option>
-                                                    <option value="11" >November</option>
-                                                    <option value="12" >December</option>
+                                                    <option value="1" @isset(request()->searchmonth) {{(request()->searchmonth == 1) ? 'selected' : ''}}  @endisset>January</option>
+                                                    <option value="2" @isset(request()->searchmonth) {{(request()->searchmonth == 2) ? 'selected' : ''}}  @endisset>February</option>
+                                                    <option value="3" @isset(request()->searchmonth) {{(request()->searchmonth == 3) ? 'selected' : ''}}  @endisset>March</option>
+                                                    <option value="4" @isset(request()->searchmonth) {{(request()->searchmonth == 4) ? 'selected' : ''}}  @endisset>April</option>
+                                                    <option value="5" @isset(request()->searchmonth) {{(request()->searchmonth == 5) ? 'selected' : ''}}  @endisset>May</option>
+                                                    <option value="6" @isset(request()->searchmonth) {{(request()->searchmonth == 6) ? 'selected' : ''}}  @endisset>June</option>
+                                                    <option value="7" @isset(request()->searchmonth) {{(request()->searchmonth == 7) ? 'selected' : ''}}  @endisset>July</option>
+                                                    <option value="8" @isset(request()->searchmonth) {{(request()->searchmonth == 8) ? 'selected' : ''}}  @endisset>August</option>
+                                                    <option value="9" @isset(request()->searchmonth) {{(request()->searchmonth == 9) ? 'selected' : ''}}  @endisset>September</option>
+                                                    <option value="10" @isset(request()->searchmonth) {{(request()->searchmonth == 10) ? 'selected' : ''}}  @endisset>October</option>
+                                                    <option value="11" @isset(request()->searchmonth) {{(request()->searchmonth == 11) ? 'selected' : ''}}  @endisset>November</option>
+                                                    <option value="12" @isset(request()->searchmonth) {{(request()->searchmonth == 12) ? 'selected' : ''}}  @endisset>December</option>
                                                 </select>
             
                                                     @error('searchmonth')

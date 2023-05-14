@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\ClassPeriod;
+use DateTime;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -31,7 +32,7 @@ class ClassPeriodController extends Controller
      */
     public function index()
     {
-        $rows = DB::table('class_periods')->where('school_id', $this->school->id)->get();
+        $rows = DB::table('class_periods')->where('school_id', $this->school->id)->orderBy('shift', 'asc')->get();
 
         if($rows->count() > 0)
         {
@@ -39,7 +40,8 @@ class ClassPeriodController extends Controller
         }
         else
         {
-            return view('frontend.school.period.form');
+            $rows = [];
+            return view('frontend.school.period.form', compact('rows'));
         }
         
     }
@@ -94,9 +96,9 @@ class ClassPeriodController extends Controller
      */
     public function store(Request $request)
     {
-        // return $request;
+        
         for($i=0; $i < count($request->title); $i++)
-        {
+        {       
             if(!is_null($request['start_time'][$i]) && !is_null($request['end_time'][$i]))
             {
                 DB::table('class_periods')->updateOrInsert(
@@ -112,7 +114,7 @@ class ClassPeriodController extends Controller
                         'updated_at' =>  now(),
                     ]
                 );
-            }
+            } 
         }
 
         return redirect(route('period.index'));
@@ -169,6 +171,7 @@ class ClassPeriodController extends Controller
      */
     public function update(Request $request, $id)
     {
+        
         try
         {
             $row = ClassPeriod::where(['school_id' => $this->school->id, 'id' => $id]);

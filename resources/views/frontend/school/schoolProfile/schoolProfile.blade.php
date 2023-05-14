@@ -19,7 +19,7 @@
                             <div class="col-lg-10">
                                 @if (app()->getLocale() === 'en')
                                     <center>
-                                        <h3 style="margin-top:40px;font-size:40px">{{ $school->school_name }}</h3>
+                                        <h3 styleS="margin-top:40px;font-size:40px">{{ $school->school_name }}</h3>
                                     </center>
                                 @else
                                     <center>

@@ -16,6 +16,7 @@ class CreateStaffTypesTable extends Migration
         Schema::create('staff_types', function (Blueprint $table) {
             $table->id();
             $table->string('position_name');
+            $table->string('position_name_bn');
             $table->foreignId('school_id')->constrained('schools')->cascadeOnDelete();
             $table->timestamps();
         });

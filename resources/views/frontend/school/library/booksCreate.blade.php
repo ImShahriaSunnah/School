@@ -47,7 +47,7 @@
                                         <td>{{$data->rack_no}}</td>
                                         <td>{{$data->quantity}}</td>
                                         <td>{{$data->available}}</td>
-                                        <td> <img width="50px" src="{{url('uploads/library/'.$data->image)}}" alt=""></td>
+                                        <td> <img width="50px" src="{{asset('uploads/library/'.$data->image)}}" alt="img not added"></td>
                                         <td>
 
 

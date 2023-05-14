@@ -10,14 +10,13 @@
 
                         <div class="d-flex justify-content-center">
                             @if (File::exists(public_path(Auth::user()->school_logo)) && !is_null(Auth::user()->school_logo))
-                            <img src="{{asset(Auth::user()->school_logo)}}" alt="school logo" class="img-fluid" width="80" style="width:80px; height:80px;">
+                            <img src="{{asset(Auth::user()->school_logo)}}" alt="school logo" class="img-fluid" width="80" style="width:80px; height:80px;margin-right:20px;">
                             @endif
                             
                             <div class="text-center">
-                                <h4 style="margin-bottom: 0px;"> {{ strtoupper( Auth::user()->school_name) }} </h4>
+                                <h4 style="margin-bottom: 0px; "> {{ strtoupper( Auth::user()->school_name) }} </h4>
                                 <p style="margin-bottom: 0px; font-size:12px margin-bottom:10px;"> {{ (Auth::user()->slogan )}} </p>
-                                <h5>Result Of {{getClassName($class)->class_name}}</h5>
-                                <h5>{{ getTermName($term)->term_name }}</h5>
+                                <h5>Result Of {{getClassName($class)->class_name}} {{ getTermName($term)->term_name }}</h5>                                
                                 <h6>Date: {{ date('d-m-Y') }}</h6>
                             </div>
                         </div>

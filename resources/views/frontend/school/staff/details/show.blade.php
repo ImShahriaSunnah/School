@@ -12,7 +12,9 @@
                         <h5 class="mb-2 mb-sm-0">{{__('app.Stuff')}} {{__('app.List')}}</h5>
                         <div class="ms-auto">
                             <button type="button" class="btn btn-secondary" onclick="history.back()">{{__('app.back')}}</button>
-                            <a href="{{route('school.staff.List.create')}}" class="btn btn-primary">{{__('app.staff create')}}</a>
+                            @if(Request::segment(2) != 'staff-salary')
+                                <a href="{{route('school.staff.List.create')}}" class="btn btn-primary">{{__('app.staff create')}}</a>
+                            @endif
                             <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="lni lni-youtube"></i> Tutorial</button>
                         </div>
                     </div>
@@ -58,17 +60,17 @@
                                     <td>{{$data->salary}}</td>
                                     <td>
                                         @if(Request::segment(2) == 'staff-salary')
-                                        <div class="btn-group mr-2" role="group" aria-label="First group">
-                                            <a href="{{route('school.staff.salary.Add',$data->id)}}" class="btn btn-primary">Add Salary</a>
-                                        </div>
+                                            <div class="btn-group mr-2" role="group" aria-label="First group">
+                                                <a href="{{route('school.staff.salary.Add',$data->id)}}" class="btn btn-primary">Add Salary</a>
+                                            </div>
                                         @else
-                                        <div class="btn-group mr-2" role="group" aria-label="First group">
-                                            <a href="{{route('staff.view',$data->id)}}" class="btn btn-primary">View</a>
-                                            <a href="{{route('edit.staff.List.school',$data->id)}}" class="btn btn-success">Edit</a>
+                                            <div class="btn-group mr-2" role="group" aria-label="First group">
+                                                <a href="{{route('staff.view',$data->id)}}" class="btn btn-primary">View</a>
+                                                <a href="{{route('edit.staff.List.school',$data->id)}}" class="btn btn-success">Edit</a>
 
-                                            {{-- <a href="{{route('school.staff.delete',$data->id)}}" class="btn btn-danger">Delete</a>--}}
-                                            <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{{$key}}">Delete</button>
-                                        </div>
+                                                {{-- <a href="{{route('school.staff.delete',$data->id)}}" class="btn btn-danger">Delete</a>--}}
+                                                <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{{$key}}">Delete</button>
+                                            </div>
                                         @endif
                                     </td>
                                     <div class="modal fade" id="deleteModal{{$key}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" style="display: none;">

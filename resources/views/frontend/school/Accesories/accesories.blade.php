@@ -14,26 +14,26 @@
                             <table class="table" style="border:1px solid rgb(43, 60, 188">
                                 <div class="row my-3">
                                     <div class="col">
-                                        <a class="btn btn-success" href="{{route('accesoriesType')}}"> + </a>
-                                        <a class="btn btn-primary" href="{{route('receipt.Show')}}"><i class="fa-solid fa-list"></i></a>
+                                        <a class="btn btn-success" href="{{route('accesoriesType')}}"> + Accesories </a>
+                                        <a class="btn btn-primary" href="{{route('receipt.Show')}}">History</a>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col-8"> 
-                                        <label for="Student Name">Student Name</label>
-                                        <input type="text" id="s_n" required onkeyup="Sname()" placeholder="Student Name" class="form-control">
+                                        <label for="Student Name">{{__('app.Student')}} {{__('app.Name')}}</label>
+                                        <input type="text" id="s_n" required onkeyup="Sname()" placeholder="{{__('app.Student')}} {{__('app.Name')}}" class="form-control">
                                         <span class="mt-2" id="s_name"></span>
                                     </div>
                                     <div class="col-4"> 
-                                        <label for="Roll Number">Roll Number</label>
-                                        <input type="number" id="roll" required onkeyup="roll()" placeholder="Roll Number" class="form-control">
+                                        <label for="Roll Number">{{__('app.Roll')}}</label>
+                                        <input type="number" id="roll" required onkeyup="roll()" placeholder="{{__('app.Roll')}}" class="form-control">
                                         <span class="mt-2" id="roll"></span>
                                     </div>
                                 </div>
                                 <br>
                                 <div class="row mb-4">
                                     <div class="col-6">
-                                        <label for="Class">Class</label>
+                                        <label for="Class">{{__('app.Class')}}</label>
                                         <select class="form-control mb-3 js-select" name="class" onchange="loadSection()" id="class" class="form-control">
                                             <option value="" selected disabled> {{__('app.select')}} </option>
                                             @foreach($class as $row )
@@ -45,7 +45,7 @@
                                     </div>
 
                                     <div class="col-6">
-                                        <label for="Section">Section</label>
+                                        <label for="Section">{{__('app.Section')}}</label>
                                         <select class="form-control mb-3 js-select" name="section_id" id="section_id" onchange="section()" class="form-control">
                                         </select>
                                     </div>
@@ -53,15 +53,14 @@
 
                                 <thead>
                                     <tr>
-                                        <th>{{__('app.nong')}}</th>
+                                        
                                         <th>{{__('app.Accesories')}}</th>
                                         <th style="width: 31%">{{__('app.quantity')}}</th>
                                         <th>{{__('app.Price')}}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <td scope="row">1</td>
+                                    <tr>                                        
                                         <td>
                                             <select class="form-control mb-3 js-select" name="accesories" id="accesories" class="form-control">
                                                 <option value="" selected disabled>Select One</option>
@@ -93,6 +92,9 @@
                 <div class="col-12"></div>
 
                 <div class="col-md-7  mt-4" style="border:1px solid rgb(43, 60, 188)">
+                    <div class="col-lg-2">
+                        <img src="{{ asset($school->school_logo) }}" width="80" class="rounded-circle shadow-8-strong" style="margin-left:50px; margin-top:10px; margin-bottom:8px;" alt="">
+                    </div>
                     <div class="p-4" id="printDiv">
                         <div class="text-center">
                             @if( app()->getLocale() === 'en')
@@ -102,15 +104,18 @@
                             @endif
                             @if( app()->getLocale() === 'en')
                             <p style="margin-top:-5px !important;font-size:12px">{{$school->slogan}}</p>
-                      @else
-                      <p style="margin-top:-5px !important;font-size:12px">{{$school->slogan_bn}}</p>
-                      @endif
-                      <p style="margin-top:-5px !important;font-size:14px">{{$school->address}}</p>
+                            @else
+                            <p style="margin-top:-5px !important;font-size:12px">{{$school->slogan_bn}}</p>
+                            @endif
+                            <p style="margin-top:-5px !important;font-size:14px">{{$school->address}}</p>
                             <div class="row text-center">
 
                                 <h5 style="margin-top:5px !important;font-size:22px;margin-bottom:10px;">Receipt</h5>
                             </div>
                         </div>
+
+
+
 
 
                         <div class="row ">
@@ -248,8 +253,7 @@
             }
             if (qty == 0) {
                 alert("Please Add Quantity");
-
-            } else {
+          } else {
                 billFunction();
             }
 
@@ -298,7 +302,7 @@
                         "class": $("#class").val(),
                         "section": $("#section_id").val(),
                         "amount": $("#subTotal").text(),
-                        "quantity":$("#qty").val(),
+                        "quantity": $("#qty").val(),
                         "accesories": $("#accesories").val(),
                         "_token": "{{csrf_token()}}",
                     },
@@ -348,6 +352,7 @@
 <script>
     function removeRow(count) {
         $("#row" + count).remove();
+        
     }
 </script>
 <script>
@@ -414,10 +419,5 @@
         })
     }
 </script>
-
-
-
-
-
 
 @endpush

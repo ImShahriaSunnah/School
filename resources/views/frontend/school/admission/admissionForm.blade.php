@@ -5,62 +5,73 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
   <title>Shikkha - {{$school->school_name}}</title>
-  <style>
-    
-
-
-
-  </style>
+  <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.1/themes/base/jquery-ui.css">
 </head>
 
 <body>
 
-  </div>
+    
   <section class="container my-2 bg-dark w-100 text-light p-2">
     <form class="row g-3 p-3" action="{{route('online.Admission.Form.Post')}}" method="post" enctype="multipart/form-data">
       @csrf
 
+      
       <center>
-        @if( app()->getLocale() === 'en')
-        <h2>{{$school->school_name}}</h2>
-        @else
-        <h2>{{$school->school_name_bn}}</h2>
-        @endif
-        @if( app()->getLocale() === 'en')
-        <p style="margin-bottom: 0px; font-size:12px margin-bottom:10px;"> {{  $school->slogan}} </p>
-        @else 
-        <p style="margin-bottom: 0px; font-size:12px margin-bottom:10px;"> {{  $school->slogan_bn}} </p>
-        @endif
+        
+        <div class="row">
+          <div class="col-lg-2"></div>
+          <div class="col-lg-2">
+            <img src="{{ asset($school->school_logo) }}" width="80"
+      class="rounded-circle shadow-8-strong"
+      style="margin-left:10px; margin-top:10px; margin-bottom:8px;" alt="">
+          </div>
+          <div class="col-lg-5">
+            @if( app()->getLocale() === 'en')
+            <h2>{{$school->school_name}}</h2>
+            @else
+            <h2>{{$school->school_name_bn}}</h2>
+            @endif
+            @if( app()->getLocale() === 'en')
+            <p style="margin-bottom: 0px; font-size:12px margin-bottom:10px;"> {{  $school->slogan}} </p>
+            @else 
+            <p style="margin-bottom: 0px; font-size:12px margin-bottom:10px;"> {{  $school->slogan_bn}} </p>
+            @endif
+          </div>
+          <div class="col-lg-3"></div>
+        </div>
+        
       </center>
-      <div class="dropdown" style="margin-right:20px ;">
-        <a class="btn btn-light btn-sm dropdown-toggle"  href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-        <i class="bi bi-globe-central-south-asia"></i>
-        </a>
+        <div class="dropdown" style="margin-right:20px ;">
+          <a class="btn btn-light btn-sm dropdown-toggle"  href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+          <i class="bi bi-globe-central-south-asia"></i>
+          </a>
 
-        <ul class="dropdown-menu">
-            <li><a class="dropdown-item" href="{{route('change.language', 'bn')}}">Bangla</a></li>
-            <li><a class="dropdown-item" href="{{route('change.language', 'en')}}">English</a></li>
-        </ul>
-    </div>
+          <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="{{route('change.language', 'bn')}}">Bangla</a></li>
+              <li><a class="dropdown-item" href="{{route('change.language', 'en')}}">English</a></li>
+          </ul>
+        </div>
 
-      <div class="col-md-5">
-        <label for="validationDefault01" class="form-label">{{__('app.name')}}<strong style="color:red">*</strong></label>
-        <input type="text" class="form-control" placeholder="  {{__('app.name')}}" value="{{old('name')}}"  required name="name" id="validationDefault01">
+        <div class="col-md-5">
+          <label for="validationDefault01" class="form-label">{{__('app.name')}}<strong style="color:red">*</strong></label>
+          <input type="text" class="form-control" placeholder="  {{__('app.name')}}" value="{{old('name')}}"  required name="name" id="validationDefault01">
 
-        @error('name') <div class="alert alert-danger">{{$message}}</div>@enderror
-      </div>
+          @error('name') <div class="alert alert-danger">{{$message}}</div>@enderror
+        </div>
         <div class="col-md-5"> <label class="form-label">{{__('app.image')}}</label>
           <div class="input-group mb-3">
             <input type="file" class="form-control" name="image"  placeholder="image">
             <img width="100px" src="{{url('/up')}}" alt="">
           </div>
-
-      </div>
-      <div class="col-2">
-        <label for="inputAddress" class="form-label">{{__('app.dob')}}<strong style="color:red">*</strong></label>
-        <input type="date" class="form-control w-100" value="{{old('dob')}}"id="dob"   placeholder="01-01-2001" name="dob">
-        @error('dob') <div class="alert alert-danger">{{$message}}</div>@enderror
-      </div>
+        </div>
+        <div class="col-2">
+          <label>{{__('app.Birth')}} </label>                                               
+          <input type="date" id="datepicker" class="form-control" placeholder="YYYY-MM-DD"
+          name="dob" @if(!empty(old('dob'))) value="{{ date('Y-m-d', strtotime(old('dob'))) }}" @endif>
+          {{-- <label for="inputAddress" class="form-label">{{__('app.dob')}}<strong style="color:red">*</strong></label>
+          <input type="text" id="datepicker" required class="form-control w-100" value="{{ date('Y-m-d', strtotime(old('dob'))) }}" id="dob"   placeholder="01-01-2001" name="dob"> --}}
+          @error('dob') <div class="alert alert-danger">{{$message}}</div>@enderror
+        </div>
       </div>
 
       <div class="col-md-3">
@@ -114,11 +125,11 @@
         <div class="gender-details-box">
           <span class="gender-title">{{__('app.Gender')}}<strong style="color:red">*</strong></span>
           <div class="gender-category">
-          <input type="radio" name="gender" value="male" {{ old('gender') == 'male' ? 'checked' : '' }}>
+          <input type="radio" required name="gender" value="male" {{ old('gender') == 'male' ? 'checked' : '' }}>
             <label for="male" >{{__('app.Male')}}</label>
-            <input type="radio" name="gender"  value="female" {{ old('gender') == 'female' ? 'checked' : '' }}>
+            <input type="radio"required name="gender"  value="female" {{ old('gender') == 'female' ? 'checked' : '' }}>
             <label for="female" >{{__('app.Female')}}</label>
-            <input type="radio" name="gender" value="other" {{ old('gender') == 'other' ? 'checked' : '' }}>
+            <input type="radio"required name="gender" value="other" {{ old('gender') == 'other' ? 'checked' : '' }}>
             <label for="other">{{__('app.other')}}</label>
           </div>
         </div>
@@ -135,7 +146,7 @@
           <option value="B-">{{__('app.B-')}}</option>
           <option value="AB+">{{__('app.AB+')}}</option>
           <option value="AB-">{{__('app.AB-')}}</option>
-          <option value="O+">{{__('app.O+')}}option>
+          <option value="O+">{{__('app.O+')}}</option>
           <option value="O-">{{__('app.O-')}}</option>
 
         </select>
@@ -155,8 +166,8 @@
       </div>
       </div>
       <div class="col-md-3">
-        <label for="inputCity" class="form-label">{{__('app.Nationality')}}<strong style="color:red">*</strong></label>
-        <input type="text" class="form-control" value="{{old('nationality')}}" required  placeholder="{{__('app.Bangladeshi')}}" name="nationality"  id="nationality">
+        <label for="inputCity" class="form-label">{{__('app.Nationality')}}</label>
+        <input type="text" class="form-control" value="{{old('nationality')}}"   placeholder="{{__('app.Bangladeshi')}}" name="nationality"  id="nationality">
         @error('nationality') <div class="alert alert-danger">{{$message}}</div>@enderror
       </div>
 
@@ -164,14 +175,14 @@
 
         <label for="inputCity" class="form-label">{{__('app.Present_Address')}}<strong style="color:red">*</strong></label>
 
-        <textarea ype="text" class="form-control" value="{{old('pre_address')}}" name="pre_address" placeholder=""id="pre_address"></textarea>
+        <textarea ype="text" required class="form-control" value="{{old('pre_address')}}" name="pre_address" placeholder=""id="pre_address"></textarea>
         @error('pre_address') <div class="alert alert-danger">{{$message}}</div>@enderror
       </div>
       <div class="col-md-6">
 
-        <label for="inputCity" class="form-label">{{__('app.Parmanent_Address')}}</label>
+        <label for="inputCity" class="form-label">{{__('app.Parmanent_Address')}}<strong style="color:red">*</strong></label>
 
-        <textarea ype="text" class="form-control" value="{{old('par_address')}}" name="par_address" placeholder=" " id="par_address"></textarea>
+        <textarea ype="text" required class="form-control" value="{{old('par_address')}}" name="par_address" placeholder=" " id="par_address"></textarea>
         @error('pre_address') <div class="alert alert-danger">{{$message}}</div>@enderror
       </div>
 
@@ -256,6 +267,17 @@
 <!--app-->
 <script src="{{ asset('schools/assets/js/app.js')}}"></script>
 <script src="{{ asset('schools/assets/js/index5.js')}}"></script>
+<script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js"></script>
+
+<script>
+  $(document).ready(function(){
+      $("#datepicker").datepicker({
+          dateFormat: "yy-mm-dd",
+          changeMonth: true,
+          changeYear: true,
+      });
+  })
+</script>
 
 </body>
 

@@ -14,9 +14,14 @@
                             <form class="row g-3" method="post" action="{{route('school.staff.salary.update',$studentFeesEdit->id)}}" enctype="multipart/form-data">
                                 @csrf
                                 <div class="col-12">
+                                    
+                                    
+                                    
                                     <label class="form-label">Pay For {{$studentFeesEdit->month_name}}</label>
                                     <div class="input-group mb-3"> <span class="input-group-text" id="basic-addon1">Amount Taka</span>
-                                        <input type="text" class="form-control"  name="amount" value="{{$studentFeesEdit->amount}}">
+                                        <input type="hidden" name="employee_phone" value="{{$StaffSalary->phone_number}}">  
+
+                                        <input type="text" class="form-control"  name="amount" value="{{$StaffSalary->salary}}">
                                     </div>
                                 </div>
                                 <div class="col-12">

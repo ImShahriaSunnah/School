@@ -13,11 +13,15 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="border p-3 rounded">
-                            <h6 class="mb-0 text-uppercase">{{__('app.Student')}} {{__('app.Information')}}</h6>
-
+                            @if(!isset($studentEdit))
+                                <h6 class="mb-0 text-uppercase">{{__('app.Student')}} {{__('app.Information')}}</h6>
+                            @else 
+                                <h6 class="mb-0 text-uppercase">{{__('app.Student')}} {{__('app.Information')}} {{__('app.Update')}}</h6>
+                            @endif
+                            
                             @if(!is_null(Auth::user()->zk_ip_address) && !is_null(Auth::user()->zk_ip_port))
                             <strong class="text-danger" style="margin-top: 20px">
-                                *** {{__('app.Ensuretitle')}} ***
+                                * {{__('app.Ensuretitle')}} *
                             </strong>
                             @endif
                             <hr/>
@@ -71,7 +75,7 @@
                                             </div>
                                             <div class="col-md-6">
                                                 <label>{{__('app.Birth')}} </label>                                               
-                                                <input type="text" id="datepicker" class="form-control" placeholder="YYYY-MM-DD"
+                                                <input type="date" id="datepicker" class="form-control" placeholder="YYYY-MM-DD"
                                                 name="dob" @if(!empty(old('dob'))) value="{{ date('Y-m-d', strtotime(old('dob'))) }}" @endif>
                                             </div>
                                         </div>
@@ -134,6 +138,11 @@
                                                 <select class="form-control mb-3 js-select" id="group_id" name="group_id">
                                                     <option selected>Select one</option>
                                                 </select>
+                                                {{-- <select class="form-control mb-3 " name="group_id" required>
+                                                    <option value="{{ old('Science') }}" >Science</option>
+                                                    <option value="{{ old('Humanities') }}">Humanities</option>
+                                                    <option value="{{ old('Business-studies') }}" >Business-studies</option>
+                                                </select> --}}
                                             </div>
                                             <div class="col-md">
                                                 <label>{{__('app.Image')}} </label>
@@ -144,11 +153,11 @@
                                     <div class="col-12">
                                         <div class="row">
                                             <div class="col-md">
-                                                <label>{{__('app.Fathers')}} {{__('app.Name')}} <span style="color:red;">*</span></label>
+                                                <label>{{__('app.Father Name')}} <span style="color:red;">*</span></label>
                                                 <input type="text" class="form-control" placeholder="{{__('app.Fathers')}} {{__('app.Name')}}" name="father_name" value="{{ old('father_name') }}" required>
                                             </div>
                                             <div class="col-md">
-                                                <label>{{__('app.Mothers')}} {{__('app.Name')}}</label>
+                                                <label>{{__('app.Mother Name')}} <span style="color:red;">*</span></label>
                                                 <input type="text" class="form-control" placeholder="{{__('app.Mothers')}} {{__('app.Name')}}" name="mother_name" value="{{ old('mother_name') }}" required>
                                             </div>
                                         </div>
@@ -210,7 +219,7 @@
                                             </div>
                                             <div class="col-md-6">
                                                 <label>{{__('app.Birth')}} <span style="color:red;">*</span></label>
-                                                <input type="date" class="form-control" name="dob" value="{{$studentEdit->dob}}" required>
+                                                <input type="date" id="datepicker" class="form-control" name="dob" value="{{$studentEdit->dob}}" required>
                                             </div>
                                         </div>
 
@@ -254,7 +263,7 @@
                                             </div>
 
                                             <div class="col-md">
-                                                <label >{{__('app.Section')}} {{__('app.Name')}} <span style="color:red;">*</span></label>
+                                                <label>{{__('app.Section')}} {{__('app.Name')}} <span style="color:red;">*</span></label>
                                                 <select class="form-control mb-3 js-select"id="section_id" name="section_id" required>
                                                 <option value="{{$studentEdit->section_id}}" selected>{{getSectionName($studentEdit->section_id)->section_name}}</option>
                                                     {{-- @foreach($class as $data)
@@ -270,11 +279,20 @@
                                     <div class="col-12">
                                         <div class="row">
                                             <div class="col-md" id="group-select">
-                                                <label class="form-label">Group Name</label>
-                                                <select class="form-control mb-3 js-select" id="group_id" name="group_id">
-                                                    <option selected>Select one</option>
-                                                    {{-- <option value="{{$studentEdit->group_id}}" selected>{{getGroupName($studentEdit->group_id)->group_name}}</option> --}}
+
+                                                <label class="form-label">{{__('app.Group')}} {{__('app.Name')}}</label>
+                                                <select class="form-control mb-3" name="group_id"  js-select>
+                                                    <option value="" >Select One</option>
+                                                    <option value="1" {{($studentEdit->group_id == 1) ? 'selected' : ''}}>Science</option>
+                                                    <option value="2" {{($studentEdit->group_id == 2) ? 'selected' : ''}}>Commerce</option>
+                                                    <option value="2" {{($studentEdit->group_id == 3) ? 'selected' : ''}}>Humanities</option>
+                                                    
+
                                                 </select>
+                                                {{-- <select class="form-control mb-3 js-select" id="group_id" name="group_id">
+                                                    <option selected>Select one</option> --}}
+                                                    {{-- <option value="{{$studentEdit->group_id}}" selected>{{getGroupName($studentEdit->group_id)->group_name}}</option> --}}
+                                                {{-- </select> --}}
                                             </div>
                                             <div class="col-md-6">
                                                 <label>{{__('app.Image')}}</label>
@@ -287,13 +305,13 @@
                                     <div class="col-12">
                                         <div class="row">
                                             <div class="col-md-6">
-                                                <label>Father Name <span style="color:red;">*</span></label>
+                                                <label>{{__('app.Father Name')}} <span style="color:red;">*</span></label>
                                                 <input type="text" class="form-control" placeholder="Father name" name="father_name" value="{{$studentEdit->father_name}}" required>
 
                                             </div>
                                             <div class="col-md-6">
-                                                <label>Mother Name</label>
-                                                <input type="text" class="form-control" placeholder="Mother name" name="mother_name" value="{{$studentEdit->mother_name}}">
+                                                <label>{{__('app.Mother Name')}} <span style="color:red;">*</span></label>
+                                                <input type="text" class="form-control" placeholder="Mother name" name="mother_name" value="{{$studentEdit->mother_name}}" required>
 
                                             </div>
                                            
@@ -420,20 +438,15 @@
             loadSection();
         @endif
 
-        // @if (isset($studentEdit))
-        //     loadSection();
-        // @endif
-
         function loadSection() {
             let class_id = $("#class_id").val();
             let groupElement = `<label>Group Name</label>
                                 <select class="form-control mb-3 js-select" id="group_id" name="group_id">
                                     <option value=" " selected>Select one</option>
                                     <option value="1" @if(isset($studentEdit))@if($studentEdit->group_id==1){{'selected'}}@endif @endif > Science </option>
-                                    <option value="2" @if(isset($studentEdit))@if($studentEdit->group_id==2){{'selected'}}@endif @endif> commerce </option>
+                                    <option value="2" @if(isset($studentEdit))@if($studentEdit->group_id==2){{'selected'}}@endif @endif> Commerce </option>
                                     <option value="3" @if(isset($studentEdit))@if($studentEdit->group_id==3){{'selected'}}@endif @endif> Humanities </option>
                                 </select>`;
-
 
             $.ajax({
                 url:'{{route('admin.show.section')}}',
@@ -444,7 +457,6 @@
                 },
 
                 success: function (response) {
-                    // console.log(response.class.class_name);
 
                     $('#section_id').html(response.html);
 
@@ -461,14 +473,6 @@
 
         }
 
-        // @if(old('section_id'))
-        //     loadGroup();
-        // @endif
-
-        // @if (isset($studentEdit))
-        //     loadGroup();
-        // @endif
-
         function loadGroup() {
             let class_id = $("#class_id").val();
             let section_id = $("#section_id").val();
@@ -483,7 +487,6 @@
                 },
 
                 success: function (response) {
-                    // console.log(response);
                     $('#group_id').html(response);
                 }
             });

@@ -48,9 +48,15 @@ class ExamController extends Controller
      * @param int $term_id
      * @return respone 
      */
-    public function getRoutine($id, $term_id)
+    public function getRoutine($id, $term_id, $shift_id)
     {
-        $routines = ExamRoutine::with('class', 'subject', 'term')->where('school_id', Auth::user()->id)->where('term_id', $term_id)->where('class_id', $id)->orderBy('date', 'desc')->get();
+        $routines = ExamRoutine::with('class', 'subject', 'term')
+                                ->where('school_id', Auth::user()->id)
+                                ->where('shift_id', $shift_id)
+                                ->where('term_id', $term_id)
+                                ->where('class_id', $id)
+                                ->orderBy('date', 'asc')
+                                ->get();
         
         return response()->json($routines);
     }
@@ -66,10 +72,11 @@ class ExamController extends Controller
         $validate = Validator::make($request->all(), [
             "class_id"        => "required",
             "subject_id"      => "required",
-            "date"            => "required",
+            "date"            => "required|date",
             "start_time"      => "required",
             "end_time"        => "required",
-            "exam_term"       => "required"
+            "exam_term"       => "required",
+            "shift_id"       => "required",
         ], [
             "class_id.required" => "The class field is required.",
             "subject_id.required" => "The subject field is required.",
@@ -77,6 +84,7 @@ class ExamController extends Controller
             "start_time.required" => "The start time field is required.",
             "end_time.required" => "The end time field is required.",
             "exam_term.required" => "The exam term field is required.",
+            "shift_id.required" => "The Shift field is required.",
         ]);
 
         if ($validate->fails()) {
@@ -97,6 +105,7 @@ class ExamController extends Controller
         ExamRoutine::insert([
             "school_id"         => Auth::user()->id,
             "term_id"           => $request->exam_term,
+            "shift_id"           => $request->shift_id,
             "class_id"          => $request->class_id,
             "subject_id"        => $request->subject_id,
             "date"              => \Carbon\Carbon::parse($request->date)->format('d/m/Y'),
@@ -134,6 +143,17 @@ class ExamController extends Controller
         $data['school']        = School::where('id', Auth::user()->id)->first();
         $data['term']          = Term::findOrFail($term_id);
         $data['class']         = InstituteClass::findOrFail($class_id);
+        $data['shift'] = "Day";
+        
+        if($data['exam_routines']->first()->shift_id == 1)
+        {
+            $data['shift'] = "Morning";
+        }
+        else
+        {
+            $data['shift'] = "Evening";
+        }
+
         $pdf = PDF::loadView('frontend.school.exam.exam_routine', $data);
         $pdf->render();
         // return $pdf->download('Exam_Routine.pdf');

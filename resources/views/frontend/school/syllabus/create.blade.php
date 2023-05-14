@@ -22,10 +22,10 @@
                                 <div class="col-md-12">
                                 </div>
                                 <div class="col-12">
-
+                                    <label for="">Select Class<span style="color:red;">*</span></label>
                                     <select class="form-control mb-3 js-select" aria-label="Default select example" name="class_id"
                                         id="class_id" onchange="loadSubject()">
-                                        <option selected>Class Name</option>
+                                        <option value="" selected>Select One</option>
                                         @foreach ($class as $data)
                                             <option value="{{ $data->id }}">{{ $data->class_name }}</option>
                                         @endforeach
@@ -37,10 +37,10 @@
 
                                 </div>
                                 <div class="col-12">
-
+                                    <label for="">Select Term<span style="color:red;">*</span></label>
                                     <select class="form-control mb-3 js-select" aria-label="Default select example" name="term_id"
                                         id="term_id">
-                                        <option selected>Term</option>
+                                        <option value="" selected>Select One</option>
                                         @foreach ($term as $data)
                                             <option value="{{ $data->id }}">{{ $data->term_name }}</option>
                                         @endforeach
@@ -53,13 +53,13 @@
 
 
                                 <div class="col-12">
-
+                                    <label for="">Select Subject<span style="color:red;">*</span></label>
                                     <select class="form-control mb-3 js-select" aria-label="Default select example" name="subject_id"
                                         id="subject_id">
-                                        <option selected>Subject</option>
+                                        <option value="" selected>Select One</option>
                                         <!-- @foreach ($subjects as $subject)
-    <option value="{{ $subject->id }}">{{ $subject->subject_name }}</option>
-    @endforeach -->
+                                            <option value="{{ $subject->id }}">{{ $subject->subject_name }}</option>
+                                        @endforeach -->
                                     </select>
                                     @error('subject_id')
                                         <div class="alert alert-danger">{{ $message }}</div>

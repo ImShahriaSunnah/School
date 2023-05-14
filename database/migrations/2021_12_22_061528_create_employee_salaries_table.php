@@ -17,6 +17,7 @@ class CreateEmployeeSalariesTable extends Migration
             $table->id();
             $table->string('month_name')->nullable();
             $table->integer('amount')->default(0);
+            $table->string('employee_phone');
             $table->foreignId('employee_id')->constrained('employees')->cascadeOnDelete();
             $table->foreignId('school_id')->constrained('schools')->cascadeOnDelete();
             $table->timestamps();

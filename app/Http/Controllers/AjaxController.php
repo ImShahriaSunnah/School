@@ -31,12 +31,27 @@ class AjaxController extends Controller
 
         return $html;
     }
+    public function ajaxLoaderaccesories(Request $request){
+        Transection::create([
+            'purpose'=>'Receipt Accesories Payment',
+            'payment_method'=>1,
+            'type'=>'3',
+            'amount'=>$request->amount,
+            'name'=>'admin',
+            'school_id' =>  Auth::id()
+        ]);
+    }
+
+    /**
+     * Save Accesories (Sunnah)
+     * 
+     * @param Request 
+     * @param $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function ajaxAccesorisTransaction(Request $request)
-    {
-
-
+    {   
         $access = AccesoriesTransaction::create([
-
             "name" => $request->name,
             "roll" => $request->roll,
             "class" => $request->class,
@@ -44,25 +59,11 @@ class AjaxController extends Controller
             "amount" => $request->amount,
             "quantity" => $request->quantity,
             "accesories" => $request->accesories,
-            'school_id' =>  Auth::id()
-
+            'school_id' =>  Auth::user()->id
         ]);
+
         return response()->json(['success' => true, 'access' => $access]);
-    }
 
-
-
-
-    public function ajaxLoaderaccesories(Request $request)
-    {
-        Transection::create([
-            'purpose' => 'receipt Accesories Payment',
-            'payment_method' => 1,
-            'type' => '3',
-            'amount' => $request->amount,
-            'name' => 'admin',
-            'school_id' =>  Auth::id()
-        ]);
     }
 
     public function ajaxLoadStudents(Request $request)
@@ -73,12 +74,12 @@ class AjaxController extends Controller
         ]);
 
         $rows = User::where(['school_id' => Auth::id(), 'shift' => $request->shift, 'class_id' => $request->classId])->get();
-
+    
         $html = '<label>Student</label>  <select class="form-select mb-3" name="student_id" required>
         <option value="0" selected>All Students</option>';
 
-        foreach ($rows as $row) {
-            $html .= '<option value="' . $row->phone . '">' . $row->name . '</option>';
+        foreach($rows as $row){
+            $html .= '<option value="'.$row->phone.'">'.$row->name.'</option>';
         }
 
         $html .= '</select>';
@@ -103,7 +104,6 @@ class AjaxController extends Controller
                 // $zk->clearUsers();
                 // return  $zk->getUser();
 
-
                 $att =  $zk->getAttendance();
                 // $zk->clearAttendance();
                 $zk->enableDevice();
@@ -111,7 +111,9 @@ class AjaxController extends Controller
             }
 
             return "Not connect";
-        } catch (Exception $e) {
+        }
+        catch(Exception $e)
+        {
             return $e->getMessage();
         }
     }

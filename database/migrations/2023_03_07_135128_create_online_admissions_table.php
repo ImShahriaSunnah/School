@@ -16,7 +16,7 @@ class CreateOnlineAdmissionsTable extends Migration
         Schema::create('online_admissions', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('image');
+            $table->string('image')->nullable();
             $table->string('dob');
             $table->string('f_name');
             $table->string('f_occupation')->nullable();
@@ -29,20 +29,20 @@ class CreateOnlineAdmissionsTable extends Migration
             $table->string('gender');
             $table->string('blood_group')->nullable();
             $table->string('religion');
-            $table->string('nationality');
+            $table->string('nationality')->nullable();
 
           
 
-            $table->string('pre_address');
-            $table->string('par_address');
-            $table->string('income');
+            $table->string('pre_address')->nullable();
+            $table->string('par_address')->nullable();
+            $table->string('income')->nullable();
 
-            $table->string('g_name');
-            $table->string('g_phone');
-            $table->string('relation');
+            $table->string('g_name')->nullable();
+            $table->string('g_phone')->nullable();
+            $table->string('relation')->nullable();
 
-            $table->string('old_school');
-            $table->string('In_class');
+            $table->string('old_school')->nullable();
+            $table->string('In_class')->nullable();
             $table->string('group')->nullable();
             $table->timestamps();
         });

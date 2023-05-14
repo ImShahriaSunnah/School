@@ -18,6 +18,7 @@ class CreateStudentFeesTable extends Migration
             $table->foreignId('class_id')->constrained('institute_classes')->cascadeOnDelete();
             $table->foreignId('school_id')->constrained('schools')->cascadeOnDelete();
             $table->foreignId('fees_type_id')->constrained('fees_types')->cascadeOnDelete();
+            // $table->foreign('fees_type_id')->references('id')->on('fees_types')->onDelete('cascade');
             $table->double('fees');
             $table->timestamps();
         });
