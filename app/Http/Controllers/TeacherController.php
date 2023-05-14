@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ResultCreatePost;
 use App\Models\AssignmentStudent;
 use App\Models\AssignmentTeacher;
 use App\Models\AssignTeacher;
@@ -17,9 +18,10 @@ use App\Models\Term;
 use App\Models\Todolist;
 use App\Models\User;
 use App\Models\ClassPeriod;
-
+use App\Models\MarkType;
 use App\Models\VaccineTeacher;
 use Exception;
+use Carbon\Carbon;
 use RealRashid\SweetAlert\Facades\Alert;
 use Illuminate\Support\Facades\File;
 use App\Notifications\AssignmentNotification;
@@ -37,9 +39,11 @@ class TeacherController extends Controller
 
 
     public function teacherDashboard(){
+        $abc = Carbon::now()->format('Y-m-d');
         $data = AssignTeacher::where('teacher_id',Auth::user()->id)->get();
         $showData = Notice::where('school_id',Auth::user()->school_id)->orderby('id','desc')->get()->toArray();
-        $todo = \App\Models\Todolist::where('teacher_id',Auth::user()->id)->orderBy('date', 'desc')->get();
+        $todo = \App\Models\Todolist::where('teacher_id',Auth::user()->id)->where('date', '>=', $abc )->orderBy('date', 'asc')->get();
+        // return $todo;
         //return $abc = \App\Models\Routine::where('teacher_id',Auth::user()->id)->get()->groupBy('subject_id');
         return view('frontend.teacher.dashboard',compact('data','showData','todo'));
     }
@@ -47,8 +51,8 @@ class TeacherController extends Controller
     public function myClassRoom(){
         $data = AssignTeacher::where('teacher_id',Auth::user()->id)->get();
         $classes = Routine:: where('teacher_id', Auth::user()->id)->get()->groupBy('subject_id');
-        
-        return view('frontend.teacher.myClassRoom',compact('data','classes'));
+        $dataTerm = Term::where('school_id', Auth::user()->school_id)->orderby('id','desc')->get();
+        return view('frontend.teacher.myClassRoom',compact('data','classes', 'dataTerm'));
     }
 
     public function profile(){
@@ -140,45 +144,99 @@ class TeacherController extends Controller
         return view('frontend.teacher.meet',compact('teacher'));
     }
 
-    public function resultUpload($subject_id,$class_id,$section_id,$group_id){
-        $group_id = ($group_id == 0) ? NULL : $group_id;
-        $dataStudent = User::where('class_id',$class_id)
-                         ->where('section_id',$section_id)
-                         ->where('group_id',$group_id)
-                         ->where('school_id',Auth::user()->school_id)
-                         ->get();
-        $dataSubject = Subject::where('id',$subject_id)->first();
-        $dataTerm = Term::orderby('id','desc')->first();
-        return view('frontend.teacher.result',compact('dataStudent','dataSubject','dataTerm'));
-    }
-
-    public function resultCreatePost(Request $request){
-
-        foreach ($request->student_id as $key => $data)
-        {
-            $dataHave = Result::where('student_id',$data)->where('subject_id',$request->subject_id)->where('term_id',$request->term_id)->first();
-            if(isset($dataHave)){
-                $result = Result::where('id',$dataHave->id)->first();
-            }else{
-                $result = new Result();
-            }
-            // dd($result);
-            $result->student_id =$data;
-            $result->student_roll_number = $request->student_roll_number[$key];
-            $result->subject_id = $request->subject_id;
-            $result->term_id = $request->term_id;
-            $result->written = is_null($request->written[$key]) ? 0 : $request->written[$key];
-            $result->mcq = is_null($request->mcq[$key] )  ? 0 : $request->mcq[$key];
-            $result->practical = is_null($request->practical[$key] ) ? 0 : $request->practical[$key];
-            $result->school_id = Auth::user()->school_id;
-
-            $result->save();
+    /**
+     * Result Update View Page 
+     * 
+     * @param $subject_id
+     * @param $class_id
+     * @param $section_id
+     * @return \Illuminate\Contracts\View\View
+     */
+    public function resultUpload(Request $request){
+        $group_id = 0;
+        $class_id = $request->class_id;
+        $subject_id = $request->subject_id;
+        $section_id = $request->section_id;
+        if (true) {
+            $request->validate([
+                'term_name' => 'required|numeric|min:1|'
+            ],
+            [
+               'term_name.required' => "If Input Your Subject Result then First Choose Term" 
+            ]);
         }
 
-        toast('Result Updated Successfully','success');
+        $group_id = ($group_id == 0) ? NULL : $group_id;
+        $dataStudent = User::where('class_id', $class_id)
+                         ->where('section_id', $section_id)
+                         ->where('group_id', $group_id)
+                         ->where('school_id', Auth::user()->school_id)
+                         ->get();
+        $dataSubject = Subject::where('id', $subject_id)->first();
+        $dataTermId = $request->term_name;
+        $markTypes = MarkType::where('institute_classes_id', $class_id)->where('school_id', Auth::user()->school_id)->orderBy('id', 'asc')->get();
+        if (count($markTypes) == 0) {
+            toast("First create mark type for this class", "error");
+            return back();
+        }
+        return view('frontend.teacher.result', compact('dataStudent','dataSubject','dataTermId', 'markTypes', 'class_id'));
+    }
+
+    /**
+     * Update Student Result
+     * 
+     * @param ResultCreatePost
+     * @param $request
+     * @return Response
+     */
+    public function resultCreatePost(ResultCreatePost $request)
+    {
+        $request->validated();
+
+        if(is_array($request->student_id) && count($request->student_id) > 0):
+            try {        
+                foreach ($request->student_id as $key => $data) {
+                    $dataHave = Result::where('student_id', $data)->where('subject_id', $request->subject_id)->where('term_id', $request->term_id)->first();
+                    if (isset($dataHave)) {
+                        $result = Result::where('id', $dataHave->id)->first();
+                    } else {
+                        $result = new Result();
+                    }
+                    $result->school_id = Auth::user()->school_id;
+                    $result->student_id = $data;
+                    $result->student_roll_number = $request->student_roll_number[$key];
+                    $result->institute_class_id  = $request->class_id;
+                    $result->subject_id = $request->subject_id;
+                    $result->term_id = $request->term_id;
+                    $result->attendance =  is_null($request->Attendance) ? 0 : $request->Attendance[$key] ?? 0;
+                    $result->assignment =  is_null($request->Assignment) ? 0 : $request->Assignment[$key] ?? 0;
+                    $result->class_test =  is_null($request->Class_Test) ? 0 : $request->Class_Test[$key] ?? 0;
+                    $result->presentation =  is_null($request->Presentation) ? 0 : $request->Presentation[$key] ?? 0;
+                    $result->quiz =  is_null($request->Quiz) ? 0 : $request->Quiz[$key] ?? 0;
+                    $result->practical =  is_null($request->Practical) ? 0 : $request->Practical[$key] ?? 0;
+                    $result->written = is_null($request->Written) ? 0 : $request->Written[$key] ?? 0;
+                    $result->mcq =  is_null($request->MCQ) ? 0 : $request->MCQ[$key] ?? 0;
+                    $result->others =  is_null($request->Others) ? 0 : $request->Others[$key] ?? 0;
+                    $result->total  = totalMark($result);
+                    $result->grade  = grade($result->total, $request->term_id);
+                    $result->gpa  = gpa($result->total, $request->term_id);
+                    $result->save();
+                }
+    
+                toast('Mark Save Sucessfully', 'success');
+            }
+            catch(Exception $e)
+            {
+                toast($e->getMessage(), 'error');
+            }        
+        
+        else:
+            toast('Please select at least one item', 'error');
+        endif;        
         return back();
 
     }
+
 
     public function attendanceUpload($class_id,$section_id,$group_id){
         $group_id = ($group_id == 0) ? NULL : $group_id;
@@ -431,11 +489,11 @@ class TeacherController extends Controller
         $rows = Routine::where([
             'school_id' => Auth::user()->school_id,
             'teacher_id' => Auth::user()->id,
-        ])->orderBy('period_id')->get()->groupBy('day');
+        ])->orderBy('day','desc')->get()->groupBy('day');
         
         $data['teachers'] = DB::table('teachers')->where('school_id', Auth::user()->id)->get();
         $data['periods'] = DB::table('class_periods')->where('school_id', Auth::user()->school_id)->get();
-
+        // return $data;
         return view('frontend.teacher.routine.table')->with(compact('rows', 'data'));
     }
     

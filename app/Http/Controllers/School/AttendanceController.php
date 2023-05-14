@@ -94,8 +94,6 @@ class AttendanceController extends Controller
 
         try {
 
-            // Excel::import(new AttendanceImport(), $request->file);
-            
             $import = new AttendanceImport();
             $import->import($request->file);
 
@@ -119,6 +117,25 @@ class AttendanceController extends Controller
                         'created_at'     =>  today(),
                         'updated_at'     =>  today(),
                     ]);
+
+
+                    $token   = env('GREENWEB_TOKEN'); // greenweb api access
+                    $to      = $student->phone;
+                    $message = $student->name . " is absent today(" . date('d-m-Y') . ")";
+
+                    $data = [
+                        'to'      => "$to",
+                        'message' => "$message",
+                        'token'   => "$token"
+                    ]; // Add parameters in key value
+                    $url = "http://api.greenweb.com.bd/api.php?json";
+
+                    // $ch = curl_init(); // Initialize cURL
+                    // curl_setopt($ch, CURLOPT_URL, $url);
+                    // curl_setopt($ch, CURLOPT_ENCODING, '');
+                    // curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
+                    // curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                    // $smsresult = curl_exec($ch);
                 }
             }
 

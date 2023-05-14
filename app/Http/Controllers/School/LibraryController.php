@@ -65,12 +65,16 @@ class LibraryController extends Controller
 
         ]);
         // for image upload
+        // $fileName = null;
+        // if ($request->hasFile('image')) {
+        //     $fileName = date('Ymdhmsis') . '.' . $request->file('image')->getclientOriginalExtension();
+        //     $request->file('image')->storeAs('uploads/library/', $fileName);
+        // }
         $fileName = null;
-        if ($request->hasFile('image')) {
-            $fileName = date('Ymdhmsis') . '.' . $request->file('image')->getclientOriginalExtension();
-            $request->file('image')->storeAs('uploads/library/', $fileName);
-        }
-        
+            if ($request->hasFile('image')) {
+                $fileName = time() . '.' . $request->file('image')->getclientOriginalExtension();
+                $request->file('image')->move(public_path('/uploads/library'), $fileName);
+            }
         // Create Book
         try {
             LibraryBookInfo::create(
@@ -92,8 +96,8 @@ class LibraryController extends Controller
         }
     }
     // Edit form
-    public function   booksEdit($id)
-    {
+    public function booksEdit($id)
+    {   
         $booksEdit = LibraryBookInfo::find($id);
         $bookTypes = LibBookType::all();
         return view('frontend.school.library.edit', compact('booksEdit', 'bookTypes'));
@@ -106,6 +110,7 @@ class LibraryController extends Controller
             'author_name' => 'required',
             'rack_no' => 'required',
             'quantity'=>'required',
+            'image' => 'required'
         ]);
 
 
@@ -130,11 +135,8 @@ class LibraryController extends Controller
                 'quantity'=>$request->quantity,
                 'image' => $fileName
             ]);
-            Alert::success('success!', "Record  update succesfully");
-
             return redirect()->route('books.create');}
         catch (\Exception $e) {
-
             return redirect()->route('books.edit')->with('error', 'data insert failed');
         }    
     }

@@ -18,7 +18,7 @@
                                             <div class="widget-icon mx-auto mb-3 bg-white-1 text-white">
                                                 <i class="bi bi-person-check-fill"></i>
                                             </div>
-                                            <h3 class="text-white">{{$teacherSalary}}</h3>
+                                            <h3 class="text-white">{{$teacherSalary}} ৳</h3>
                                             <p class="mb-0 text-white">{{__('app.Total Teacher Salary')}}</p>
                                         </div>
                                     </div>
@@ -32,7 +32,7 @@
                                             <div class="widget-icon mx-auto mb-3 bg-white-1 text-white">
                                                 <i class="bi bi-person-check-fill"></i>
                                             </div>
-                                            <h3 class="text-white">{{$teacherPaidSalary}}</h3>
+                                            <h3 class="text-white">{{$teacherPaidSalary}} ৳</h3>
                                             <p class="mb-0 text-white">{{__('app.Total Teacher Salary Paid')}}</p>
                                         </div>
                                     </div>
@@ -46,7 +46,7 @@
                                             <div class="widget-icon mx-auto mb-3 bg-white-1 text-white">
                                                 <i class="bi bi-person-check-fill"></i>
                                             </div>
-                                            <h3 class="text-white">{{$teacherSalary-$teacherPaidSalary}}</h3>
+                                            <h3 class="text-white">{{$teacherSalary-$teacherPaidSalary}} ৳</h3>
                                             <p class="mb-0 text-white">{{__('app.Total Teacher Salary Due')}}</p>
                                         </div>
                                     </div>
@@ -60,7 +60,7 @@
                                             <div class="widget-icon mx-auto mb-3 bg-white-1 text-white">
                                                 <i class="bi bi-people-fill"></i>
                                             </div>
-                                            <h3 class="text-white">{{$StaffSalary}}</h3>
+                                            <h3 class="text-white">{{$StaffSalary}} ৳</h3>
                                             <p class="mb-0 text-white">{{__('app.Staff Salary')}} </p>
                                         </div>
                                     </div>
@@ -74,7 +74,7 @@
                                             <div class="widget-icon mx-auto mb-3 bg-white-1 text-white">
                                                 <i class="bi bi-people-fill"></i>
                                             </div>
-                                            <h3 class="text-white">{{$StaffPaidSalary}}</h3>
+                                            <h3 class="text-white">{{$StaffPaidSalary}} ৳</h3>
                                             <p class="mb-0 text-white">{{__('app.Staff Salary Paid')}} </p>
                                         </div>
                                     </div>
@@ -88,7 +88,7 @@
                                             <div class="widget-icon mx-auto mb-3 bg-white-1 text-white">
                                                 <i class="bi bi-people-fill"></i>
                                             </div>
-                                            <h3 class="text-white">{{$StaffSalary - $StaffPaidSalary}}</h3>
+                                            <h3 class="text-white">{{$StaffSalary - $StaffPaidSalary}} ৳</h3>
                                             <p class="mb-0 text-white">{{__('app.Staff Salary Due')}} </p>
                                         </div>
                                     </div>
@@ -101,7 +101,7 @@
                                             <div class="widget-icon mx-auto mb-3 bg-white-1 text-white">
                                                 <i class="bi bi-file-earmark-check-fill"></i>
                                             </div>
-                                            <h3 class="text-white">{{$Expense}}</h3>
+                                            <h3 class="text-white">{{$Expense}} ৳</h3>
                                             <p class="mb-0 text-white">{{__('app.Total Expense')}}</p>
                                         </div>
                                     </div>
@@ -116,7 +116,7 @@
                                             <div class="widget-icon mx-auto mb-3 bg-white-1 text-white">
                                                 <i class="bi bi-tags-fill"></i>
                                             </div>
-                                            <h3 class="text-white">{{$TotalFees}}</h3>
+                                            <h3 class="text-white">{{$TotalFees}} ৳</h3>
                                             <p class="mb-0 text-white">{{__('app.Total Student Fee')}}</p>
                                         </div>
                                     </div>
@@ -130,7 +130,7 @@
                                             <div class="widget-icon mx-auto mb-3 bg-white-1 text-white">
                                                 <i class="bi bi-chat-left-quote-fill"></i>
                                             </div>
-                                            <h3 class="text-white">{{$colected}}</h3>
+                                            <h3 class="text-white">{{$colected}} ৳</h3>
                                             <p class="mb-0 text-white">{{__('app.Collected Fee')}}</p>
                                         </div>
                                     </div>
@@ -144,7 +144,7 @@
                                             <div class="widget-icon mx-auto mb-3 bg-white-1 text-white">
                                                 <i class="bi bi-hdd-fill"></i>
                                             </div>
-                                            <h3 class="text-white">{{$due}}</h3>
+                                            <h3 class="text-white">{{$due}} ৳</h3>
                                             <p class="mb-0 text-white">{{__('app.Due Fee')}}</p>
                                         </div>
                                     </div>
@@ -158,7 +158,7 @@
                                             <div class="widget-icon mx-auto mb-3 bg-white-1 text-white">
                                                 <i class="bi bi-wallet"></i>                                            
                                             </div>
-                                            <h3 class="text-white">{{$sumFund}}</h3>
+                                            <h3 class="text-white">{{$sumFund}} ৳</h3>
                                             <p class="mb-0 text-white">{{__('app.Fund Receive')}}</p>
                                         </div>
                                     </div>
@@ -172,7 +172,7 @@
                                             <div class="widget-icon mx-auto mb-3 bg-white-1 text-white">
                                                 <i class="bi bi-hdd-fill"></i>
                                             </div>
-                                            <h3 class="text-white">{{$accesories}}</h3>
+                                            <h3 class="text-white">{{$accesories}} ৳</h3>
                                             <p class="mb-0 text-white">{{__('app.Accesories')}}</p>
                                         </div>
                                     </div>
@@ -186,7 +186,7 @@
                                             <div class="widget-icon mx-auto mb-3 bg-white-1 text-white">
                                                 <i class="bi bi-hdd-fill"></i>
                                             </div>
-                                            <h3 class="text-white">{{$profit}}</h3>
+                                            <h3 class="text-white">{{$profit}} ৳</h3>
                                             <p class="mb-0 text-white">{{__('app.Total Profit')}}</p>
                                         </div>
                                     </div>

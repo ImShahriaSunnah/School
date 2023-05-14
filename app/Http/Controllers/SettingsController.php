@@ -51,8 +51,6 @@ class SettingsController extends Controller
                     'title' =>  $class->title,
                     'subjects'  =>  DB::table("common_subjects")->where('class', $class->id)->get(['id', 'code', 'name'])
                 ];
-                
-            //return $data;
             }
             return view('frontend.school.settings')->with(compact('data'));
         }
@@ -151,19 +149,22 @@ class SettingsController extends Controller
     /**
      * update school password
      */
-    public function school_Password(Request $request ,$id){
+    public function school_Password(Request $request){
         $school=School::find(Auth::id());
         $request->validate([
-           'password'=>'required|min:8'
+            'password'=>['required','min:5','confirmed']
         ]);
-
         $school->update([
-            'password' =>bcrypt($request->password)
+            
+            'password'=> bcrypt($request->password)
         ]);
-        Alert::success('Student password is Changed', 'Success Message');
-        return back();
+        Alert::success('School password is Changed', 'Success Message');
+        return response()->json([
+            'status'=>'success'
+            ]); 
     }
 
+      
 
     /**
      * edit school profile
@@ -182,48 +183,40 @@ class SettingsController extends Controller
      */
     public function school_profile_Update(Request $request, $id)
     {
-            $school=School::find($id);
+        $school=School::find($id);
 
-            $request->validate([
-                'school_logo' => 'image|mimes:jpeg,png,jpg'
-            ]);
+        $request->validate([
+            'school_logo' => 'image|mimes:jpeg,png,jpg|dimensions:width=640,height=640'
+        ]);
 
 
-            if($imageName = null && $request->hasFile('school_logo')){
+        if($request->hasFile('school_logo'))
+        {
+            File::delete(public_path($school->school_logo));
 
-                $imageName = $school->school_logo;
-                $removefile=public_path().'/uplaods/SchoolLogo/'.$imageName;
-                File::delete($removefile);
-
-                $imageName=date('Ymdhmsis').'.'.$request->file('school_logo')->getClientOriginalExtension();
-                $request->file('school_logo')->storeAs('/uploads/SchoolLogo',$imageName);
+            $fileName = date('Ymdhmsis') . '.' . $request->file('school_logo')->extension();
+            $request->file('school_logo')->move(public_path('uploads/SchoolLogo'), $fileName);
+            $filePath = "uploads/SchoolLogo/" . $fileName;
+            $filePath = $filePath;
+        }
                 
-                $school->update([
-                    'school_name'=>$request->school_name,
-                    'school_name_bn'    => $request->school_name_bn,
-                    'email'=>$request->email,
-                    'address'=>$request->address,
-                    'phone_number'=>$request->phone_number,
-                    'state'=>$request->state,
-                    'city'=>$request->city,
-                    'postcode'=>$request->postcode,
-                    'school_logo'=>$imageName,
-                ]);
-            }
-            else
-            {
 
-                $school->update([
-                    'school_name'=>$request->school_name,
-                    'school_name_bn'    => $request->school_name_bn,
-                    'email'=>$request->email,
-                    'address'=>$request->address,
-                    'phone_number'=>$request->phone_number,
-                    'state'=>$request->state,
-                    'city'=>$request->city,
-                    'postcode'=>$request->postcode,
-                ]);
-            }
+        $school->update([
+            'school_name'=>$request->school_name,
+            'school_name_bn'    => $request->school_name_bn,
+            'email'=>$request->email,
+            'address'=>$request->address,
+            'phone_number'=>$request->phone_number,
+            'state'=>$request->state,
+            'city'=>$request->city,
+            'postcode'=>$request->postcode,
+            'slogan'=>$request->slogan,
+            'slogan_bn'=>$request->slogan_bn,
+            'ein_number'=>$request->ein_number,
+            'school_logo'=>$filePath ?? $school->school_logo,
+        ]);
+
+        Alert::success("Great!", "Record updated successfully");
         return redirect()->route('school.profile');
     }
 }

@@ -5,8 +5,11 @@
 
 <main class="page-content">
   <center>
-    <h1>Accesories</h1>
+    <h1>{{__('app.Accesories')}} {{__('app.List')}}</h1>
+
   </center>
+  <a class="btn btn-success" href="{{route('reciept.create')}}">Back</a>
+
   <div class="row mt-3">
     <div class="col-12">
       <div class="card">
@@ -25,7 +28,7 @@
                 </div>
 
                 <div class="col-md">
-                  <button class="btn btn-outline-primary">Create</button>
+                  <button class="btn btn-outline-primary">{{__('app.Create')}}</button>
                 </div>
               </div>
             </form>
@@ -44,9 +47,9 @@
             <table class="table table-bordered">
               <thead>
                 <tr>
-                  <th scope="col">id</th>
-                  <th scope="col">Accesories</th>
-                  <th scope="col">Price</th>
+                  <th scope="col">{{__('app.Id')}}</th>
+                  <th scope="col">{{__('app.Accesories')}} {{__('app.Name')}}</th>
+                  <th scope="col">{{__('app.Price')}}</th>
                   <th scope="col">{{__('app.action')}}</th>
 
                 </tr>
@@ -102,8 +105,10 @@
 
                           <div class="row">
                             <div class="col-md">
+                              <label for="">Accesories Name</label>
                               <input type="text" class="form-control" value="{{$accesories->accesories}}" name="accesories" placeholder="Accesories Name">
                             </div>
+                            <label for="">Price</label>
                             <div class="col-md">
                               <input type="number" class="form-control" value="{{$accesories->price}}" name="price" placeholder="Enter Price">
                             </div>

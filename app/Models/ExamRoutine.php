@@ -9,6 +9,8 @@ class ExamRoutine extends Model
 {
     use HasFactory;
 
+    protected $guarded = [];
+
     //Relation with Institute Class
     public function class()
     {

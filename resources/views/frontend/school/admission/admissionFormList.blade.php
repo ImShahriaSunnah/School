@@ -35,15 +35,16 @@
                                     <td>{{ $id->name}}</td>
                                     <td>{{ $id->old_school}}</td>
                                     <td>{{ $id->In_class}}</td>
-                                   <td><img width="100px" src="{{url('/up/'.$id->image)}}" alt=""></td> 
+                                    <td><img width="100px" src="{{url('/up/'.$id->image?? 'profile_big.jpg')}} " alt=""></td>
+
 
                                     <td>
 
 
-                                        <a href="{{route('online.Admission.Delete',['id'=>$id->id])}}" class="btn btn-danger"><i class="bi bi-trash2-fill"></i></a>
 
-                                        {{-- <a href="{{route('online.Admission.Edit',['id'=>$id->id])}}" class="btn btn-success"><i class="bi bi-pencil-fill"></i></a> --}}
-
+                                        <button type="button" class="btn btn-danger" onclick="if(confirm('Are You sure?')){ location.replace('{{route('online.Admission.Delete',['id'=>$id->id])}}') }">
+                                            <i class="bi bi-trash-fill"></i>
+                                        </button>
                                         <a href="{{route('online.Admission.Single.Show',['id'=>$id->id])}}" class="btn btn-primary"><i class="bi bi-bullseye"></i></a>
 
                                     </td>

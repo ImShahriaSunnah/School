@@ -12,6 +12,7 @@ class InstituteClass extends Model
     protected $guarded = [
     ];
 
+
     /**
      * Relation with Mark Type
      * 
@@ -20,5 +21,14 @@ class InstituteClass extends Model
     public function markTypes()
     {
         return $this->hasMany(MarkType::class, 'institute_classes_id', 'id');
+    }
+
+
+    /**
+     * relation with section
+     */
+    public function section()
+    {
+        return $this->hasMany(Section::class, 'class_id')->select('id','class_id','section_name');
     }
 }

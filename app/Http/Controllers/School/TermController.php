@@ -17,10 +17,7 @@ class TermController extends Controller
      */
     public function index()
     {
-       
-
-
-        $rows = Term::where('school_id', Auth::id())->oldest('created_at')->get();
+        $rows = Term::where('school_id', Auth::id())->get();
         return view('frontend.school.student.result.term.show', compact('rows'));
     }
 
@@ -43,9 +40,9 @@ class TermController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'term_name'      => 'required',
+            'term_name'      => 'required|regex:/^[a-zA-Z0-9\s]+$/u',
             'term_name_bn'   => 'required',
-            'total_mark'    => 'required'
+            'total_mark'    => 'required|numeric'
         ]);
 
         $class = new Term();
@@ -92,7 +89,9 @@ class TermController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'term_name' => 'required',
+            'term_name' => 'required|regex:/^[a-zA-Z0-9\s]+$/u',
+            'term_name_bn'  => 'required',
+            'total_mark'    => 'required|numeric'
         ]);
 
         $class = Term::find($id);

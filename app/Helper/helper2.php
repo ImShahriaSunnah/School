@@ -2,7 +2,34 @@
 
 use Illuminate\Support\Facades\DB;
 use App\Models\Attendance;
+use App\Models\InstituteClass;
 use App\Models\StudentFee;
+use App\Models\Subject;
+
+/**
+ * class selected
+ */
+function commonClassSelected($schoolId, $className)
+{
+    return InstituteClass::where('school_id', $schoolId)->where('class_name', $className)->exists();
+}
+
+
+
+/**
+ * subject selected
+ */
+function commonSubjectSelected($schoolId, $className, $subjectName)
+{
+    return Subject::where('school_id', $schoolId)
+            // ->where('class_id', $classId)
+            ->whereHas('class_name', function($q) use ($className){
+                $q->where('class_name', $className);
+            })
+            ->where('subject_name', $subjectName)
+            ->exists();
+}
+
 
 /**
  * -------  get subject information
@@ -11,7 +38,6 @@ use App\Models\StudentFee;
  * ==================================================*/
 function commonSubject($id)
 {
-    
     return DB::table('common_subjects')->find($id);
 }
 
@@ -23,7 +49,6 @@ function commonSubject($id)
  * ==================================================*/
 function instituteSubject($id)
 {
-    
     return DB::table('subjects')->find($id);
 }
 
@@ -46,6 +71,10 @@ function commonClass($id)
 function instituteClass($id)
 {
     return DB::table('institute_classes')->find($id);
+}
+function instituteSection($id)
+{
+    return DB::table('sections')->find($id);
 }
 
 
@@ -2026,7 +2055,7 @@ function extraFeesAbsentAfterBreak($class_id,$month_name,$student_id, $absentaft
 
 function getStudentFees($schoolId, $classId, $feesType)
 {
-    return StudentFee::where(['school_id'=>$schoolId, 'class_id'=>$classId, 'fees_type_id'=>$feesType])->first();
+    return StudentFee::where(['school_id' => $schoolId, 'class_id' => $classId, 'fees_type_id' => $feesType])->first();
 }
 
 ?>

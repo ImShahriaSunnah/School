@@ -17,7 +17,8 @@ class CreateQuestionsTable extends Migration
             $table->id();
             $table->string('type');
             $table->bigInteger('school_id');
-            $table->bigInteger('term_id');
+            // $table->bigInteger('term_id');
+            $table->foreignId('term_id')->constrained('terms')->cascadeOnDelete();
             $table->bigInteger('class_id');
             $table->bigInteger('subject_id');
             $table->string('hours');

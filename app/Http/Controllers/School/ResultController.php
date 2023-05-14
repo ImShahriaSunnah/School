@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Attendance;
 use App\Models\Group;
 use App\Models\InstituteClass;
+use App\Models\MarkType;
 use App\Models\Result;
 use App\Models\Section;
 use App\Models\Subject;
@@ -14,13 +15,15 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use RealRashid\SweetAlert\Facades\Alert;
+use Illuminate\Support\Facades\DB;
+
 use Exception;
 
 class ResultController extends Controller
 {
     /**
      * Show View Page Select Class and Term
-     * 
+     *
      * @return \Illuminate\Contracts\View\View
      */
     public function classWiseResult()
@@ -33,7 +36,7 @@ class ResultController extends Controller
 
     /**
      * Class Wise User
-     * 
+     *
      * @param $id
      */
     public function classWiseUser(Request $request)
@@ -44,13 +47,13 @@ class ResultController extends Controller
 
     /**
      * Show Class Wise, Student Wise, Final Year Result
-     * 
-     * @param Request 
+     *
+     * @param Request
      * @param $request
-     * @return 
+     * @return
      */
     public function showClassWiseResult(Request $request)
-    {   
+    {  
         if ($request->resultType == "studentWise") {
 
             $request->validate(
@@ -65,24 +68,49 @@ class ResultController extends Controller
                     'student_wise_term_id.required' => 'Term Section Required',
                 ]
             );
-                  
+            $markType = MarkType::where('institute_classes_id', $request->student_wise_class_id)->where('school_id', Auth::user()->id)->get();
+            $markTypeCount = MarkType::where('institute_classes_id', $request->student_wise_class_id)->where('school_id', Auth::user()->id)->count();
             $term = Term::where('id', $request->student_wise_term_id)->first();
-            $studentResults = Result::where('institute_class_id', $request->student_wise_class_id)->where('student_id', $request->student_wise_student_id)->where('term_id', $request->student_wise_term_id)->get();
-            
+            $studentResults = Result::where('institute_class_id', $request->student_wise_class_id)
+            ->where('student_id', $request->student_wise_student_id)
+            // ->where('section_id', $request->student_wise_section_id)
+            ->where('term_id', $request->student_wise_term_id)->get();
+            $markTypeCount = $markTypeCount+1;
+            $attendance = Attendance::where('attendance', 1)->where('class_id', $request->student_wise_class_id)->where('student_id', $request->student_wise_student_id)->where('school_id', Auth::user()->id)->count();
+
+            $rank = Result::select('student_id')->selectRaw("SUM(total) as finalTotal")
+                            ->where('institute_class_id', $request->student_wise_class_id)
+                            ->where('term_id', $request->student_wise_term_id)
+                            ->orderByDesc('finalTotal')
+                            ->groupBy('student_id')
+                            ->get();
+            $findRank       = $rank->where('student_id', $request->student_wise_student_id);
+            $studentRank    = $findRank->keys()->first() + 1;
+
+            $section = User::find($request->student_wise_student_id);
+            $section_rank = Result::select('student_id')->selectRaw("SUM(total) as finalTotal")
+                            ->where('institute_class_id', $request->student_wise_class_id)
+                            ->where('term_id', $request->student_wise_term_id)
+                            ->where('section_id', $section->section_id)
+                            ->orderByDesc('finalTotal')
+                            ->groupBy('student_id')
+                            ->get();
+            $section_findRank       = $section_rank->where('student_id', $request->student_wise_student_id);
+            $section_studentRank    = $section_findRank->keys()->first() + 1;
+
             if($studentResults->count() > 0)
             {
-                return view('frontend.school.result.show_student_result', compact('studentResults', 'term'));
+                return view('frontend.school.result.show_student_result', compact('studentResults', 'term', 'markType', 'markTypeCount', 'attendance', 'studentRank', 'section_studentRank'));
             }
             else
             {
                 Alert::info("Sorry", "Result not published yet");
                 return back();
             }
-
         }
-        
+
         elseif ($request->resultType == 'yearlyFinalResult') {
-            
+
             $request->validate(
                 [
                     'final_wise_class_id' => 'required',
@@ -101,12 +129,14 @@ class ResultController extends Controller
 
             $subjects = [];
             foreach ($studentResults as $key => $result) {
+                if(!is_null($result->term)):
                 $subjects[$result->subject->subject_name][$result->term->term_name] = [
                     'total' => $result->total,
                     'written' => $result->written,
                     'mcq' => $result->mcq,
-                    'other' => $result->attendence + $result->assignment + $result->class_test + $result->presentation + $result->quiz + $result->practical + $result->other,
+                    'other' => $result->attendence + $result->assignment + $result->class_test + $result->presentation + $result->quiz + $result->practical + $result->others,
                 ];
+                endif;
             }
             $rank = Result::select('student_id')->selectRaw("SUM(total) as finalTotal")
                             ->where('institute_class_id', $request->final_wise_class_id)
@@ -114,14 +144,26 @@ class ResultController extends Controller
                             ->groupBy('student_id')
                             ->get();
             $findRank       = $rank->where('student_id', $request->final_student_wise_student_id);
-            $studentRank    = $findRank->keys()->first() + 1; 
+            $studentRank    = $findRank->keys()->first() + 1;
+
+            $section = User::find($request->final_student_wise_student_id);
+            $section_rank = Result::select('student_id')->selectRaw("SUM(total) as finalTotal")
+                            ->where('institute_class_id', $request->student_wise_class_id)
+                            ->where('term_id', $request->student_wise_term_id)
+                            ->where('section_id', $section->section_id)
+                            ->orderByDesc('finalTotal')
+                            ->groupBy('student_id')
+                            ->get();
+            $section_findRank       = $section_rank->where('student_id', $request->student_wise_student_id);
+            $section_studentRank    = $section_findRank->keys()->first() + 1;
+
             $userSection = User::where('id', $request->final_student_wise_student_id)->first();
             $attendance = Attendance::where('section_id', $userSection->section_id)->where('student_id', $request->final_student_wise_student_id)->get();
-            return view('frontend.school.result.show_final_result', compact('subjects', 'studentResults', 'studentRank', 'attendance')); 
+            return view('frontend.school.result.show_final_result', compact('subjects', 'studentResults', 'studentRank', 'attendance','section_studentRank'));
 
         }
 
-        else {    
+        else {
             $request->validate(
                 [
                     'class_wise_class_id' => 'required',
@@ -134,7 +176,7 @@ class ResultController extends Controller
             );
             // try {
 
-            //     } 
+            //     }
             // catch(Exception $e)
             // {
             //     return $e->getMessage();
@@ -145,7 +187,7 @@ class ResultController extends Controller
                 ->where('institute_class_id', $request->class_wise_class_id)
                 ->where('term_id', $request->class_wise_term_id)
                 ->get()->groupBy('student_id');
-                
+
                 $subjectCount = Result::where('school_id',Auth::user()->id)
                 ->where('institute_class_id', $request->class_wise_class_id)
                 ->where('term_id', $request->class_wise_term_id)
@@ -153,8 +195,8 @@ class ResultController extends Controller
                 ->groupBy('student_id');
 
                 $term_mark= Term::where('id',$term)->first();
-                
-            
+
+
                 $arrOfResult =[];
                 foreach ($classResults as $result => $data){
                     $total = 0;
@@ -163,12 +205,12 @@ class ResultController extends Controller
                     $resultStatus = 1;
                     foreach($data as $results){
                         $total += $results->total;
-                        
+
                         $totalGpa += $results->gpa;
-                        $totalMark = $results->total * 100 / $term_mark->total_mark; 
-                        if( $totalMark < 33 ) $resultStatus = 0; 
+                        $totalMark = $results->total * 100 / $term_mark->total_mark;
+                        if( $totalMark < 33 ) $resultStatus = 0;
                         $totalSubject++;
-                        
+
                     }
                     $totalGpa = number_format($totalGpa/$totalSubject, 2);
                     $arrOfResult [$total]= [
@@ -177,17 +219,17 @@ class ResultController extends Controller
                         'totalMark' => $totalMark,
                         'resultStatus' => $resultStatus,
                         'student_id' => $data[0]->student_id,
-                    ];                    
+                    ];
                 }
                 $arraySize = sizeof($arrOfResult);
 
                 $sortedArrayOfResult = collect($arrOfResult)->sortByDesc('total');
 
                 // return $sortedArrayOfResult[203]["student_id"];
-                
-                return view('frontend.school.result.classWiseResult', compact('sortedArrayOfResult','term','class', 'arraySize')); 
-            
+
+                return view('frontend.school.result.classWiseResult', compact('sortedArrayOfResult','term','class', 'arraySize'));
+
         }
     }
-        
+
 }

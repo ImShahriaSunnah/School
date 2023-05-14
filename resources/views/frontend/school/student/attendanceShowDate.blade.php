@@ -57,7 +57,7 @@
     </main>
 
     <?php
-    $tutorialShow = getTutorial('student-attendance-show');
+        $tutorialShow = getTutorial('student-attendance-show');
     ?>
     @include('frontend.partials.tutorial')
 

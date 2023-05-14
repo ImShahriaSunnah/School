@@ -56,9 +56,7 @@
                         <form class="row g-3" method="post" action="{{route('section.update.post',$sectionEdit->id)}}" enctype="multipart/form-data">
                             @csrf
                             <div class="col-12">
-                                <lable>Class Name <span style="color: red;"> *</span></lable>
-                                </label>
-
+                                <label for="">Class Name <span style="color: red;"> *</span></label>
                                 <select class="form-control mb-3 js-select" aria-label="Default select example" name="class_id">
                                     <option selected="">Class Name</option>
                                     @foreach($class as $data)

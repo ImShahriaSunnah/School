@@ -29,7 +29,7 @@
                             <div class="col-12">
 
                                 <select class="form-control mb-3 js-select" aria-label="Default select example" name="select_class" id="select_class">
-                                    <option selected>Select Class</option>
+                                    <option value="">Select Class</option>
                                     @foreach($class as $data)
                                     <option value="{{$data->id}}">{{$data->class_name}}</option>
                                     @endforeach

@@ -27,7 +27,7 @@ class CreateTeachersTable extends Migration
             $table->string('image')->nullable();
             $table->string('M_status')->nullable();
             $table->string('salary')->nullable();
-            $table->string('Nationality')->nullable();
+            $table->string('Nationality')->default('Bangladesh');
             $table->string('blood_group')->nullable();
             $table->string('shift')->nullable();
             $table->string('address')->nullable();

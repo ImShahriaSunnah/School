@@ -17,9 +17,9 @@
                             <div class="col-md-12">
                             </div>
                             <div class="col-12">
-
+                                <label for="">Select Class<span style="color:red;">*</span></label>
                                 <select class="form-control mb-3 js-select"  aria-label="Default select example" name="common_class_id" id="common_class_id" onchange="loadSection()">
-                                    <option selected>Class Name</option>
+                                    <option value="" selected>Class Name</option>
 
                                     @foreach($commonClass as $class)
                                     <option value="{{$class->id}}">{{$class->title}}</option>
@@ -29,9 +29,9 @@
                             </div>
 
                             <div class="col-12">
-
+                                <label for="">Select Subject<span style="color:red;">*</span></label>
                                 <select class="form-control mb-3 js-select" value="$subject->id" aria-label="Default select example" name="common_subject_id" id="common_subject_id" onchange="loadSection()">
-                                    <option selected>Subject</option>
+                                    <option value="" selected>Subject</option>
                                     @foreach($commonSubject as $subject)
                                     <option value="{{$subject->id}}">{{$subject->name}}</option>
                                     @endforeach

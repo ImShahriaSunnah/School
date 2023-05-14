@@ -22,6 +22,7 @@ class CreateResultsTable extends Migration
             $table->foreignId('subject_id')->constrained('subjects')->cascadeOnDelete();
             $table->foreignId('term_id')->constrained('terms')->cascadeOnDelete();
             $table->foreignId('institute_class_id')->constrained('institute_classes')->cascadeOnDelete();
+            $table->integer('section_id');
             $table->integer('attendance')->default(0);
             $table->integer('assignment')->default(0);
             $table->integer('class_test')->default(0);

@@ -71,7 +71,7 @@
                                                 <label for=""><b>{{$item->title}}</b></label>
                                                 <div class="input-group mb-2"> 
                                                     <span class="input-group-text" id="basic-addon1">৳</span>
-                                                    <input type="text" class="form-control" placeholder="Amount" name="fees[]" 
+                                                    <input type="number" class="form-control" placeholder="Amount"  name="fees[]" 
                                                         @isset(request()->class)
                                                             value="{{getStudentFees(Auth::id(), request()->class, $item->id)?->fees ?? 0}}"
                                                         @endisset

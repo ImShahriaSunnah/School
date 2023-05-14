@@ -15,7 +15,7 @@
                                 </div>
                                 <div class="col-12">
                                     <label class="form-label">Class</label>
-                                    <select class="form-control mb-3 js-select"aria-label="Default select example" name="class_id" id="class_id" onchange="loadSection()">
+                                    <select class="form-control mb-3 js-select"aria-label="Default select example" name="class_id" id="class_id" required onchange="loadSection()">
                                         <option value="" selected>Select One</option>
                                         @foreach($class as $data)
                                             <option value="{{$data->id}}">{{$data->class_name}}</option>
@@ -37,6 +37,7 @@
                                 <div class="col-12">
                                     <label class="form-label">{{__('app.Month')}}</label>
                                     <select class="form-control mb-3 js-select" id="month_id" name="month_id" required>
+                                        <option value="" selected>Select one</option>
                                         <option value="01">January</option>
                                         <option value="02">February</option>
                                         <option value="03">March</option>

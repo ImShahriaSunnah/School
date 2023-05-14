@@ -2,28 +2,29 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\AssignmentStudent;
-use App\Models\AssignmentTeacher;
-use App\Models\AssignStudentFee;
-use App\Models\Attendance;
-use App\Models\Department;
+use Carbon\Carbon;
+use App\Models\User;
 use App\Models\Notice;
 use App\Models\Result;
 use App\Models\Routine;
-use App\Models\StudentMonthlyFee;
 use App\Models\Subject;
 use App\Models\Teacher;
-use App\Models\User;
 use App\Models\Vaccine;
-use Carbon\Carbon;
+use App\Models\Attendance;
+use App\Models\Department;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use App\Models\AssignStudentFee;
+use App\Models\AssignmentStudent;
+use App\Models\AssignmentTeacher;
+use App\Models\StudentMonthlyFee;
 use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Validator;
 use PHPUnit\Framework\Constraint\Count;
 use RealRashid\SweetAlert\Facades\Alert;
+use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
 {
@@ -241,11 +242,12 @@ class UserController extends Controller
             'shift'=>Auth::user()->shift,
 
         ])->get()->groupBy('day');
-        
+
         $data['periods'] = DB::table('class_periods')->where('school_id', Auth::user()->school_id)->where('shift',Auth::user()->shift)->get();
 
         return view('frontend.user.routine.class_routine', compact('routines', 'data'));
     }
+    
     /**
      * Show Student Payment (Sajjad)
      * 
@@ -261,7 +263,43 @@ class UserController extends Controller
         $studentMonthlyFees = StudentMonthlyFee::where('student_id', Auth::user()->id)
                                 ->where('school_id', Auth::user()->school_id)
                                 ->whereBetween('created_at', [$newYear, $currentMonth])->get();
-        return view('frontend.user.payment.index', compact('studentMonthlyFees'));
+        if($fee!==null){
+            return view('frontend.user.payment.index', compact('studentMonthlyFees'));
+        }
+        else{
+            Alert::success('Not Payment Submitted', 'Success Message');
+
+            return view('frontend.user.notice.index');
+        }
+        
     }
-    
+
+    /**
+     * FIND STUDENT PAYMENT INFORMATION
+     */
+    public function findStudent(Request $request)
+    {
+        return $request;
+        
+        $student = User::where('school_id', Auth::id())->where('id', $request->studentId);
+        $data['month'] = $request->month;
+
+        if($student->exists())
+        {
+            $data['student'] = $student->first();
+            $data['months'] = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+
+            if($data['month'] != 'n'):
+                $data['assignFees'] = AssignStudentFee::where('school_id', Auth::id())->where('class_id', $data['student']->class_id)->whereIn('month_id', $data['month'])->first();
+                $data['studentFees'] = StudentMonthlyFee::where('school_id', Auth::id())->where('student_id', $data['student']->id)->whereIn('month_id', $data['month'])->first();
+            endif;
+
+            // return $data;
+            return view('frontend.school.finance.student-fees', compact('data'));
+        }
+
+        Alert::info("Sorry!", 'Record does not exists');
+        return back();
+
+    }
 }

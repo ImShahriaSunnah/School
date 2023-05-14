@@ -26,19 +26,25 @@ class CertificateController extends Controller
 
 
 
-    public function example($id){
+    // public function example($id){
+    //   $user=User::find($id);
+    //   $school=School::find(Auth::id());
+    //   $view = view('frontend.school.Certificate.Testimonial',compact('user','school'))->render();
+    //   $dompdf = new Dompdf();
+    //   $dompdf->set_option('isRemoteEnabled',TRUE);
+    //   $dompdf->loadHtml($view);
+    //   $dompdf->setPaper('A4', 'portrait');
+    //   $dompdf->render();
+    //   $dompdf->stream();
+
+    //   return back();
+    //   // return Response::download('frontend.school.Certificate.Testimonial');
+    // }
+
+    public function Transfer($id){
       $user=User::find($id);
       $school=School::find(Auth::id());
-      $view = view('frontend.school.Certificate.Testimonial',compact('user','school'))->render();
-
-      $dompdf = new Dompdf();
-      $dompdf->loadHtml($view);
-      $dompdf->setPaper('A4', 'portrait');
-      $dompdf->render();
-      $dompdf->stream();
-
-      return back();
-      // return Response::download('frontend.school.Certificate.Testimonial');
+      return view('frontend.school.Certificate.Transfer',compact('user','school'));
     }
 
 }

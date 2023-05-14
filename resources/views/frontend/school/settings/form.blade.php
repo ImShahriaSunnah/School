@@ -17,25 +17,37 @@
                                 </div>
 
                                 <div class="mb-3">
-                                    <label class="form-label">{{__('app.Device IP Address')}}</label>
+                                    <label class="form-label">{{__('Device Address')}}</label>
                                     <input 
                                         type="text" 
                                         class="form-control" 
-                                        name="zk_ip_address"
-                                        value="{{Auth::user()->zk_ip_address}}"
-                                        placeholder="192.168.0.123"
+                                        name="device_address"
+                                        value="{{Auth::user()->device_address}}"
+                                        placeholder="XXXXXXXXXXXXXX"
                                     />
+
+                                    @error('device_address')
+                                        <span class="text-danger">
+                                            <strong> {{$message}} </strong>
+                                        </span>
+                                    @enderror
                                 </div>
 
                                 <div class="mb-3">
-                                    <label class="form-label">{{__('app.IP Port')}}</label>
+                                    <label class="form-label">{{__('Device Username')}}</label>
                                     <input 
                                         type="text" 
                                         class="form-control"
-                                        name="zk_ip_port"
-                                        value="{{Auth::user()->zk_ip_port}}"
-                                        placeholder="4370"
+                                        name="device_username"
+                                        value="{{Auth::user()->device_username}}"
+                                        placeholder="username"
                                     />
+
+                                    @error('device_username')
+                                        <span class="text-danger">
+                                            <strong> {{$message}} </strong>
+                                        </span>
+                                    @enderror
                                 </div>
                                 
                                 <button class="btn btn-primary">{{__('app.save')}}</button>
@@ -43,7 +55,7 @@
                         </div>
                     </div>
                     <div class="col-xl-3 text-center">
-                        <img src="{{asset('images/zk-teco.jpg')}}" class="img-fluid" alt="zkteco">
+                        <img src="{{asset('d/stellar_device.png')}}" class="img-fluid" width="90" alt="zkteco">
                     </div>
                 </div>
             </div>

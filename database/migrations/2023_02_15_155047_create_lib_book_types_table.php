@@ -15,7 +15,7 @@ class CreateLibBookTypesTable extends Migration
     {
         Schema::create('lib_book_types', function (Blueprint $table) {
             $table->id();
-            $table->string('book_type')->unique();
+            $table->string('book_type');
             $table->timestamps();
         });
     }

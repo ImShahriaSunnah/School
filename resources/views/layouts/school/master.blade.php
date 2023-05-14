@@ -71,6 +71,18 @@
                 -webkit-print-color-adjust: exact;
             }
         }
+
+        /* Chrome, Safari, Edge, Opera */
+            input::-webkit-outer-spin-button,
+            input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+            }
+
+            /* Firefox */
+            input[type=number] {
+            -moz-appearance: textfield;
+            }
     </style>
 
 </head>
@@ -228,65 +240,65 @@
             </div>
             <ul class="nav nav-pills flex-column" style="align-items: center">
                 <li class="nav-item mb-2 text-center" data-bs-toggle="tooltip" data-bs-placement="right" title="{{__('app.dashboard')}}">
-                    <a href="{{route('school.dashboard')}}"><button class="nav-link mb-0" data-bs-toggle="pill" data-bs-target="#pills-mdashboards" type="button"><i class="bi bi-house-door-fill"></i></button></a>
+                    <a href="{{route('school.dashboard')}}"><button class="nav-link mb-0" data-bs-toggle="pill" data-bs-target="#pills-mdashboards" type="button"> <img src="{{asset('assets/nav-icons/dashboard.svg')}}" alt="dashboard" width="20"> </button></a>
                     <br> {{__('app.dashboard')}}
                 </li>
-                <li class="nav-item mb-2 text-center" data-bs-toggle="tooltip" data-bs-placement="right" title="{{__('app.Class')}} / {{__('app.Section')}} / {{__('app.Group')}} / {{__('app.Department')}}">
-                    <a href="{{route('class.show')}}"><button class="nav-link mb-0" data-bs-toggle="pill" data-bs-target="#pills-class" type="button"><i class="bi bi-card-list"></i></button></a>
+                <li class="nav-item mb-2 text-center" data-bs-toggle="tooltip" data-bs-placement="right" title="{{__('app.Class')}}">
+                    <a href="{{route('class.show')}}"><button class="nav-link mb-0" data-bs-toggle="pill" data-bs-target="#pills-class" type="button"><img src="{{asset('assets/nav-icons/class.svg')}}" alt="class" width="20"></button></a>
                     <br> {{__('app.Class')}}
                 </li>
                 <li class="nav-item mb-2 text-center" data-bs-toggle="tooltip" data-bs-placement="right" title="{{__('app.Teacher')}}">
-                    <a href="{{route('teacher.Show')}}"><button class="nav-link mb-0" data-bs-toggle="pill" data-bs-target="#pills-teacher" type="button"><i class="bi bi-person-fill"></i></button></a>
+                    <a href="{{route('teacher.Show')}}"><button class="nav-link mb-0" data-bs-toggle="pill" data-bs-target="#pills-teacher" type="button"><img src="{{asset('assets/nav-icons/teacher.svg')}}" alt="teacher" width="20"></button></a>
                     <br> {{__('app.Teacher')}}
                 </li>
                 <li class="nav-item mb-2 text-center" data-bs-toggle="tooltip" data-bs-placement="right" title="{{__('app.Student')}}">
-                    <a href="{{route('student.teacher.create.show')}}"><button class="nav-link mb-0" data-bs-toggle="pill" data-bs-target="#pills-student" type="button"><i class="bi bi-people-fill"></i></button></a>
+                    <a href="{{route('student.teacher.create.show')}}"><button class="nav-link mb-0" data-bs-toggle="pill" data-bs-target="#pills-student" type="button"><img src="{{asset('assets/nav-icons/student.svg')}}" alt="student" width="20"></button></a>
                     <br> {{__('app.Student')}}
                 </li>
                 <li class="nav-item mb-2 text-center" data-bs-toggle="tooltip" data-bs-placement="right" title="{{__('app.Attendance')}}">
-                    <a href="{{route('student.attendance.show')}}"><button class="nav-link mb-0" data-bs-toggle="pill" data-bs-target="#pills-attentdance" type="button"><i class="bi bi-person-check-fill"></i></button></a>
+                    <a href="{{route('student.attendance.show')}}"><button class="nav-link mb-0" data-bs-toggle="pill" data-bs-target="#pills-attentdance" type="button"><img src="{{asset('assets/nav-icons/attendence.svg')}}" alt="attendence" width="20"></button></a>
                     <br>{{__('app.Attendance')}}
                 </li>
                 <li class="nav-item mb-2 text-center" data-bs-toggle="tooltip" data-bs-placement="right" title="{{__('app.Finance')}}">
-                    <a href="{{route('school.finance.dashoboard')}}"><button class="nav-link mb-0" data-bs-toggle="pill" data-bs-target="#pills-finance" type="button"><i class="fadeIn animated bx bx-credit-card-front"></i></button></a>
+                    <a href="{{route('school.finance.dashoboard')}}"><button class="nav-link mb-0" data-bs-toggle="pill" data-bs-target="#pills-finance" type="button"><img src="{{asset('assets/nav-icons/finance.svg')}}" alt="finance" width="20"></button></a>
                     <br>{{__('app.Finance')}}
                 </li>
                 <li class="nav-item mb-2 text-center" data-bs-toggle="tooltip" data-bs-placement="right" title="{{__('app.Stuff')}}">
-                    <a href="{{route('school.staff.List')}}"><button class="nav-link mb-0" data-bs-toggle="pill" data-bs-target="#pills-staff" type="button"><i class="bi bi-person-bounding-box"></i></button></a>
+                    <a href="{{route('school.staff.List')}}"><button class="nav-link mb-0" data-bs-toggle="pill" data-bs-target="#pills-staff" type="button"><img src="{{asset('assets/nav-icons/staff.svg')}}" alt="staff" width="20"></button></a>
                     <br>{{__('app.Stuff')}}
                 </li>
                 <li class="nav-item mb-2 text-center" data-bs-toggle="tooltip" data-bs-placement="right" title="{{__('app.SMS')}}">
-                   <a href="{{route('send.sms.student')}}"><button class="nav-link mb-0" data-bs-toggle="pill" data-bs-target="#pills-sms" type="button"><i class="fadeIn animated bx bx-comment-detail"></i></button></a>
+                   <a href="{{route('send.sms.student')}}"><button class="nav-link mb-0" data-bs-toggle="pill" data-bs-target="#pills-sms" type="button"><img src="{{asset('assets/nav-icons/sms.svg')}}" alt="sms" width="20"></button></a>
                     <br>{{__('app.SMS')}}
                 </li>
 
                 <li class="nav-item mb-2 text-center" data-bs-toggle="tooltip" data-bs-placement="right" title="{{__('app.Exam')}}">
-                    <a href="{{route('term.index')}}"><button class="nav-link mb-0" data-bs-toggle="pill" data-bs-target="#pills-exam" type="button"><i class="fadeIn animated bx bx-book-content"></i></button></a>
+                    <a href="{{route('term.index')}}"><button class="nav-link mb-0" data-bs-toggle="pill" data-bs-target="#pills-exam" type="button"><img src="{{asset('assets/nav-icons/exam.svg')}}" alt="exam" width="20"></button></a>
                     <br>{{__('app.Exam')}}
                 </li>
 
                 <li class="nav-item mb-2 text-center" data-bs-toggle="tooltip" data-bs-placement="right" title="{{__('app.Result')}}">
-                    <a href="{{route('result.school.admin.create.show.all')}}"><button class="nav-link mb-0" data-bs-toggle="pill" data-bs-target="#pills-result" type="button"><i class="fadeIn animated bx bx-book-content"></i></button></a>
+                    <a href="{{route('result.school.admin.create.show.all')}}"><button class="nav-link mb-0" data-bs-toggle="pill" data-bs-target="#pills-result" type="button"><img src="{{asset('assets/nav-icons/result.svg')}}" alt="result" width="20"></button></a>
                     <br>{{__('app.Result')}}
                 </li>
 
                 <li class="nav-item mb-2 text-center" data-bs-toggle="tooltip" data-bs-placement="right" title="{{__('app.Notice')}}">
-                    <a href="{{route('notice.school.admin.create.show')}}"><button class="nav-link mb-0" data-bs-toggle="pill" data-bs-target="#pills-notice" type="button"><i class="bi bi-boxes"></i></button></a>
+                    <a href="{{route('notice.school.admin.create.show')}}"><button class="nav-link mb-0" data-bs-toggle="pill" data-bs-target="#pills-notice" type="button"><img src="{{asset('assets/nav-icons/notice.svg')}}" alt="notice" width="20"></button></a>
                     <br>{{__('app.Notice')}}
                 </li>
 
                 <li class="nav-item mb-2 text-center" data-bs-toggle="tooltip" data-bs-placement="right" title="{{__('app.Library')}}">
-                    <a href="{{route('borrowerinfo')}}"><button class="nav-link mb-0" data-bs-toggle="pill" data-bs-target="#pills-library" type="button"><i class="lni lni-slideshare"></i></button></a>
+                    <a href="{{route('borrowerinfo')}}"><button class="nav-link mb-0" data-bs-toggle="pill" data-bs-target="#pills-library" type="button"><img src="{{asset('assets/nav-icons/library.svg')}}" alt="library" width="20"></button></a>
                     <br>{{__('app.Library')}}
                 </li>
 
                 <li class="nav-item mb-2 text-center" data-bs-toggle="tooltip" data-bs-placement="right" title="{{__('app.Setting')}}">
-                    <a href="{{route('settings')}}"><button class="nav-link mb-0" data-bs-toggle="pill" data-bs-target="#pills-settings" type="button"><i class="fadeIn animated bi bi-gear"></i></button></a>
+                    <a href="{{route('settings')}}"><button class="nav-link mb-0" data-bs-toggle="pill" data-bs-target="#pills-settings" type="button"><img src="{{asset('assets/nav-icons/settings.svg')}}" alt="settings" width="20"></button></a>
                     <br>{{__('app.Setting')}}
                 </li>
 
                 <li class="nav-item mb-2 text-center" data-bs-toggle="tooltip" data-bs-placement="right" title="{{__('app.Addon')}}">
-                    <a href="{{route('SchoolAddon')}}"><button class="nav-link mb-0" data-bs-toggle="pill" data-bs-target="#pills-SchoolAddon" type="button"><i class="bi bi-dropbox"></i></button></a>
+                    <a href="{{route('SchoolAddon')}}"><button class="nav-link mb-0" data-bs-toggle="pill" data-bs-target="#pills-SchoolAddon" type="button"><img src="{{asset('assets/nav-icons/addons.svg')}}" alt="addons" width="20"></button></a>
                     <br>{{__('app.Addon')}}
                 </li>
 
@@ -337,12 +349,12 @@
                         </div>
                         <a href="{{route('class.show')}}" class="list-group-item"><i class="fadeIn animated bx bx-id-card"></i>{{__('app.Class')}} {{__('app.Show')}}</a>
                         <a href="{{route('section.show')}}" class="list-group-item"><i class="lni lni-slideshare"></i>{{__('app.Section')}} {{__('app.Show')}}</a>
-                        <a href="{{route('group.show')}}" class="list-group-item"><i class="fadeIn animated bx bx-network-chart"></i>{{__('app.Group')}} {{__('app.Show')}}</a>
+                        {{-- <a href="{{route('group.show')}}" class="list-group-item"><i class="fadeIn animated bx bx-network-chart"></i>{{__('app.Group')}} {{__('app.Show')}}</a> --}}
                         {{-- <a href="{{route('department.show')}}" class="list-group-item"><i class="lni lni-control-panel"></i>Show Department</a> --}}
-                        <a href="{{route('period.index')}}" class="list-group-item"><i class="lni lni-notepad"></i>{{__('app.Class')}} {{__('app.Period')}}</a>
-                        <a href="{{route('routine.index')}}" class="list-group-item"><i class="lni lni-notepad"></i> {{__('app.Class')}} {{__('app.Routine')}}</a>
                         <a href="{{route('syllabus.form.show')}}" class="list-group-item"><i class="lni lni-notepad"></i>{{__('app.Class')}} {{__('app.Syllabus')}}</a>
                         <a href="{{route('subject.index')}}" class="list-group-item"><i class="lni lni-library"></i> {{__('app.Subject')}} {{__('app.Show')}}</a>
+                        <a href="{{route('period.index')}}" class="list-group-item"><i class="lni lni-notepad"></i>{{__('app.Class')}} {{__('app.Period')}}</a>
+                        <a href="{{route('routine.index')}}" class="list-group-item"><i class="lni lni-notepad"></i> {{__('app.Class')}} {{__('app.Routine')}}</a>
                         <a href="{{route('school.Routine.view')}}" class="list-group-item"><i class="bi bi-journal-richtext"></i> {{__('app.School')}} {{__('app.Routine')}} {{__('app.Show')}}</a>
                     </div>
                 </div>
@@ -367,10 +379,11 @@
                 {{-- Student --}}
                 <div class="tab-pane fade <?php if (Request::segment(1) == 'school'
                 and Request::segment(2) == 'student'
-                and Request::segment(3) == 'create'
+                and (Request::segment(3) == 'create'
                     or Request::segment(3) == 'edit'
                     or Request::segment(3) == 'studentshow'
-                    or (Request::segment(3) == 'student' and Request::segment(4) == 'singleShow')
+                    or (Request::segment(3) == 'student')
+                and Request::segment(4) == 'singleShow')
                     or Request::route()->getName() == 'student.find') {
                                                 echo 'active show';
                                             } ?>" id="pills-student">
@@ -406,31 +419,31 @@
                             {{-- <small class="mb-0">{{__('app.dashboard1')}}</small> --}}
                         </div>
                         <a href="{{route('student.attendance.show')}}" class="list-group-item"><i class="fadeIn animated bx bx-user-voice"></i>{{__('app.Student')}} {{__('app.Attendance')}}</a>
-                        @if (!is_null(Auth::user()->zk_ip_address))
+                        {{-- @if (!is_null(Auth::user()->zk_ip_address))
                         <a href="javascript::" onclick="if(confirm('*** Please, Ensure that your fingerprint device is running! ***')){ location.replace('{{route('get.attendance.device')}}') }" class="list-group-item"><i class="fadeIn animated bi bi-hdd-rack"></i> {{__('app.Attendance')}} {{__('app.Get')}}</a>
-                        @endif
+                        @endif --}}
                         {{-- <a href="{{route('student.attendance.show.date')}}" class="list-group-item"><i class="fadeIn animated bx bx-food-menu"></i>{{__('app.Show Attendance')}}</a> --}}
                         <a href="{{route('student.attendance.show.date.all')}}" class="list-group-item"><i class="fadeIn animated bx bx-clipboard"></i>{{__('app.All')}} {{__('app.Attendance')}}</a>
 
                         <a href="javascript::" data-bs-target="#attendance-upload-modal" data-bs-toggle="modal" class="list-group-item">
                             <i class="fas fa-file-upload"></i>{{__('app.upload_attendance')}}
                         </a>
+
+                        <a href="javascript::" data-bs-toggle="modal" data-bs-target="#get_attendance" class="list-group-item">
+                            <i class="fas fa-file-upload"></i>{{__('Get Attendance')}}
+                        </a>
                     </div>
                 </div>
 
                 {{-- Finance --}}
                 <div class="tab-pane fade
-                    @if ( Request::route()->getName() == "school.finance.find.student.fee"
-                        or Request::route()->getName() == "school.teacher.salary.edit"
-                        or (Request::segment(1) == 'school' or Request::segment(1) == 'receipt' or Request::segment(1) == 'accesories' )
-                            and ((Request::segment(2) == 'finance' and (Request::segment(3) == 'dashboard' or Request::segment(3) == 'fees' or Request::segment(3) == 'student'))
-                                or (Request::segment(2) == 'assign' and Request::segment(3) == 'fees')
-                                or (Request::segment(2) == 'staff-salary' and Request::segment(3) == 'teacher' and Request::segment(4) == 'add' and Request::segment(5) == 'salary')
-                                or (Request::segment(2) == 'bankadd' and Request::segment(3) == 'create')
-                                or (Request::segment(2) == 'student' and Request::segment(3) == 'finance' and (Request::segment(4) == 'expense' or Request::segment(4) == 'fund') and Request::segment(5) == 'create')
-                                or Request::segment(2) == 'show'
-                                or Request::segment(2) == 'Show'
-                                or Request::segment(2) == 'create')
+                    @if ( ((Request::segment(1) == 'school' or Request::segment(1) == 'receipt' or Request::segment(1) == 'accesories')
+                            and ((Request::segment(2) == 'finance' and (Request::segment(3) == 'dashboard' or Request::segment(3) == 'fees' or Request::segment(3) == 'student')) or (Request::segment(2) == 'assign' and Request::segment(3) == 'fees')                                or (Request::segment(2) == 'staff-salary' and Request::segment(3) == 'teacher' and Request::segment(4) == 'add' and Request::segment(5) == 'salary')                                or (Request::segment(2) == 'bankadd' and Request::segment(3) == 'create')                                or (Request::segment(2) == 'student' and Request::segment(3) == 'finance' and (Request::segment(4) == 'expense' or Request::segment(4) == 'fund') and Request::segment(5) == 'create')
+                                or Request::segment(2) == 'staff-salary'
+                                or Request::segment(2) == 'create'))
+                            or Request::route()->getName() == "school.finance.find.student.fee"
+                            or Request::route()->getName() == "school.teacher.salary.edit"
+                            or Request::route()->getName() == "school.staff.salary.Add"
 
                         )
 
@@ -453,7 +466,11 @@
 
                         <a href="{{route('bankadd')}}" class="list-group-item"><i class="fadeIn animated bx bx-credit-card-alt"></i>{{__('app.BankAccount')}}</a>
                         <a href="{{route('expense.show')}}" class="list-group-item"><i class="fadeIn animated bx bx-credit-card-alt"></i>{{__('app.Expenses')}}</a>
+
                         <a href="{{route('fund.show')}}" class="list-group-item"><i class="fadeIn animated bx bx-credit-card-alt"></i>{{__('app.Funds')}}</a>
+                        <a href="{{route('fund.list')}}" class="list-group-item"><i class="fadeIn animated bx bx-credit-card-alt"></i>Fund List</a>
+                        <a href="{{route('expense.list')}}" class="list-group-item"><i class="fadeIn animated bx bx-credit-card-alt"></i>Expenses List</a>
+
                         <a href="{{route('reciept.create')}}" class="list-group-item"><i class="fadeIn animated bx bx-credit-card-alt"></i>{{__('app.Accessories')}} {{__('app.Receipt')}}</a>
 
                     </div>
@@ -537,7 +554,7 @@
                             </div>
                             {{-- <small class="mb-0">{{__('app.dashboard1')}}</small> --}}
                         </div>
-                        <a href="{{route('result.school.admin.create.show.all')}}" class="list-group-item"><i class="fadeIn animated bx bx-task-x"></i>{{__('app.Result')}}</a>
+                        <a href="{{route('result.school.admin.create.show.all')}}" class="list-group-item"><i class="fadeIn animated bx bx-task-x"></i>{{__('app.Result Upload')}}</a>
                         <a href="{{route('sms.result')}}" class="list-group-item"><i class="fadeIn animated bx bx-task-x"></i>{{__('app.Result')}} {{__('app.SMS')}}</a>
                         {{-- <a href="{{route('notice.school.admin.create.show')}}" class="list-group-item"><i class="fadeIn animated bx bx-pie-chart-alt"></i>{{__('app.Notice')}}</a> --}}
 
@@ -625,6 +642,7 @@
     @yield('content')
 
     @include('modals.attendance_form')
+    @include('modals.get_attendance')
 
     <!--start overlay-->
     <div class="overlay nav-toggle-icon"></div>

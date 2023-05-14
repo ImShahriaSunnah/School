@@ -18,14 +18,26 @@
                                 @foreach ($data['classes'] as $key => $class)
                                 <div class="col mb-3" id="customerServices">
                                     <div class="form-check">
-                                        <input type="checkbox" name="class[]" value="{{$class['id']}}" onchange="selectSubjects('{{$key}}')">
+                                        <input 
+                                            type="checkbox" 
+                                            name="class[]" 
+                                            value="{{$class['id']}}"
+                                            onchange="selectSubjects('{{$key}}')"
+                                            @if(commonClassSelected(Auth::id(), $class['title'])) checked @endif
+                                        />
                                         <label class="form-check-label" for="check{{$key}}"><b>{{$class['title']}}</b></label>
                                     </div>
 
                                     <div class="ms-3">
                                         @forelse ($class['subjects'] as $id => $subject)
                                         <div class="form-check">
-                                            <input type="checkbox" class="subject-check-{{$key}}" name="subjects[]" value="{{$subject->id}}">
+                                            <input 
+                                                type="checkbox" 
+                                                class="subject-check-{{$key}}"
+                                                name="subjects[]"
+                                                value="{{$subject->id}}"
+                                                @if(commonSubjectSelected(Auth::id(), $class['title'], $subject->name)) checked @endif
+                                            />
                                             <label class="form-check-label" for="subject{{$key.$id}}">{{$subject->name}}</label>
                                         </div>
                                         @empty

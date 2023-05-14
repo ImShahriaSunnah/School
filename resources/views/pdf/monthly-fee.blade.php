@@ -35,6 +35,19 @@
                     </thead>
                     <tbody>
                         @if(is_array($data['assignFees']['fees_details']) && isset($data['assignFees']['fees_details']))
+                            {{-- <tr>
+                                <td>
+                                    <span class="text-inverse">Monthly Fees</span><br>
+                                    <small></small>
+                                </td>
+                                @if({{$data['user']->scholarship == 2}})
+                                    <td class="text-center">{{(getClassName($data['user']->class_id)->class_fees) /2}} Taka</td>
+                                @elseif({{$data['user']->scholarship == 0}})
+                                    <td class="text-center">{{(getClassName($data['user']->class_id)->class_fees) *0}} Taka</td>
+                                @else
+                                    <td class="text-center">{{getClassName($data['user']->class_id)->class_fees}} Taka</td>
+                                @endif
+                            </tr> --}}
                             @foreach ($data['assignFees']['fees_details'] as $key => $item)
                                 <tr>
                                     <td width="70%">{{ ucfirst(preg_replace("/(?<=[a-z])(?=[A-Z])/", " ", $key)) }}</td>
@@ -42,6 +55,19 @@
                                 </tr>
                             @endforeach
                         @else
+                        {{-- <tr>
+                            <td>
+                                <span class="text-inverse">Monthly Fees</span><br>
+                                <small></small>
+                            </td>
+                            @if({{$data['user']->scholarship == 2}})
+                                <td class="text-center">{{(getClassName($data['user']->class_id)->class_fees) /2}} Taka</td>
+                            @elseif({{$data['user']->scholarship == 0}})
+                                <td class="text-center">{{(getClassName($data['user']->class_id)->class_fees) *0}} Taka</td>
+                            @else
+                                <td class="text-center">{{getClassName($data['user']->class_id)->class_fees}} Taka</td>
+                            @endif
+                        </tr> --}}
                             @foreach (json_decode($data['assignFees']['fees_details']) as $key => $item)
                                 <tr>
                                     <td width="70%">{{ ucfirst(preg_replace("/(?<=[a-z])(?=[A-Z])/", " ", $key)) }}</td>
@@ -51,7 +77,13 @@
                         @endif
                         <tr class="text-end">
                             <td><strong>In Total: </strong></td>
-                            <td>{{ $data['studentFees']?->amount }} TK</td>
+                            {{-- @if({{$data['user']->scholarship == 2}})
+                                <td class="text-center">({{$data['studentFees']?->amount + (getClassName($data['user']->class_id)->class_fees / 2)}}) Taka</td>
+                            @elseif({{$data['user']->scholarship == 0}})
+                                <td class="text-center">({{$data['studentFees']?->amount + (getClassName($data['user']->class_id)->class_fees * 0)}}) Taka</td>
+                            @else --}}
+                                <td class="text-center">{{$data['studentFees']?->amount + getClassName($data['user']->class_id)->class_fees}} Taka</td>
+                            {{-- @endif --}}
                         </tr>
                     </tbody>
                 </table>

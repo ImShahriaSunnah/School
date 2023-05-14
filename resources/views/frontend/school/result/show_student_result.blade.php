@@ -7,15 +7,15 @@
             <div class="col-xl mx-auto">
                 <div class="card">
                     <div class="card-body" id="printDiv">
-                        <div class="border p-3 rounded">
+                        <div class="border border-dark p-3 rounded" ">
 
                             <div class="d-flex justify-content-center">
                                 @if (File::exists(public_path(Auth::user()->school_logo)) && !is_null(Auth::user()->school_logo))
-                                <img src="{{asset(Auth::user()->school_logo)}}" alt="school logo" class="img-fluid" width="80" style="width:100px; height:80px;margin-right:20px;">
+                                <img src="{{asset(Auth::user()->school_logo)}}" alt="school logo" class="img-fluid" width="80" style="width:100px; height:80px;margin-right:10px;">
                                 @endif
                                 <div class="text-center">
-                                    <h4 style="margin-bottom: 0px;"> {{ strtoupper(Auth::user()->school_name) }} </h4>
-                                    <p style="margin-bottom: 0px;"> {{ (Auth::user()->slogan )}} </p>
+                                    <h3 style="margin-bottom: 0px;"> {{ strtoupper(Auth::user()->school_name) }} </h3>
+                                    <p style="margin-bottom: 0px;"> <b>({{ (Auth::user()->slogan )}})</b> </p>
                                     <p style="margin-bottom: 0px;"> {{ Auth::user()->address }} </p>
                                     <h5>{{ $term->term_name }}</h5>
                                 </div>
@@ -25,13 +25,13 @@
 
                             <div class="d-flex mb-2 justify-content-between">
                                 @if(File::exists(public_path($studentResults->first()->user?->image)))
-                                    <img src="{{asset($studentResults->first()->user?->image)}}" class="img-fluid" alt="student image" style="height: 60px; width: 60px">
+                                    <img src="{{asset($studentResults->first()->user?->image)}}" class="img-fluid" alt="student image" style="height: 100px; width: 80px">
                                 @else
                                     <img src="{{asset('d/no-img.jpg')}}" class="img-fluid" alt="student image" style="height: 60px; width: 60px">
                                 @endif
 
                                 <div class="h6 col-md-3" style="font-size: 12px;">
-                                    <table>
+                                    <table style="border-color: black;">
                                         <tbody>
                                             <tr>
                                                 <td>Student Name</td>
@@ -83,7 +83,7 @@
                                 {{-- Performance of student --}}
 
                                 <div class="ml-auto">
-                                    <table class="table table-bordered" style="font-size: 8px;">
+                                    <table class="table table-bordered" style="font-size: 10px; border-color:black;">
                                         <thead>
                                             <tr align="center">
                                                 <th colspan="2">Performance In Class</th>
@@ -111,8 +111,8 @@
                                 </div>
                             </div>
 
-                            <table class="table table-bordered text-center" style="font-size: 8px;">
-                                <thead>
+                            <table class="table table-bordered text-center" style="font-size: 12px; border-color:black;">
+                                <thead style="padding:0px;">
                                   <tr>
                                     <th width="350px;" class="text-nowrap">Subject Name</th>
                                     <th scope="col">Full Mark</th>
@@ -127,10 +127,10 @@
                                     @endforeach
                                     <th scope="col">Total Marks</th>
                                     <th scope="col">Grade</th>
-                                    <th scope="col">Result</th>
+                                    <th scope="col">Grade Point</th>
                                   </tr>
                                 </thead>
-                                <tbody>
+                                <tbody style="padding:0px;">
                                     @php
                                         $total = 0;
                                         $totalGpa = 0.000;
@@ -140,48 +140,48 @@
                                     @foreach ($studentResults as $result)
                                     <tr>
                                         @if($result->subject->subject_name == 'Information and Communication Technology')
-                                            <td width="300px;" scope="row">ICT</td>
+                                            <td width="300px;" scope="row" style="padding: 1px; color:black;">ICT</td>
                                         @elseif($result->subject->subject_name == 'Bangla First Paper')
-                                            <td width="300px;" scope="row">Bangla 1st Paper</td>
+                                            <td width="300px;" scope="row" style="padding: 1px; color:black;">Bangla 1st Paper</td>
                                         @elseif($result->subject->subject_name == 'Bangla Second paper')
-                                            <td width="300px;" scope="row">Bangla 2nd Paper</td>
+                                            <td width="300px;" scope="row" style="padding: 1px; color:black;">Bangla 2nd Paper</td>
                                         @elseif($result->subject->subject_name == 'English First Paper')
-                                            <td width="300px;" scope="row">English 1st Paper</td>
+                                            <td width="300px;" scope="row" style="padding: 1px; color:black;">English 1st Paper</td>
                                         @elseif($result->subject->subject_name == 'English Second Paper')
-                                            <td width="300px;" scope="row">English 2nd Paper</td>
+                                            <td width="300px;" scope="row" style="padding: 1px; color:black;">English 2nd Paper</td>
                                             @elseif($result->subject->subject_name == 'Islam/ Other Religions')
-                                            <td width="300px;" scope="row">Islam/ Other</td>
+                                            <td width="300px;" scope="row" style="padding: 1px; color:black;">Islam/ Other</td>
                                         @else
-                                            <td width="300px;" scope="row">{{ $result->subject->subject_name }}</td>
+                                            <td width="300px;" scope="row" style="padding: 1px; color:black;">{{ $result->subject->subject_name }}</td>
                                         @endif
-                                            <td>100</td>
-                                            <td>33</td>
+                                            <td style="padding: 0px; color:black;">100</td>
+                                            <td style="padding: 0px; color:black;">33</td>
                                          @foreach ($markType as $data)
                                             @if($data->mark_type == 'Attendance')
-                                                <td>{{$result->attendance}}</td>
+                                                <td style="padding: 0px; color:black;">{{$result->attendance}}</td>
                                             @elseif($data->mark_type == 'Written')
-                                                <td>{{$result->written}}</td>
+                                                <td style="padding: 0px; color:black;">{{$result->written}}</td>
                                             @elseif($data->mark_type == 'MCQ')
-                                                <td>{{$result->mcq}}</td>
+                                                <td style="padding: 0px; color:black;">{{$result->mcq}}</td>
                                             @elseif($data->mark_type == 'Assignment')
-                                                <td>{{$result->assignment}}</td>
+                                                <td style="padding: 0px; color:black;">{{$result->assignment}}</td>
                                             @elseif($data->mark_type == 'Presentation')
-                                                <td>{{$result->presentation}}</td>
+                                                <td style="padding: 0px; color:black;">{{$result->presentation}}</td>
                                             @elseif($data->mark_type == 'Quiz')
-                                                <td>{{$result->quiz}}</td>
+                                                <td style="padding: 0px; color:black;">{{$result->quiz}}</td>
                                             @elseif($data->mark_type == 'Practical')
-                                                <td>{{$result->practical}}</td>
+                                                <td style="padding: 0px; color:black;">{{$result->practical}}</td>
                                             @elseif($data->mark_type == 'Others')
-                                                <td>{{$result->others}}</td>
+                                                <td style="padding: 0px; color:black;">{{$result->others}}</td>
                                             @elseif ($data->mark_type == 'Class_Test')
-                                                <td>{{$result->class_test}}</td>
+                                                <td style="padding: 0px; color:black;">{{$result->class_test}}</td>
                                             @endif
 
                                         @endforeach
 
-                                        <td>{{ $result->total }}</td>
-                                        <td>{{ $result->grade }}</td>
-                                        <td>{{ $result->gpa }}</td>
+                                        <td style="padding: 0px; color:black;">{{ $result->total }}</td>
+                                        <td style="padding: 0px; color:black;">{{ $result->grade }}</td>
+                                        <td style="padding: 0px; color:black;">{{ $result->gpa }}</td>
                                     </tr>
                                     @php
                                          $total += $result->total;
@@ -205,7 +205,7 @@
                                             }
                                     @endphp
                                     <tr>
-                                        <td colspan="{{$markTypeCount+2 }}">Total</td>
+                                        <td colspan="{{$markTypeCount+2 }}">Total/ GPA</td>
                                         <td>{{ $total }}</td>
                                         @if (isset($resultStatus))
                                             <td colspan="2" >{{ $resultStatus }}</td>
@@ -216,109 +216,114 @@
                                     </tr>
                                 </tbody>
                             </table>
-                        </div>
-                        <br>
-                        <div class="row justify-content-between">
 
-                            <div class="col-6" style="font-size: 12px;">
-                                <table class=" table table-bordered text-center" >
-                                    <thead>
-                                        <tr>
-                                            <th colspan="2">Signatures</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr style="height: 90%">
-                                            <td style="height: 70px; width:150px;"></td>
-                                            <td style="height: 70px; width:150px;"></td>
-                                        </tr>
-                                        <tr>
-                                            <td>Class Teacher</td>
-                                            <td>Guardian</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
+                            <br>
+                            <div class="row justify-content-between">
 
-                            <div class="col-3">
-                                <div>
-                                    <table class=" table table-bordered text-center" style="font-size: 12px;">
-
-                                        <tbody>
-                                            <tr class="row">
-                                                <td class="col-8">Total Days</td>
-                                                <td class="col-4"></td>
+                                <div class="ml-auto col-2">
+                                    <table class="table table-bordered" style="font-size: 12px; border-color:black;">
+                                        <thead>
+                                            <tr align="center">
+                                                <th colspan="2">Mark Grade</th>
                                             </tr>
-                                            <tr class="row">
-                                                <td class="col-8">Total Attendance</td>
-                                                <td class="col-4"></td>
-                                                {{-- <td class="col-4">{{ $attendance }}</td> --}}
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td style="padding:1px;">80-100</td>
+                                                <td width="20%" style="padding:1px;">A+</td>
+                                            </tr>
+                                            <tr>
+                                                <td style="padding:1px;">70-79</td>
+                                                <td style="padding:1px;">A</td>
+                                            </tr>
+                                            <tr>
+                                                <td style="padding:1px;">60-69</td>
+                                                <td style="padding:1px;">A-</td>
+                                            </tr>
+                                            <tr>
+                                                <td style="padding:1px;">50-59</td>
+                                                <td style="padding:1px;">B</td>
+                                            </tr>
+                                            <tr>
+                                                <td style="padding:1px;">40-49</td>
+                                                <td style="padding:1px;">C</td>
+                                            </tr>
+                                            <tr>
+                                                <td style="padding:1px;">33-39</td>
+                                                <td style="padding:1px;">D</td>
+                                            </tr>
+                                            <tr>
+                                                <td style="padding:1px;">0-32</td>
+                                                <td style="padding:1px;">F</td>
                                             </tr>
                                         </tbody>
                                     </table>
+                                </div>                            
+
+                                <div class="col-3">
+                                    <div>
+                                        <table class=" table table-bordered text-center" style="font-size: 12px; border-color:black;">
+
+                                            <tbody>
+                                                <tr class="row">
+                                                    <td class="col-8 border-end-0" style="border-bottom-color: white;" style="padding:2px;">Total Working Days</td>
+                                                    <td class="col-4" style="padding:2px;"></td>
+                                                </tr>
+                                                <tr class="row">
+                                                    <td class="col-8 border-end-0 border-top-0" style="padding:2px;">Present</td>
+                                                    <td class="col-4" style="padding:2px;"></td>
+                                                </tr>
+                                                <tr class="row">
+                                                    <td class="col-8 border-end-0 border-top-0" style="padding:2px;">Absent</td>
+                                                    <td class="col-4" style="padding:2px;"></td>                                                
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                    <div>
+                                        <table class=" table table-bordered text-center" style="font-size: 12px; border-color:black;">
+
+                                            <tbody>
+                                                <tr class="row">
+                                                    <td class="col-8 border-end-0" style="padding:2px;">Position in class</td>
+                                                    <td class="col-4" style="padding:2px;">{{$studentRank}}</td>
+                                                </tr>
+                                                <tr class="row">
+                                                    <td class="col-8 border-end-0 border-top-0" style="padding:2px;">Position in section</td>
+                                                    <td class="col-4" style="padding:2px;">{{$section_studentRank}}</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    
                                 </div>
 
-                                <div>
-                                    <table class=" table table-bordered text-center" style="font-size: 12px;">
-
-                                        <tbody>
-                                            <tr class="row">
-                                                <td class="col-8">Position in class</td>
-                                                <td class="col-4"></td>
-                                                {{-- <td class="col-4">{{$studentRank}}</td> --}}
+                                <div class="col-6" style="font-size: 12px;">
+                                    <table class=" table table-bordered text-center" style="border-color: black;">
+                                        <thead>
+                                            <tr>
+                                                <th colspan="3">Signatures</th>
                                             </tr>
-                                            <tr class="row">
-                                                <td class="col-8">Position in section</td>
-                                                <td class="col-4"></td>
+                                        </thead>
+                                        <tbody>
+                                            <tr style="height: 90%">
+                                                <td style="height: 80px; width:150px;"></td>
+                                                <td style="height: 80px; width:150px;"></td>
+                                                <td style="height: 80px; width:150px;"></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Class Teacher</td>
+                                                <td>Principal</td>
+                                                <td>Guardian</td>
                                             </tr>
                                         </tbody>
                                     </table>
-                                </div>
+                                </div>                            
 
                             </div>
-
-                            <div class="ml-auto col-2">
-                                <table class="table table-bordered" style="font-size: 9px;">
-                                    <thead>
-                                        <tr align="center">
-                                            <th colspan="2">Mark Grade</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td style="padding:1px;">80-100</td>
-                                            <td width="20%" style="padding:1px;">A+</td>
-                                        </tr>
-                                        <tr>
-                                            <td style="padding:1px;">70-79</td>
-                                            <td style="padding:1px;">A</td>
-                                        </tr>
-                                        <tr>
-                                            <td style="padding:1px;">60-69</td>
-                                            <td style="padding:1px;">A-</td>
-                                        </tr>
-                                        <tr>
-                                            <td style="padding:1px;">50-59</td>
-                                            <td style="padding:1px;">B</td>
-                                        </tr>
-                                        <tr>
-                                            <td style="padding:1px;">40-49</td>
-                                            <td style="padding:1px;">C</td>
-                                        </tr>
-                                        <tr>
-                                            <td style="padding:1px;">33-39</td>
-                                            <td style="padding:1px;">D</td>
-                                        </tr>
-                                        <tr>
-                                            <td style="padding:1px;">0-32</td>
-                                            <td style="padding:1px;">F</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-
                         </div>
-
+                        
                     </div>
                 </div>
             </div>

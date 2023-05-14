@@ -13,7 +13,9 @@ use Facade\Ignition\DumpRecorder\Dump;
 use Illuminate\Auth\Events\Validated;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use RealRashid\SweetAlert\Facades\Alert;
+use Illuminate\Support\Facades\Validator;
+
+use function PHPUnit\Framework\isNull;
 
 class QuestionController extends Controller
 {
@@ -39,158 +41,222 @@ class QuestionController extends Controller
      * @return \Illuminate\Contracts\View\ 
      */
     public function questionStore(Request $request)
-    {
-        $question = Question::where('school_id', Auth::user()->id)->where('type', $request->question_type)
-                            ->where('term_id', $request->exam_term)->where('class_id', $request->class_name)
-                            ->where('subject_id', $request->subject_name)->first();
-        if  ($question) {
-
-            $request->validate([
-                'subject_name' => 'required'
-            ],
-            [
-                'subject_name.required' => 'This subject question is already exist'
-            ]);
-            
-            toast('This subject question is already exist', 'error');
-            return redirect()->back();
-
-        } else {
-
-            if (!empty($request->question_title[1])) {
-    
-               $unValid = $request->validate([
-                    'exam_term'         => 'required|',
-                    'class_name'        => 'required',
-                    'subject_name'      => 'required',
-                    'hours'             => 'required|numeric',
-                    'total_mark'        => 'required|numeric',
-                    'question_title.*'    => 'required',
-                    'question_mark.*'     => 'required',
-                    'questions.*'          => 'required',
-                    
-                ], [
-                    "exam_term.required"        => "This exam field term is required",
-                    "class_name.required"       => "This class field is required",
-                    "subject_name.required"     => "This subject field is required",
-                    "total_mark.required"       => "This total mark field is required",
-                    "question_title.*.required"   => "This question title field is required",
-                    "question_mark.*.required"    => "This mark field is required",
-                    "questions.*.required"                 => "This question field is required"   
-                ]);
-
-                // if ($unValid) {
-                //     return redirect()->back();
-                // };
+    {   
+        // $question = Question::where('school_id', Auth::user()->id)->where('type', $request->question_type)
+        //                     ->where('term_id', $request->exam_term)->where('class_id', $request->class_name)
+        //                     ->where('subject_id', $request->subject_name)->get();
         
-                Question::updateOrCreate([
+        $question_top = Validator::make($request->only('exam_term', 'class_name', 'subject_name', 'hours', 'total_mark'), [
+                'exam_term'         => 'required|',
+                'class_name'        => 'required',
+                'subject_name'      => 'required',
+                'hours'             => 'required|numeric|min:1|max:100',
+                'total_mark'        => 'required|numeric|min:1|max:100',
+        ], [
+                "exam_term.required"          => "Exam field term is required",
+                "class_name.required"         => "Class field is required",
+                "subject_name.required"       => "Subject field is required",
+                "total_mark.required"         => "Total mark field is required",
+        ]);
+
+        if ($question_top->fails()) {
+            return response()->json([
+                'status' => 'fail',
+                'error'  => $question_top->errors()->toArray()
+            ]);
+        }
+
+        if (!empty($request->question_title[1])) {
+
+            $unValid = Validator::make($request->all(), [
+                'exam_term'         => 'required|',
+                'class_name'        => 'required',
+                'subject_name'      => 'required',
+                'hours'             => 'required|numeric|min:1|max:100',
+                'total_mark'        => 'required|numeric|min:1|max:100',
+                'question_title.*'    => 'required',
+                'question_mark.*'     => 'required',
+                'questions.*'          => 'required',
+                
+            ], [
+
+                "exam_term.required"          => "Exam field term is required",
+                "class_name.required"         => "Class field is required",
+                "subject_name.required"       => "Subject field is required",
+                "total_mark.required"         => "Total mark field is required",
+                "question_title.*.required"   => "Question title field is required",
+                "question_mark.*.required"    => "Mark field is required",
+                "questions.*.required"        => "Question field is required"   
+            ]);
+
+            if ($unValid->fails()) {
+                return response()->json([
+                    'status' => 'fail',
+                    'error'  => $unValid->errors()->toArray()
+                ]);
+            }
+
+            if (is_null($request->question_id)) {
+
+                Question::create([
                     'type'          => $request->question_type,  
                     'school_id'     => Auth::user()->id,
                     'term_id'       => $request->exam_term,
                     'class_id'       => $request->class_name,
                     'subject_id'       => $request->subject_name,
-                ],
-                [
                     'hours'          => $request->hours,
                     'total_marks'   => $request->total_mark,   
                     'question_title' => $request->question_title,
                     'question_mark' => $request->question_mark,
                     'question'     => $request->questions
                 ]);
-    
-                toast('Question Create Successful', 'success');
-                return redirect()->route('show.question');
-    
-            }  elseif (!empty($request->mcqQuestion_no[1][1])) {
-                // dd($request->all()); 
-               $unValid = $request->validate([
-                    'exam_term'         => 'required',
-                    'class_name'        => 'required',
-                    'subject_name'      => 'required',
-                    'hours'             => 'required|numeric',
-                    'total_mark'        => 'required|numeric',
-                    'mcqQuestion_no.*'    => 'required',
-                    'mcqQuestions.*'    => 'required',
-                    
-                ], [
-                    "exam_term.required"    => "This exam field term is required",
-                    "class_name.required"   => "This class field is required",
-                    "subject_name.required" => "This subject field is required",
-                    "total_mark.required"   => "This total mark field is required",
-                    "mcqQuestion_no.*.required"   => "This mcq question field is required",
-                    "mcqQuestions.*.required"   => "This question field is required",
-                ]);
 
-                // if ($unValid) {
-                //     return redirect()->back();
-                // };
-        
-                Question::updateOrCreate([
+            } else {
+                $question_id = Question::findOrFail($request->question_id);
+                
+                $question_id->update([
+                    'type'          => $request->question_type,  
+                    'school_id'     => Auth::user()->id,
+                    'term_id'       => $request->exam_term,
+                    'class_id'       => $request->class_name,
+                    'subject_id'       => $request->subject_name,
+                    'hours'          => $request->hours,
+                    'total_marks'   => $request->total_mark,   
+                    'question_title' => $request->question_title,
+                    'question_mark' => $request->question_mark,
+                    'question'     => $request->questions
+              ]);
+            }
+
+            toast('Question Create Successful', 'success');
+            return response()->json(['status' => 'success']);
+
+        }  elseif (!empty($request->mcqQuestion_no[1][1])) {
+
+            $unValid = Validator::make($request->all(), [
+                'exam_term'         => 'required',
+                'class_name'        => 'required',
+                'subject_name'      => 'required',
+                'hours'             => 'required|numeric|min:1|max:100',
+                'total_mark'        => 'required|numeric|min:1|max:100',
+                'mcqQuestion_no.*'    => 'required',
+                'mcqQuestions.*'    => 'required',
+                
+            ], [
+                "exam_term.required"    => "Exam field term is required",
+                "class_name.required"   => "Class field is required",
+                "subject_name.required" => "Subject field is required",
+                "total_mark.required"   => "Total mark field is required",
+                "mcqQuestion_no.*.required"   => "Mcq question field is required",
+                "mcqQuestions.*.required"   => "Question field is required",
+            ]);
+
+            if ($unValid->fails()) {
+                return response()->json([
+                    'status' => 'fail',
+                    'error'  => $unValid->errors()->toArray()
+                ]);
+            }
+
+            if (is_null($request->question_id)) {
+
+                Question::create([
                     'type'          => $request->question_type,
                     'school_id'     => Auth::user()->id,
                     'term_id'       => $request->exam_term,
                     'class_id'       => $request->class_name,
                     'subject_id'       => $request->subject_name,
-                ],[
-                    
                     'hours'          => $request->hours,
                     'total_marks'   => $request->total_mark,
                     'mcq_question'  => $request->mcqQuestion_no,   
                     'question_mark' => $request->mcqQuestion_mark,
                     'question'     => $request->mcqQuestions
                 ]);
-    
-                toast('Question Create Successful', 'success');
-                return redirect()->route('show.question');
-    
-            } elseif (!empty($request->creQuestions[1])) {
-                
-               $unValid = $request->validate([
-                    'exam_term'             => 'required',
-                    'class_name'            => 'required',
-                    'subject_name'          => 'required',
-                    'hours'                 => 'required|numeric',
-                    'total_mark'            => 'required|numeric',
-                    'creQuestion_no.*'      => 'required',
-                    'creQuestion_mark.*'    => 'required',
-                    'creQuestions.*'        => 'required',
-                    
-                ], [
-                    "exam_term.required"            => "This exam field term is required",
-                    "class_name.required"           => "This class field is required",
-                    "subject_name.required"         => "This subject field is required",
-                    "total_mark.required"           => "This total mark field is required",
-                    "creQuestions.*.required"       => "This question field is required",
-                    "creQuestion_no.*.required"     => "This creative question field is required",
-                    "creQuestion_mark.*.required"   => "This question mark field is required",
+            } else {
+                $question_id = Question::findOrFail($request->question_id);
+                $question_id->update([
+                    'type'          => $request->question_type,
+                    'school_id'     => Auth::user()->id,
+                    'term_id'       => $request->exam_term,
+                    'class_id'       => $request->class_name,
+                    'subject_id'       => $request->subject_name,
+                    'hours'          => $request->hours,
+                    'total_marks'   => $request->total_mark,
+                    'mcq_question'  => $request->mcqQuestion_no,   
+                    'question_mark' => $request->mcqQuestion_mark,
+                    'question'     => $request->mcqQuestions
                 ]);
-        
-                // if ($unValid) {
-                //     return redirect()->back();
-                // };
+            }
 
-                Question::updateOrCreate([
-    
+            toast('Question Create Successful', 'success');
+            return response()->json(['status' => 'success']);
+
+        } elseif (!empty($request->creQuestions[1])) {
+            
+            $unValid = Validator::make($request->all(), [
+                'exam_term'             => 'required',
+                'class_name'            => 'required',
+                'subject_name'          => 'required',
+                'hours'                 => 'required|numeric|min:1|max:100',
+                'total_mark'            => 'required|numeric|min:1|max:100',
+                'creQuestion_no.*'      => 'required',
+                'creQuestion_mark.*'    => 'required',
+                'creQuestions.*'        => 'required',
+                
+            ], [
+                "exam_term.required"            => "This exam field term is required",
+                "class_name.required"           => "This class field is required",
+                "subject_name.required"         => "This subject field is required",
+                "total_mark.required"           => "This total mark field is required",
+                "creQuestions.*.required"       => "This question field is required",
+                "creQuestion_no.*.required"     => "This creative question field is required",
+                "creQuestion_mark.*.required"   => "This question mark field is required",
+            ]);
+
+            if ($unValid->fails()) {
+                return response()->json([
+                    'status' => 'fail',
+                    'error'  => $unValid->errors()->toArray()
+                ]);
+            }
+            
+            if (is_null($request->question_id)) {
+
+                Question::create([
                     'type'              => $request->question_type,
                     'school_id'         => Auth::user()->id,
                     'term_id'           => $request->exam_term,
                     'class_id'          => $request->class_name,
                     'subject_id'        => $request->subject_name,
-        
-                   ],[
-                        'hours'             => $request->hours,
-                        'total_marks'       => $request->total_mark,
-                        'cre_question'      => $request->creQuestion_no,   
-                        'question_mark'     => $request->creQuestion_mark,
-                        'question'          => $request->creQuestions
-                    ]);
-    
-                toast('Question Create Successful', 'success');
-                return redirect()->route('show.question');
+                    'hours'             => $request->hours,
+                    'total_marks'       => $request->total_mark,
+                    'cre_question'      => $request->creQuestion_no,   
+                    'question_mark'     => $request->creQuestion_mark,
+                    'question'          => $request->creQuestions
+                ]);
+            } else {
+                $question_id = Question::findOrFail($request->question_id);
+                $question_id->update([
+                    'type'              => $request->question_type,
+                    'school_id'         => Auth::user()->id,
+                    'term_id'           => $request->exam_term,
+                    'class_id'          => $request->class_name,
+                    'subject_id'        => $request->subject_name,
+                    'hours'             => $request->hours,
+                    'total_marks'       => $request->total_mark,
+                    'cre_question'      => $request->creQuestion_no,   
+                    'question_mark'     => $request->creQuestion_mark,
+                    'question'          => $request->creQuestions
+                ]);
+
             }
-            toast('Your question field blank', 'error');
-            return back();
-        }                  
+
+            toast('Question Create Successful', 'success');
+            return response()->json(['status' => 'success']);
+        }
+        
+        toast(' Check your question field blank', 'error');
+        return back();
     }
 
     /**
@@ -201,126 +267,190 @@ class QuestionController extends Controller
      * @return \Illuminate\Contracts\View\ 
      */
     public function ajaxQuestionStore(Request $request)
-    {
-        $question = Question::where('school_id', Auth::user()->id)->where('type', $request->question_type)
-                            ->where('term_id', $request->exam_term)->where('class_id', $request->class_name)
-                            ->where('subject_id', $request->subject_name)->first();
-        if  ($question) {
-            return response()->json([
-                'status' => 'fail',
-                'error'  => 'This subject question is already exist'
-            ]);
-        } else {
+    {   
 
-            if ($request->question_type == "Written") {
-    
-                $request->validate([
-                    'exam_term'         => 'required|',
-                    'class_name'        => 'required',
-                    'subject_name'      => 'required',
-                    'hours'             => 'required|numeric',
-                    'total_mark'        => 'required|numeric',
-                    'question_title.*'    => 'required',
-                    'question_mark.*'     => 'required',
-                    // 'questions.*'          => 'required',
-                    
-                ], [
-                    "exam_term.required"        => "This exam field term is required",
-                    "class_name.required"       => "This class field is required",
-                    "subject_name.required"     => "This subject field is required",
-                    "total_mark.required"       => "This total mark field is required",
-                    "question_title.*.required"   => "This question title field is required",
-                    "question_mark.*.required"    => "This mark field is required",
-                    // "questions.*.required"                 => "This question field is required"   
-                ]);
-        
-                Question::updateOrCreate([
-                    'type'          => $request->question_type,  
-                    'school_id'     => Auth::user()->id,
-                    'term_id'       => $request->exam_term,
-                    'class_id'       => $request->class_name,
-                    'subject_id'       => $request->subject_name,
-                ],[
-                    
-                    'hours'          => $request->hours,
-                    'total_marks'   => $request->total_mark,   
-                    'question_title' => $request->question_title,
-                    'question_mark' => $request->question_mark,
-                    'question'     => $request->questions
-                ]);
-    
-            }  elseif ($request->question_type == "MCQ") {
+        if ($request->question_type == "Written") {
+            
+            $validator = Validator::make($request->all(), [
+                'exam_term'         => 'required|',
+                'class_name'        => 'required',
+                'subject_name'      => 'required',
+                'hours'             => 'required|min:1|numeric',
+                'total_mark'        => 'required|min:1|numeric',
+                'question_title.*'    => 'required',
+                'question_mark.*'     => 'required',
+                // 'questions.*'          => 'required',
                 
-                $request->validate([
-                    'exam_term'         => 'required',
-                    'class_name'        => 'required',
-                    'subject_name'      => 'required',
-                    'hours'             => 'required|numeric',
-                    'total_mark'        => 'required|numeric',
-                    'mcqQuestion_no.*'    => 'required',
-                    // 'mcqQuestions.*'    => 'required',
-                    
-                ], [
-                    "exam_term.required"    => "This exam field term is required",
-                    "class_name.required"   => "This class field is required",
-                    "subject_name.required" => "This subject field is required",
-                    "total_mark.required"   => "This total mark field is required",
-                    "mcqQuestion_no.*.required"   => "This mcq question field is required",
-                    // "mcqQuestions.*.required"   => "This question field is required",
+            ], [
+                "exam_term.required"            => "This exam field term is required",
+                "class_name.required"           => "This class field is required",
+                "subject_name.required"         => "This subject field is required",
+                "total_mark.required"           => "This total mark field is required",
+                "question_title.*.required"     => "This question title field is required",
+                "question_mark.*.required"      => "This mark field is required",
+                "questions.*.required"          => "This question field is required"   
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'status' => 'fail',
+                    'error'  => $validator->errors()->toArray()
                 ]);
-        
-                Question::updateOrCreate([
+            }else {
+                if (is_null($request->question_id)) {
+                    
+                    $id =  Question::create([
+                          'type'          => $request->question_type,  
+                          'school_id'     => Auth::user()->id,
+                          'term_id'       => $request->exam_term,
+                          'class_id'       => $request->class_name,
+                          'subject_id'       => $request->subject_name,
+                          'hours'          => $request->hours,
+                          'total_marks'   => $request->total_mark,   
+                          'question_title' => $request->question_title,
+                          'question_mark' => $request->question_mark,
+                          'question'     => $request->questions
+                      ]);
+                      
+                      if($id->id != null) {
+                          return response()->json($id);
+                      }
+                } else {
+                    $question_id = Question::findOrFail($request->question_id);
+                    
+                    $question_id->update([
+                          'type'          => $request->question_type,  
+                          'school_id'     => Auth::user()->id,
+                          'term_id'       => $request->exam_term,
+                          'class_id'       => $request->class_name,
+                          'subject_id'       => $request->subject_name,
+                          'hours'          => $request->hours,
+                          'total_marks'   => $request->total_mark,   
+                          'question_title' => $request->question_title,
+                          'question_mark' => $request->question_mark,
+                          'question'     => $request->questions
+                    ]);
+                }
+            }
+        }  elseif ($request->question_type == "MCQ") {
+           
+            $validator = Validator::make($request->all(), [
+                'exam_term'         => 'required',
+                'class_name'        => 'required',
+                'subject_name'      => 'required',
+                'hours'             => 'required|min:1|numeric',
+                'total_mark'        => 'required|min:1|numeric',
+                'mcqQuestion_no.*'    => 'required',
+                // 'mcqQuestions.*'    => 'required',
+                
+            ], [
+                "exam_term.required"    => "This exam field term is required",
+                "class_name.required"   => "This class field is required",
+                "subject_name.required" => "This subject field is required",
+                "total_mark.required"   => "This total mark field is required",
+                "mcqQuestion_no.*.required"   => "This mcq question field is required",
+                // "mcqQuestions.*.required"   => "This question field is required",
+            ]);
+            
+            if ($validator->fails()) {
+                return response()->json([
+                    'status' => 'fail',
+                    'error'  => $validator->errors()->toArray()
+                ]);
+            }else{
+                if (is_null($request->question_id)) {
+                    
+                   $id = Question::create([
+                        'type'          => $request->question_type,
+                        'school_id'     => Auth::user()->id,
+                        'term_id'       => $request->exam_term,
+                        'class_id'       => $request->class_name,
+                        'subject_id'       => $request->subject_name,
+                        'hours'          => $request->hours,
+                        'total_marks'   => $request->total_mark,
+                        'mcq_question'  => $request->mcqQuestion_no,   
+                        'question_mark' => $request->mcqQuestion_mark,
+                        'question'     => $request->mcqQuestions
+                    ]);
+    
+                    return response()->json($id);
+                }
+                $question_id = Question::findOrFail($request->question_id);
+    
+                $question_id->update([
                     'type'          => $request->question_type,
                     'school_id'     => Auth::user()->id,
                     'term_id'       => $request->exam_term,
                     'class_id'       => $request->class_name,
                     'subject_id'       => $request->subject_name,
-                ],[
-                    
                     'hours'          => $request->hours,
                     'total_marks'   => $request->total_mark,
                     'mcq_question'  => $request->mcqQuestion_no,   
                     'question_mark' => $request->mcqQuestion_mark,
                     'question'     => $request->mcqQuestions
                 ]);
-    
-            } elseif ($request->question_type == "Creative") {
-                $request->validate([
-                    'exam_term'             => 'required',
-                    'class_name'            => 'required',
-                    'subject_name'          => 'required',
-                    'hours'                 => 'required|numeric',
-                    'total_mark'            => 'required|numeric',
-                    'creQuestion_no.*'      => 'required',
-                    'creQuestion_mark.*'    => 'required',
-                    // 'creQuestions.*'        => 'required',
-                    
-                ], [
-                    "exam_term.required"            => "This exam field term is required",
-                    "class_name.required"           => "This class field is required",
-                    "subject_name.required"         => "This subject field is required",
-                    "total_mark.required"           => "This total mark field is required",
-                    // "creQuestions.*.required"       => "This question field is required",
-                    "creQuestion_no.*.required"     => "This creative question field is required",
-                    "creQuestion_mark.*.required"   => "This question mark field is required",
+            }
+        } elseif ($request->question_type == "Creative") {
+            $validator = Validator::make($request->all(), [
+                'exam_term'             => 'required',
+                'class_name'            => 'required',
+                'subject_name'          => 'required',
+                'hours'                 => 'required|min:1|numeric',
+                'total_mark'            => 'required|min:1|numeric',
+                'creQuestion_no.*'      => 'required',
+                'creQuestion_mark.*'    => 'required',
+                // 'creQuestions.*'        => 'required',
+                
+            ], [
+                "exam_term.required"            => "This exam field term is required",
+                "class_name.required"           => "This class field is required",
+                "subject_name.required"         => "This subject field is required",
+                "total_mark.required"           => "This total mark field is required",
+                // "creQuestions.*.required"       => "This question field is required",
+                "creQuestion_no.*.required"     => "This creative question field is required",
+                "creQuestion_mark.*.required"   => "This question mark field is required",
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'status' => 'fail',
+                    'error'  => $validator->errors()->toArray()
                 ]);
-        
-                Question::updateOrCreate([
-                'type'              => $request->question_type,
-                'school_id'         => Auth::user()->id,
-                'term_id'           => $request->exam_term,
-                'class_id'          => $request->class_name,
-                'subject_id'        => $request->subject_name,
+            }else{
+
+                if (is_null($request->question_id)) {
     
-               ],[
+                  $id =  Question::create([
+                    'type'              => $request->question_type,
+                    'school_id'         => Auth::user()->id,
+                    'term_id'           => $request->exam_term,
+                    'class_id'          => $request->class_name,
+                    'subject_id'        => $request->subject_name,
                     'hours'             => $request->hours,
                     'total_marks'       => $request->total_mark,
                     'cre_question'      => $request->creQuestion_no,   
                     'question_mark'     => $request->creQuestion_mark,
                     'question'          => $request->creQuestions
+                    ]);
+    
+                    return response()->json($id);
+                }
+                $question_id = Question::findOrFail($request->question_id);
+    
+                $question_id->update([
+                'type'              => $request->question_type,
+                'school_id'         => Auth::user()->id,
+                'term_id'           => $request->exam_term,
+                'class_id'          => $request->class_name,
+                'subject_id'        => $request->subject_name,
+                'hours'             => $request->hours,
+                'total_marks'       => $request->total_mark,
+                'cre_question'      => $request->creQuestion_no,   
+                'question_mark'     => $request->creQuestion_mark,
+                'question'          => $request->creQuestions
                 ]);
-                
             }
+    
         }
     }
     
@@ -452,21 +582,21 @@ class QuestionController extends Controller
                 'exam_term'         => 'required|',
                 'class_name'        => 'required',
                 'subject_name'      => 'required',
-                'hours'             => 'required|numeric',
-                'total_mark'        => 'required|numeric',
+                'hours'             => 'required|numeric|min:1|max:100',
+                'total_mark'        => 'required|numeric|max:100',
                 'question_title.*'    => 'required',
-                'question_mark.*'     => 'required',
+                'question_mark.*'     => 'required|numeric',
                 'questions.*'          => 'required',
                 
             ], [
-                "question_type.required"    => "This question type field is required",
-                "exam_term.required"        => "This exam field term is required",
-                "class_name.required"       => "This class field is required",
-                "subject_name.required"     => "This subject field is required",
-                "total_mark.required"       => "This total mark field is required",
-                "question_title.*.required"   => "This question title field is required",
-                "question_mark.*.required"    => "This mark field is required",
-                "questions.*."                 => "This question field is required"   
+                "question_type.required"    => "Question type field is required",
+                "exam_term.required"        => "Exam field term is required",
+                "class_name.required"       => "Class field is required",
+                "subject_name.required"     => "Subject field is required",
+                "total_mark.required"       => "Total mark field is required",
+                "question_title.*.required"   => "Question title field is required",
+                "question_mark.*.required"    => "Mark field is required",
+                "questions.*."                 => "Question field is required"   
             ]);
     
             $qnUpdate->update([
@@ -491,20 +621,20 @@ class QuestionController extends Controller
                 'exam_term'         => 'required',
                 'class_name'        => 'required',
                 'subject_name'      => 'required',
-                'hours'             => 'required|numeric',
-                'total_mark'        => 'required|numeric',
-                'mcqQuestion_no.*'    => 'required',
+                'hours'             => 'required|numeric|min:1|max:100',
+                'total_mark'        => 'required|numeric|max:100',
+                'mcqQuestion_no.*'  => 'required',
                 'mcqQuestions.*'    => 'required',
                 
                 
             ], [
-                "question_type.required"    => "This question type field is required",
-                "exam_term.required"    => "This exam field term is required",
-                "class_name.required"   => "This class field is required",
-                "subject_name.required" => "This subject field is required",
-                "total_mark.required"   => "This total mark field is required",
-                "mcqQuestion_no.*.required"   => "This mcq question field is required",
-                "mcqQuestions.*.required"   => "This question field is required",
+                "question_type.required"    => "Question type field is required",
+                "exam_term.required"    => "Exam field term is required",
+                "class_name.required"   => "Class field is required",
+                "subject_name.required" => "Subject field is required",
+                "total_mark.required"   => "Total mark field is required",
+                "mcqQuestion_no.*.required"   => "Mcq question field is required",
+                "mcqQuestions.*.required"   => "Question field is required",
             ]);
     
             $qnUpdate->update([
@@ -523,27 +653,27 @@ class QuestionController extends Controller
             return redirect()->route('show.question');
 
         } elseif (!empty($request->creQuestions[1])) {
-            
+            // dd($request->all());
             $request->validate([
                 'question_type'     => 'required',
                 'exam_term'         => 'required',
                 'class_name'        => 'required',
                 'subject_name'      => 'required',
-                'hours'             => 'required|numeric',
-                'total_mark'        => 'required|numeric',
+                'hours'             => 'required|numeric|min:1|max:100',
+                'total_mark'        => 'required|numeric|max:100',
                 'creQuestion_no.*'    => 'required',
                 'creQuestion_mark.*'    => 'required',
                 'creQuestions.*'    => 'required',
                 
             ], [
-                "question_type.required"    => "This question type field is required",
-                "exam_term.required"    => "This exam field term is required",
-                "class_name.required"   => "This class field is required",
-                "subject_name.required" => "This subject field is required",
-                "total_mark.required"   => "This total mark field is required",
-                "creQuestions.*.required"   => "This question field is required",
-                "creQuestion_no.*.required"   => "This creative question field is required",
-                "creQuestion_mark.*.required"   => "This question mark field is required",
+                "question_type.required"    => "Question type field is required",
+                "exam_term.required"    => "Exam field term is required",
+                "class_name.required"   => "Class field is required",
+                "subject_name.required" => "Subject field is required",
+                "total_mark.required"   => "Total mark field is required",
+                "creQuestions.*.required"   => "Question field is required",
+                "creQuestion_no.*.required"   => "Creative question field is required",
+                "creQuestion_mark.*.required"   => "Question mark field is required",
             ]);
     
             $qnUpdate->update([
@@ -562,6 +692,7 @@ class QuestionController extends Controller
     
             return redirect()->route('show.question');
         }
+        
         return redirect()->back(); 
     }
 

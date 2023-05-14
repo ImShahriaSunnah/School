@@ -9,8 +9,10 @@ use App\Models\Employee;
 use App\Models\FeesType;
 use App\Models\InstituteClass;
 use App\Models\StudentFee;
+use App\Models\TeacherSalary;
 use App\Models\StudentMonthlyFee;
 use App\Models\Teacher;
+use App\Models\EmployeeSalary;
 use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
@@ -18,6 +20,7 @@ use Illuminate\Support\Facades\Auth;
 use RealRashid\SweetAlert\Facades\Alert;
 use App\Models\Transection;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Carbon\Carbon;
 
 class FinanceController extends Controller
 {
@@ -27,18 +30,21 @@ class FinanceController extends Controller
      */
     public function dashboard()
     {
-        $teacherSalary = Teacher::where('school_id', Auth::user()->id)->sum("salary"); 
-        $StaffSalary = Employee::where('school_id', Auth::user()->id)->sum("salary");      
-        $Expense = Transection::where('school_id', Auth::user()->id)->where('type','1')->sum("amount");      
-        $TotalFees = StudentMonthlyFee::where('school_id', Auth::user()->id)->sum("amount");    
+        $teacherSalary = Teacher::where('school_id', Auth::user()->id)->sum("salary");
+        $currentMonth = Carbon::now()->month;
+        $teacherPaidSalary = TeacherSalary::where('school_id', Auth::user()->id)->whereMonth('updated_at', '=', $currentMonth)->sum("amount");
+        $StaffSalary = Employee::where('school_id', Auth::user()->id)->sum("salary");
+        $StaffPaidSalary = EmployeeSalary::where('school_id', Auth::user()->id)->whereMonth('updated_at', '=', $currentMonth)->sum("amount");
+        $Expense = Transection::where('school_id', Auth::user()->id)->where('type','1')->sum("amount");
+        $TotalFees = StudentMonthlyFee::where('school_id', Auth::user()->id)->sum("amount");
         $sumFund = Transection::where('school_id', Auth::user()->id)->where('type','2')->sum("amount");
-        $colected = StudentMonthlyFee::where('school_id', Auth::user()->id)->where('status','2')->sum("amount");    
-        $due = StudentMonthlyFee::where('school_id', Auth::user()->id)->where('status','0')->sum("amount"); 
+        $colected = StudentMonthlyFee::where('school_id', Auth::user()->id)->where('status','2')->sum("amount");
+        $due = StudentMonthlyFee::where('school_id', Auth::user()->id)->where('status','0')->sum("amount");
         $accesories = Transection::where('school_id', Auth::user()->id)->where('type','3')->sum("amount");
-        $profit=$sumFund+$colected+$accesories-$teacherSalary-$StaffSalary-$Expense;
-        $profit = abs($profit);
-        
-        return view("frontend.school.finance.dashboard.dashboard",compact('teacherSalary','StaffSalary','Expense','TotalFees','sumFund','colected','due','accesories','profit'));
+        $profit = $sumFund + $colected + $accesories - $teacherPaidSalary - $StaffPaidSalary - $Expense;
+        // $profit = abs($profit);
+
+        return view("frontend.school.finance.dashboard.dashboard",compact('teacherSalary','teacherPaidSalary','StaffSalary','StaffPaidSalary','Expense','TotalFees','sumFund','colected','due','accesories','profit'));
     }
 
 
@@ -59,7 +65,7 @@ class FinanceController extends Controller
                 return back();
             endif;
         }
-        
+
         return view('frontend.school.finance.fees-create', compact('data'));
     }
 
@@ -70,7 +76,8 @@ class FinanceController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'title' => ['required']
+            'title'     => 'required|regex:/^[a-zA-Z0-9\s]+$/u',
+            'fees.*'    => 'numeric'
         ]);
 
         try{
@@ -94,8 +101,8 @@ class FinanceController extends Controller
     {
         $request->validate([
             'class_id'  =>  ['required', 'integer'],
-            'fees'      =>  ['required', 'array'],
-            // 'fees.*'      =>  ['required'],
+            // 'class'      =>  ['required'],
+            'fees.*'      =>  'required | integer'
         ]);
 
         // return $request;
@@ -114,7 +121,9 @@ class FinanceController extends Controller
                                 'school_id' =>  Auth::id(),
                                 'class_id'     =>  $class->id,
                                 'fees_type_id'  =>  $item
-                        ], ['fees'=>$request['fees'][$key] ?? 0]);
+                        ],
+
+                        ['fees' =>  $request['fees'][$key] ?? 0]);
                     }
                 }
             }
@@ -141,7 +150,7 @@ class FinanceController extends Controller
 
 
 
-    /** 
+    /**
      * show students list
      */
     public function students(Request $request)
@@ -164,26 +173,29 @@ class FinanceController extends Controller
     }
 
 
-        /** 
+        /**
      * show students list
      */
     public function findStudent($sid = null, $month)
     {
         $student = User::where('school_id', Auth::id())->where('id', $sid);
         $data['month'] = $month;
+        $studentMonthlyFees = StudentMonthlyFee::where('student_id', $sid)->get();
 
         if($student->exists())
         {
             $data['student'] = $student->first();
             $data['months'] = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+            $monthlyFee = InstituteClass::where('school_id', Auth::id())->where('id', $data['student']->class_id)->first()->class_fees;
 
             if($month != 'n'):
                 $data['assignFees'] = AssignStudentFee::where('school_id', Auth::id())->where('class_id', $data['student']->class_id)->where('month_id', $month)->first();
+                // $monthlyFee = InstituteClass::where('school_id', Auth::id())->where('id', $data['student']->class_id)->first()->class_fees;
                 $data['studentFees'] = StudentMonthlyFee::where('school_id', Auth::id())->where('student_id', $data['student']->id)->where('month_id', $month)->first();
             endif;
 
             // return $data;
-            return view('frontend.school.finance.student-fees', compact('data'));
+            return view('frontend.school.finance.student-fees', compact('data','monthlyFee','studentMonthlyFees'));
         }
 
         Alert::info("Sorry!", 'Record does not exists');
@@ -191,9 +203,73 @@ class FinanceController extends Controller
 
     }
 
+    /**
+     * get finance history
+     */
+    public function getFinanceHistory(Request $request)
+    {
+        $data['requests'] = $request->except('_token');
+
+        $student = User::where('school_id', Auth::id())->where('id', $request->studentId);
+        $data['month'] = $request->month;
+
+        if($student->exists())
+        {
+            $data['student'] = $student->first();
+            $data['months'] = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+            $monthlyFee = InstituteClass::where('school_id', Auth::id())->where('id', $data['student']->class_id)->first()->class_fees;
+
+            $data['assignFees'] = AssignStudentFee::where('school_id', Auth::id())->where('class_id', $data['student']->class_id)->whereIn('month_id', $data['months'])->get();
+            $data['studentFees'] = StudentMonthlyFee::where('school_id', Auth::id())->where('student_id', $data['student']->id)->whereIn('month_id', $data['months'])->get();
+            return $data;
+            return view('frontend.school.finance.student-fees', compact('data','monthlyFee'));
+        }
+    }
+
+    public function studentSchoolScholarship(Request $request, $id)
+    {
+        $student = User::find($id);
+        $student->scholarship = $request->scholarship;
+        $student->save();
+        Alert::success('Success student scholarship', 'Success Message');
+        return back();
+
+    }
+
+    // public function scholarshipStatus(Request $request)
+    // {
+    //     $key = $request->key;
+    //     $status = $request->status;
+    //     $row = User::where(['id'=>  $key]);
+
+    //     if($row->exists())
+    //     {
+    //         if($status == 1)
+    //         {
+    //             $row->update(['status'  =>  1]);
+    //         }
+    //         else if($status == .5)
+    //         {
+    //             $row->update(['status' => .5]);
+    //         }
+    //         else
+    //         {
+    //             $row->update(['status'  =>  0]);
+    //         }
+
+    //         return back()->with('success', 'Record updated successfully');
+    //     }
+
+    //     return back()->with('error', 'Something went wrong. Please try again after login');
+    // }
+
 
     /**
      * received student fees
+     *
+     * @param Request
+     * @param $request
+     * @return @param \Illuminate\Contracts\View\View
      */
     public function receivedFees(Request $request)
     {
@@ -214,10 +290,10 @@ class FinanceController extends Controller
                     'school_id'     =>  Auth::id(),
                     'student_id'    =>  $request['studentId'],
                     'month_id'      =>  $request['monthId']
-                ], 
+                ],
                 [
                     'amount'        =>  $request['amount'],
-                    'status'        => 2 // status = paid
+                    'status'        =>  2 // status = paid
                 ]
             );
 
@@ -235,23 +311,17 @@ class FinanceController extends Controller
                 'school_id'     =>  Auth::id()
             ]);
 
-            $data['user'] = User::find($request['studentId']);
+            $data['user'] = User::find($request['studentId']);            
             $data['assignFees'] = AssignStudentFee::find($request['assignFeesId']);
             $data['studentFees'] = StudentMonthlyFee::where('school_id', Auth::id())->where('student_id', $data['user']->id)->where('month_id', $request['monthId'])->first();
             $data['html'] = view('pdf.monthly-fee', compact('data'))->render();
-
             $resp['status'] = true;
             $resp['message'] = "Record updated successfully";
             $resp['data'] = $data;
-
             $paymentSlip = $data;
 
             else:
-                
-            // $resp['status'] = false;
-            // $resp['message'] = "Please add a bank account first";
-            // $resp['data'] = null;
-           
+
             Alert::Info("Sorry!", 'Please add a bank account first');
             endif;
 
@@ -262,9 +332,23 @@ class FinanceController extends Controller
             $resp['message'] = $e->getMessage();
             $resp['data'] = null;
         }
-        
-        // return response()->json($resp);
 
-        return back()->with('paymentSlip', compact('paymentSlip'));
+        return response()->json($paymentSlip);
+    }
+
+    /**
+     * Delete Finance Fees Title
+     *
+     * @param Request
+     * @param $request
+     * @return redirector
+     */
+    public function financeTitleDelete($id)
+    {
+        StudentFee::where('fees_type_id', $id)->delete();
+        FeesType::findOrFail($id)->delete();
+        toast("Successfully Delete Fees Type", "success");
+
+        return redirect()->back();
     }
 }

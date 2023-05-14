@@ -556,7 +556,6 @@ return [
     'Due Fee'=>'Due Fee',
     'Fund Receive'=>'Fund Receive',
     'Accesories'=>'Accesories',
-    'Accesories	'=>'Accesories	',
 
     'Total Profit'=>'Total Profit',
     'Search End Date'=>'Search End Date',
@@ -996,7 +995,14 @@ return [
 'Bangladeshi' => 'Bangladeshi',
 'UniqueId' => 'Unique Id',
 'Information' => 'Information',
-
+'Father Name' => 'Father Name',
+'Mother Name' => 'Mother Name',
+'Result Upload' => 'Result Upload',
+'Select Day' => 'select Day',
+'Select Subject' => 'Select Subject',
+'Select Teacher' => 'Select Teacher',
+'Update' => 'Update',
+'Roll' => 'Roll No.'
 
 
 ];

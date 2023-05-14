@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\AssignStudentFee;
+use App\Models\Attendance;
 use App\Models\SchoolCheckout;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -550,7 +551,7 @@ function studentFieldWiseFee($month_id)
                   'month_id'    => $month_id
                 ])->whereBetween('created_at', [$newYear, $currentMonth])->first();
     
-    return isset($studentFee->fees_details) ? $studentFee : 0 ;
+    return isset($studentFee->fees_details) ? $studentFee : [] ;
 }
 
 /**
@@ -598,10 +599,14 @@ function annualGrade($total)
 /**
  * Final Grade
  */
-function finalGrade($total)
-{ 
+function finalGrade($total, $schoolId=null)
+{   
+    if(is_null($schoolId)):
+    $schoolId = Auth::id();
+    endif;
+
     try {
-        $totalTermMark = \App\Models\Term::selectRaw("SUM(total_mark) as term_total_mark")->first();
+        $totalTermMark = \App\Models\Term::where('school_id', $schoolId)->selectRaw("SUM(total_mark) as term_total_mark")->first();
         if ($totalTermMark != "0") {
             $totalMark = $total * 100 / $totalTermMark->term_total_mark;
         } else {
@@ -658,10 +663,14 @@ function annualGpa($total)
 /**
  * Final GPA
  */
-function finalGpa($total)
+function finalGpa($total, $schoolId = null)
 {
+    if(is_null($schoolId)):
+    $schoolId = Auth::id();
+    endif;
+
     try {
-        $totalTermMark = \App\Models\Term::selectRaw("SUM(total_mark) as term_total_mark")->first();
+        $totalTermMark = \App\Models\Term::where('school_id', $schoolId)->selectRaw("SUM(total_mark) as term_total_mark")->first();
         if ($totalTermMark != "0") {
             $totalMark = $total * 100 / $totalTermMark->term_total_mark;
         } else {
@@ -715,6 +724,52 @@ function classWisePassFail($gpa)
 function sendtoPaymentPage(){
   //  dd(1);
     return "Hello, Universe!";
+}
+
+
+/**
+ * Get Result Teacher Panel
+ * 
+ * @param $Student_id
+ * @param $subject_id
+ * @param $term_id
+ * @param $markType
+ * @return mixing $data or Null
+ * 
+ */
+function teacherGetResultMarks($Student_id, $subject_id, $term_id, $markType)
+{
+    $data = \App\Models\Result::where('school_id', Auth::user()->school_id)->where('student_id', $Student_id)->where('term_id', $term_id)->where('subject_id', $subject_id)->first();
+    try {
+        return $data[strtolower($markType)];
+    } catch (\Exception $e) {
+        return null;
+    }
+}
+
+/**
+ * Get Attendance on Admin Pannel (Sajjad Devel)
+ * 
+ * @param $Student_id
+ * @param $class_id
+ * @param $subject_id
+ * @param $section_id
+ * @param $date
+ * @return mixing $Int or Null
+ * 
+ */
+function getAttendance($student_id, $class_id, $section_id, $date)
+{   
+    $attend = Attendance::where("school_id", Auth::user()->id)
+                            ->where('class_id', $class_id)
+                            ->where('section_id', $section_id)
+                            ->where('student_id', $student_id)
+                            ->whereDate('created_at', $date)->first();
+    if($attend != null) {
+        return $attend->attendance;
+    }else {
+        return 0;
+    }
 }
 
 ?>

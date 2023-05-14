@@ -3,6 +3,7 @@ namespace App\Http\Controllers;
 use App\Models\Bank;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use RealRashid\SweetAlert\Facades\Alert;
 
 class BankController extends Controller
 {
@@ -63,13 +64,12 @@ class BankController extends Controller
             $request->validate([
                 'bank_name'  => 'required',
                 'branch'  => 'required',
-                'account_number'  => 'required|unique:banks,account_number',
+                'account_number'  => 'required|unique:banks,account_number|numeric',
                 'account_type'  => 'required',
                 'account_holder'  => 'required',
             ]);
 
             $data = new Bank();
-            
             $data -> bank_name = $request->bank_name;
             $data -> branch = $request->branch;
             $data -> account_number = $request->account_number;
@@ -80,7 +80,8 @@ class BankController extends Controller
             $data -> swift = (is_null($request->swift) ? '0' : $request->swift);
             $data -> school_id = Auth::user()->id;
             $data -> save();
-            
+            Alert::success('Successfully Bank record Add', 'Success Message');
+
             return redirect()->route('bankadd')->with('success', 'Record created successfully');
         }
     
@@ -130,7 +131,7 @@ class BankController extends Controller
             $request->validate([
                 'bank_name'  => 'required',
                 'branch'  => 'required',
-                'account_number'  => 'required',
+                'account_number'  => 'required|numeric',
                 'account_type'  => 'required',
                 'account_holder'  => 'required',
             
@@ -148,7 +149,8 @@ class BankController extends Controller
             $data -> swift = (is_null($request->swift) ? '0' : $request->swift);
             $data -> school_id = Auth::user()->id;
             $data -> save();
-            
+            Alert::success('Successfully Bank record Updated', 'Success Message');
+
             return redirect()->route('bankadd')->with('success', 'Record updated successfully');
     
         }
@@ -170,6 +172,7 @@ class BankController extends Controller
         $key = $request->key;
 
         $bankadd = Bank::where('id',$key)->delete();
+        Alert::success('Successfully Bank record Deleted', 'Success Message');
 
         return redirect()->route('bankadd')->with('success', 'Record deleted successfully');
     }
